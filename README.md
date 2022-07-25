@@ -8,6 +8,7 @@ Known instrument, fixed for `LO ver >= 7.3`.
 
 Fixed adding toolbar buttons.
 
-NOTE: add images only at toolbar creation step now.  
-Adding images on menu's items creation step can up duplicate problem (todo).  
+NOTE: add images only at toolbar buttons creation step (now).  
+
+TODO: Adding images on menu's items creation step.  
 
