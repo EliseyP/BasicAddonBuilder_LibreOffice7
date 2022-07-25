@@ -1,4 +1,4 @@
-# BasicAddonBuilder_LibreOffice 
+# BasicAddonBuilder_LibreOffice7 
 
 ## 0.6.0
 
