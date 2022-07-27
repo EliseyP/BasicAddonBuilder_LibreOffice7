@@ -1,6 +1,6 @@
 # BasicAddonBuilder_LibreOffice7 
 
-## 0.6.1
+## 0.6.2
 
 `LibreOffice` extension for extension compiling  
 
@@ -9,9 +9,6 @@ Known instrument, fixed for `LO ver >= 7.1`.
 Added Python Libraries support.  
 
 Fixed adding toolbar buttons.
-
-NOTE: add images only at toolbar buttons and Addons menu item creation steps (now).  
-
 
 ### Python Libraries support.
 
@@ -22,6 +19,5 @@ Python modules and functions are available for mapping on toolbar or menu creati
 
 
 ### TODO: 
-- Adding images (and Python mapping) on Main menu's items creation step.  
-- Create Update.xml file in extension creation dir.
+- Create `Update.xml` file in extension creation dir.
 - Optional removing version from extension name. 
