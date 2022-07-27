@@ -1,0 +1,4 @@
+BasicAddonBuilder
+Copyright (C) 2006-2008 Paolo Mantovani
+
+Assistant de création d'extension (Add-on's) OpenOffice.org à partir de librairies StarBasic

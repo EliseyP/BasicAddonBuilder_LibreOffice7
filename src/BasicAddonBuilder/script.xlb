@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library:library PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "library.dtd">
+<library:library xmlns:library="http://openoffice.org/2000/library" library:name="BasicAddonBuilder" library:readonly="false" library:passwordprotected="false">
+ <library:element library:name="Main"/>
+ <library:element library:name="DlgWizard_main"/>
+ <library:element library:name="DlgWizard_step00"/>
+ <library:element library:name="DlgWizard_step01"/>
+ <library:element library:name="DlgWizard_step02"/>
+ <library:element library:name="DlgWizard_step05"/>
+ <library:element library:name="DlgWizard_step03"/>
+ <library:element library:name="DlgWizard_step04"/>
+ <library:element library:name="DlgWizard_step06"/>
+ <library:element library:name="DlgWizard_step08"/>
+ <library:element library:name="PkgExporter"/>
+ <library:element library:name="Common"/>
+ <library:element library:name="Global"/>
+ <library:element library:name="CtrlToolbarPreview"/>
+ <library:element library:name="CtrlMenuPreview"/>
+ <library:element library:name="DlgTranslate"/>
+ <library:element library:name="Registry"/>
+ <library:element library:name="DlgMacroPicker"/>
+ <library:element library:name="DlgTextEdit"/>
+ <library:element library:name="Zip"/>
+ <library:element library:name="DlgImagePicker"/>
+ <library:element library:name="DlgUIElementProperties"/>
+ <library:element library:name="CtrlTranslateBox"/>
+ <library:element library:name="DlgFtpConnection"/>
+ <library:element library:name="DlgWizard_step09"/>
+ <library:element library:name="DlgWizard_step07"/>
+ <library:element library:name="BABProject"/>
+ <library:element library:name="DlgProjects"/>
+ <library:element library:name="patch_information"/>
+</library:library>

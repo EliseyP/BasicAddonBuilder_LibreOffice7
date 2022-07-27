@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgProjects" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;	
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;	
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module DlgProjects:
+&apos;	
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+&apos;private const
+&apos;...
+
+&apos;private vars
+Dim oDlgProjects As Object
+Dim oDlgProjectsModel As Object
+
+Dim mDeletedProjects()
+Dim iForceResult As Integer
+
+
+sub test
+dim sname as string
+dim a as integer
+LoadProjectList()
+sname = &quot;&quot;
+a = ShowProjects(sname)
+print a, sname
+end sub
+
+
+
+&apos;______________________________________________________________________________
+Function ShowProjects(sProjectName As String, Optional sDialogTitle As String) As Integer
+	
+Dim oLib As Object
+Dim oLibDialog As Object
+Dim iDialogResult As Integer
+
+Dim sPrjToDelete As String
+
+
+	DialogLibraries.LoadLibrary(&quot;BasicAddonBuilder&quot;)
+	oLib = DialogLibraries.GetByName(&quot;BasicAddonBuilder&quot;)
+	oLibDialog = oLib.GetByName(&quot;DlgProjects&quot;)
+	
+	oDlgProjects = CreateUnoDialog(oLibDialog)
+	oDlgProjectsModel = oDlgProjects.Model
+	
+	&apos;translate dialog UI
+	LocalizeDialog(oDlgProjects)
+	
+	&apos;set the dialog title
+	If Not IsMissing(sDialogTitle) Then
+		oDlgProjects.Title = sDialogTitle
+	End If
+
+	&apos;initialize dialog controls
+	oDlgProjectsModel.lstProjects.StringItemList = LoadProjectList
+	
+	&apos;execute the dialog
+	iDialogResult = oDlgProjects.Execute()
+	
+	&apos;if the dialog has been closed by double clicking on the listbox
+	&apos;we must force the dialog result
+	If iForceResult &lt;&gt; 0 Then
+		iDialogResult = iForceResult
+	End If
+	
+	If iDialogResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+		&apos;get values from dialog
+		sProjectName = oDlgProjects.getControl(&quot;lstProjects&quot;).SelectedItem
+		
+		&apos;delete the projects in the &quot;to delete&quot; list
+		For Each sPrjToDelete In mDeletedProjects()
+			DeleteProject(sPrjToDelete)
+		Next
+		
+	End If
+
+	&apos;exit with the dialog result
+	ShowProjects = iDialogResult
+	
+End Function
+
+
+
+&apos;====================================================
+&apos;	Event handlers section
+&apos;====================================================
+
+&apos;______________________________________________________________________________
+Sub lstProjects_itemStateChanged(oEvent As Object)
+	EnableControls()
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub lstProjects_onClick(oEvent As Object)
+
+	If oEvent.ActionCommand &lt;&gt; &quot;&quot; Then
+		iForceResult = 1
+		oDlgProjects.endExecute()
+	End if
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub cmdDelete_onClick(oEvent As Object)
+Dim lstProjects As Object
+Dim mList()
+
+	lstProjects = oDlgProjects.getControl(&quot;lstProjects&quot;)
+	
+	&apos;append the selected item to the list of the projects to delete
+	AppendItem(mDeletedProjects(), lstProjects.SelectedItem)
+	
+	&apos;remove the item from the view
+	lstProjects.removeItems(lstProjects.SelectedItem, 1)
+	
+	EnableControls()
+
+End Sub
+
+
+&apos;====================================================
+&apos;	Helper functions
+&apos;====================================================
+
+&apos;______________________________________________________________________________
+Sub EnableControls()
+Dim lstProjects As Object
+Dim bEnable As Boolean
+
+	lstProjects = oDlgProjects.getControl(&quot;lstProjects&quot;)
+	bEnable = (lstProjects.SelectedItemPos &gt; -1)
+	
+	With oDlgProjectsModel
+		.cmdDelete.Enabled = bEnable
+		.cmdOpen.Enabled = bEnable
+	End With
+
+End Sub
+
+
+&apos;______________________________________________________________________________
+Function LoadProjectList() As Variant
+Dim oReg As Object
+Dim oRoot As Object
+Dim mList()
+Dim sRegistryURL As String
+Dim sKeyName As String
+Dim bReadOnly As Boolean
+Dim bCreate As Boolean
+Dim I As Integer
+
+	oReg = CreateUnoService(&quot;com.sun.star.registry.SimpleRegistry&quot;)
+	
+	sRegistryURL = pmxGetPathSettings(&quot;UserConfig&quot;) &amp; &quot;BABProjects.dat&quot;
+	bReadOnly = True
+	bCreate = True
+
+	oReg.open(sRegistryURL, bReadOnly, bCreate)
+	oRoot = oReg.getRootkey()
+	
+	&apos;remove the leading &quot;/&quot; from each item 
+	mList() = oRoot.getKeyNames()
+	For I = LBound(mList()) To UBound(mList())
+		sKeyName = mList(I)
+		If Len(sKeyName) &gt; 0 Then
+			sKeyName = Right(sKeyName, Len(sKeyName) - 1)
+		End If
+		mList(I) = sKeyName
+	Next I
+	
+	LoadProjectList = mList()
+
+End Function
+
+
+&apos;______________________________________________________________________________
+Sub DeleteProject(sPrjName As String)
+Dim oReg As Object
+Dim oRoot As Object
+Dim sRegistryURL As String
+Dim bReadOnly As Boolean
+Dim bCreate As Boolean
+
+	oReg = CreateUnoService(&quot;com.sun.star.registry.SimpleRegistry&quot;)
+
+	sRegistryURL = pmxGetPathSettings(&quot;UserConfig&quot;) &amp; &quot;BABProjects.dat&quot;
+	bReadOnly = False
+	bCreate = False
+	oReg.open(sRegistryURL, bReadOnly, bCreate)
+
+	oRoot = oReg.getRootkey()
+	
+	If HasItem(oRoot.KeyNames(), sPrjName) Then
+		oRoot.deleteKey(sPrjName)
+	End If
+	
+End Sub
+
+
+
+
+</script:module>

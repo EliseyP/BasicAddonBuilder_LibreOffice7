@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_step00" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module DlgWizard_step00:
+&apos;	Management of the step 0 of the dialog.
+&apos;	The step 0 contains controls that must remain visible in all other steps
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+
+&apos;______________________________________________________________________________
+Sub Step00_Initialize()
+&apos;nothing to do
+End Sub
+
+
+&apos;______________________________________________________________________________
+&apos;this routine is manually binded to the &quot;on action&quot; event
+&apos;of the button &quot;cmdNext&quot;
+Sub cmdNext_onClick(oEvt)
+
+Dim iCurStep As Integer
+Dim iCurStepIndex As Integer
+Dim iNextStep As Integer
+
+	iCurStep = g_oDlgWizardModel.Step
+	iCurStepIndex = GetRoadmapItemIndex(iCurStep)
+	
+	If iCurStepIndex &lt; (g_oDlgWizardModel.Roadmap.Count - 1) Then
+		iNextStep = _
+		g_oDlgWizardModel.Roadmap.getByIndex(iCurStepIndex + 1).ID
+		SetDialogStep(iNextStep)
+	End If
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+&apos;this routine is manually binded to the &quot;on action&quot; event
+&apos;of the button &quot;cmdBack&quot;
+Sub cmdBack_onClick(oEvt)
+
+Dim iCurStep As Integer
+Dim iCurStepIndex As Integer
+Dim iPrevStep As Integer
+
+	iCurStep = g_oDlgWizardModel.Step
+	iCurStepIndex = GetRoadmapItemIndex(iCurStep)
+	
+	If iCurStepIndex &gt; 0 Then
+		iPrevStep = _
+		g_oDlgWizardModel.Roadmap.getByIndex(iCurStepIndex - 1).ID
+		SetDialogStep(iPrevStep)
+	End If
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+&apos;this routine is manually binded to the &quot;on action&quot; event
+&apos;of the button &quot;cmdCreate&quot;
+Sub cmdCreate_onClick(oEvt)
+
+Dim oFileAccess As Object
+
+Dim sPkgId As String
+Dim sTmpPkgUrl As String
+Dim sTmpUpdateUrl As String
+Dim sPkgStoreUrl As String
+Dim sFtpRoot As String
+Dim sPkgFtpUrl As String
+Dim sUpdateFtpUrl As String
+
+On Local Error Goto ErrH
+
+	oFileAccess = CreateUnoService(&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
+
+	&apos;setup parameters
+	sPkgId = g_oDlgWizardModel.txtInfoIdentifier.Text
+	sTmpPkgUrl = GetTempFile()
+	sTmpUpdateUrl = GetTempFile()
+	sPkgStoreUrl = ConvertToUrl(g_oDlgWizardModel.txtStoreUrl.Text)
+	sFtpRoot = FixDirPath(g_oDlgWizardModel.txtUploadFtpUrl.Tag)
+	sPkgFtpUrl = sFtpRoot &amp; GetDefaultPackageName()
+	sUpdateFtpUrl = sFtpRoot &amp; &quot;.&quot; &amp; sPkgId &amp; &quot;_update.xml&quot;
+	
+	&apos;create the Extension (aka UNO package) in a temporary location
+	ExportUnoPackage(sTmpPkgUrl)
+	
+	&apos; TODO
+	&apos;create the Update.xml file into the extension create dir
+	&apos;ExportUpdateXml(sCreationUrl)
+	
+	
+	If g_oDlgWizardModel.chkStore.State = 1 Then
+		&apos;copy the created extension to the location selected by the user
+		oFileAccess.copy(sTmpPkgUrl, sPkgStoreUrl)
+		
+	End If
+	
+	If g_oDlgWizardModel.chkUpload.State = 1 Then
+		&apos;copy the created extension to the FTP location selected by the user
+		oFileAccess.copy(sTmpPkgUrl, sPkgFtpUrl)
+		
+		If g_oDlgWizardModel.chkUpdateInfo.State = 1 Then
+			&apos;create the Update.xml file into a temporary location
+			ExportUpdateXml(sTmpUpdateUrl)
+		
+			&apos;copy the update.xml to the FTP location selected by the user
+			oFileAccess.copy(sTmpUpdateUrl, sUpdateFtpUrl)
+			
+			&apos;clean temporary files
+			oFileAccess.kill(sTmpUpdateUrl)
+		End If
+	End If
+	
+	&apos;clean temporary files
+	oFileAccess.kill(sTmpPkgUrl)
+	
+	g_oDlgWizard.endExecute()
+	
+ExitHere:
+	Exit Sub
+	
+ErrH:	
+	&apos;unexpected error
+	MsgBox &quot;Error &quot; &amp; err &amp; &quot;: &quot; &amp; error$ , 16
+			
+	Resume ExitHere
+
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub Roadmap_itemStateChanged(oEvent As Object)
+	SetDialogStep(oEvent.ItemID)
+End Sub
+
+&apos;______________________________________________________________________________
+Sub Roadmap_disposing(oEvent As Object)
+&apos;	Nothing to do
+End Sub
+
+
+
+</script:module>

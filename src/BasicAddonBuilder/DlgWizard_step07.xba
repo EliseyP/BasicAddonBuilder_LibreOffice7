@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_step07" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $ 
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;	
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module DlgWizard_step07:
+&apos;	Management of the step 7 of the dialog.
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+
+Public g_mLicenseTranslations()
+
+&apos;______________________________________________________________________________
+Sub Step07_Initialize()
+	
+	&apos;print(g_sExtensionWithOnlyPythonName)
+
+	With g_oDlgWizardModel
+&apos;set step title/description
+		.lblStepTitle.Label = GetRoadmapItem(7).Label
+		.lblStepDescription.Label = _
+			GetResString(&quot;Set the version number and select a license for the Extension to create.&quot;) &amp; Chr(10) &amp; _
+			GetResString(&quot;You can also specify more localized versions of the license&quot;)
+		
+&apos; enable/disable general controls
+		.cmdBack.Enabled = True
+		.cmdNext.Enabled = True 
+		
+&apos; enable/disable roadmap items
+&apos;		.Roadmap(0).Enabled = True
+	End With
+
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub txtInfoIdentifier_textModified(oEvent As Object)
+Dim sId As String
+Dim bEnable As Boolean
+Dim I As Integer
+Dim iLast As Integer
+Dim iCur As Integer
+
+	sId = Trim(oEvent.Source.Text)
+	bEnable = (sId &lt;&gt; &quot;&quot;)
+	g_oDlgWizardModel.cmdNext.Enabled = bEnable
+	If Not bEnable Then
+		g_oDlgWizardModel.cmdCreate.Enabled = False
+	End If
+	
+	iLast = g_oDlgWizardModel.Roadmap.Count - 1
+	iCur = iLast - 2	
+	For I = iCur To iLast
+		g_oDlgWizardModel.Roadmap.getByIndex(I).Enabled = bEnable
+		&apos;g_oDlgWizardModel.Roadmap(I).Enabled = bEnable
+	Next I
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub txtInfoIdentifier_focusLost(oEvent As Object)
+&apos;ensure that there is a valid identifier
+Dim sId As String
+Dim sIdPart As String
+Dim mIdParts()
+Dim I As Integer
+
+	&apos;check the identifier
+	sId = Trim(oEvent.Source.Text)
+	If sId &lt;&gt; &quot;&quot; Then
+		mIdParts() = Split(sId, &quot;.&quot;)
+		For I = LBound(mIdParts()) To UBound(mIdParts())
+			sIdPart = mIdParts(I) 
+			mIdParts(I) = LCase(FlattenString(sIdPart))
+		Next
+		sId = Join(mIdParts(), &quot;.&quot;)
+	Else
+		sId = GetDefaultPackageId()
+	End If
+	oEvent.Source.Text =sId
+
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub cmdInfoLicenseUrl_onClick(oEvent As Object)
+Dim sLicenseUrl As String
+Dim mFilters(1,1) As String
+Dim iDlgResult As Integer
+	
+	mFilters(0,0) = &quot;Text (*.txt)&quot;
+	mFilters(0,1) = &quot;*.txt&quot;
+	mFilters(1,0) = &quot;All files (*.*)&quot;
+	mFilters(1,1) = &quot;*.*&quot;	
+	
+	sLicenseUrl = ConvertToUrl(g_oDlgWizardModel.txtInfoLicenseUrl.Text)
+	
+	iDlgResult = ShowFileDialog(sLicenseUrl, mFilters())
+	If iDlgResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+		&apos;update the License Url in the text control
+		g_oDlgWizardModel.txtInfoLicenseUrl.Text = ConvertFromUrl(sLicenseUrl)
+		EnableStepControls()
+	End If
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub cmdInfoLicenseTranslate_onClick(oEvent As Object)
+Dim mFilters(1,1) As String
+Dim sLicenseUrl As String
+Dim iDlgResult As Integer
+
+	mFilters(0,0) = &quot;Text (*.txt)&quot;
+	mFilters(0,1) = &quot;*.txt&quot;
+	mFilters(1,0) = &quot;All files (*.*)&quot;
+	mFilters(1,1) = &quot;*.*&quot;
+	
+	sLicenseUrl = ConvertToUrl(g_oDlgWizardModel.txtInfoLicenseUrl.Text)
+	
+	iDlgResult = ShowTranslateDialog(sLicenseUrl, g_mLicenseTranslations(), True, mFilters())
+	If iDlgResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+		&apos;update the License Url in the text control
+		g_oDlgWizardModel.txtInfoLicenseUrl.Text = ConvertFromUrl(sLicenseUrl)
+		EnableStepControls()
+	End If
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub EnableStepControls()
+	&apos;enable/disable the &apos;Translate&apos; button
+	g_oDlgWizardModel.cmdInfoLicenseTranslate.Enabled = _
+		g_oDlgWizardModel.txtInfoLicenseUrl.Text &lt;&gt; &quot;&quot;
+	
+	
+End Sub
+
+&apos;--&gt;patch-----for more information, see module &quot;patch_information&quot;----
+Sub Add_Publisher()
+	If g_oDlgWizardModel.chk_publisher.State = 1 Then
+			g_oDlgWizard.getControl(&quot;lbl_publisherName&quot;).Enable = True
+			g_oDlgWizard.getControl(&quot;lbl_publisherUrl&quot;).Enable = True
+			g_oDlgWizard.getControl(&quot;txt_publisherUrl&quot;).Enable = True
+			g_oDlgWizard.getControl(&quot;txt_publisherName&quot;).Enable = True
+		Else
+			g_oDlgWizard.getControl(&quot;lbl_publisherName&quot;).Enable = False
+			g_oDlgWizard.getControl(&quot;lbl_publisherUrl&quot;).Enable = False
+			g_oDlgWizard.getControl(&quot;txt_publisherUrl&quot;).Enable = False
+			g_oDlgWizard.getControl(&quot;txt_publisherName&quot;).Enable = False
+	End If
+End Sub
+&apos;-------------------------------------------------------------patch&lt;--
+
+
+</script:module>

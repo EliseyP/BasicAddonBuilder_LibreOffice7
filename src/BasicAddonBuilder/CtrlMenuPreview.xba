@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="CtrlMenuPreview" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $ 
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;	
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module CtrlMenuPreview:
+&apos;	
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+&apos;private const
+Private Const ICO_SIZE = 16
+&apos;Private Const BIG_ICO_SIZE = 26
+
+&apos; Color &quot;theme&quot;
+Private Const PREVIEW_BG_COLOR = &amp;HFFFFFF
+Private Const MENU_BG_COLOR = &amp;HFFFFFF
+Private Const MENU_BD_COLOR = &amp;HFFFFFF
+Private Const ITEM_BG_COLOR = &amp;HFFFFFF
+Private Const ITEM_BD_COLOR = &amp;HFFFFFF
+Private Const SEL_ITEM_BG_COLOR = &amp;H678DB2
+Private Const SEL_ITEM_BD_COLOR = &amp;H98724D
+Private Const SEL_ITEM_FORE_COLOR = &amp;HFFFFFF
+
+&apos;private vars
+Private mMenuControls()
+Private iPreviewType As Integer
+Private iSelectedItemIndex As Integer
+Private mMenuItems()
+
+Private oScrollView As Object
+Private oScrollBar As Object
+Private oScrollableArea As Object
+Private oMenu As Object
+
+
+Type MenuPreviewItem
+	UnoControl As Object
+	UIElementDescriptor As Object
+End Type
+
+
+&apos;______________________________________________________________________________
+Sub MenuPreview_Initialize(oBaseControl As Object, iType As Integer)
+Dim oBaseCtrl As Object
+Dim oMenuCtrl As Object
+Dim mElement()
+Dim I As Integer
+Dim bFound As Boolean
+
+	For I = LBound(mMenuControls()) To UBound(mMenuControls())
+		mElement() = mMenuControls(I)
+		oBaseCtrl = mElement(0)
+		If EqualUnoObjects(oBaseCtrl, oBaseControl) Then
+			oMenuCtrl = mElement(1)
+			bFound = True
+			Exit For
+		End If
+	Next I
+	
+	If Not( bFound) Then
+		oMenuCtrl = MenuPreview_CreateNew(oBaseControl)
+		AppendItem(mMenuControls(), Array(oBaseControl, oMenuCtrl))
+	End If
+	
+	&apos;setup variables at module level
+	oScrollView = oMenuCtrl
+	oScrollBar = oMenuCtrl.getControl(&quot;ScrollBar&quot;)
+	oScrollableArea = oMenuCtrl.getControl(&quot;ScrollableArea&quot;)
+	oMenu = oScrollableArea.getControl(&quot;OfficeMenu&quot;)
+	
+	&apos;update OfficeMenu properties 
+	MenuPreview_SelectItemPos(-1) &apos;no Items - no selection
+	MenuPreview_SetPreviewType(iType)
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Function MenuPreview_CreateNew(oBaseControl As Object) As Object
+
+Dim oScrollViewFrame As Object
+Dim oCModel As Object
+Dim aPosSize As Object
+Dim oListener As Object
+Dim nWidth As Long 
+Dim nHeight As Long
+
+	
+	&apos;create a child window in the area of the oBaseControl
+	aPosSize = GetRect(0, 0, oBaseControl.Size.Width, oBaseControl.Size.Height)
+	oScrollViewFrame = CreateChildFrame(oBaseControl.Peer, aPosSize)
+	
+	&apos;create a control container service that will host the whole MenuPreview
+	oScrollView = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainer&quot;)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainerModel&quot;)
+	oCModel.Border = 1 &apos; 3D border
+	oCModel.BackgroundColor = PREVIEW_BG_COLOR
+	oScrollView.setModel(oCModel)
+	
+	&apos;attach the controlcontainter to the ScrollView Frame
+	oScrollView.createPeer(oScrollViewFrame.ContainerWindow.Toolkit, oScrollViewFrame.ContainerWindow)
+	oScrollViewFrame.setComponent(oScrollView, Null)
+	
+	&apos;store the size of the control container for later use
+	nWidth = oScrollView.Size.Width
+	nHeight = oScrollView.Size.Height
+
+	&apos;add a scrollbar in the left side of the scroll-view container
+	oScrollBar = CreateUnoService(&quot;com.sun.star.awt.UnoControlScrollBar&quot;)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlScrollBarModel&quot;)
+	oScrollBar.setModel(oCModel)
+	oScrollView.addControl(&quot;ScrollBar&quot;, oScrollBar)
+	&apos;position and setup of the control
+	oScrollBar.setPosSize(nWidth-20, 0, 20, nHeight, com.sun.star.awt.PosSize.POSSIZE) 
+	With oScrollBar.Model
+		.Border = -1 &apos;no border
+		.LiveScroll = True
+		.Orientation = com.sun.star.awt.ScrollBarOrientation.VERTICAL
+		.BlockIncrement = 100
+		.LineIncrement = 10
+	End With
+	&apos;listen for adjustment events
+	oListener = CreateUnoListener(&quot;MenuPreviewScrollbar_&quot;, &quot;com.sun.star.awt.XAdjustmentListener&quot;)
+	oScrollBar.AddAdjustmentListener(oListener)
+	
+	&apos;Add another container that will be the scrollable area
+	oScrollableArea = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainer&quot;)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainerModel&quot;)
+	oCModel.BackgroundColor = PREVIEW_BG_COLOR
+	oScrollableArea.setModel(oCModel)
+	oScrollView.addControl(&quot;ScrollableArea&quot;, oScrollableArea)
+	&apos;position and setup of the control
+	oScrollableArea.setPosSize(0, 0, nWidth - 20, nHeight, com.sun.star.awt.PosSize.POSSIZE)
+	
+	&apos;Add another container that will host the OfficeMenu-Items
+	oMenu = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainer&quot;)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainerModel&quot;)
+	oCModel.Border = 0
+	oCModel.BackgroundColor = MENU_BG_COLOR
+	oMenu.setModel(oCModel)
+	oScrollableArea.addControl(&quot;OfficeMenu&quot;, oMenu)
+	
+	MenuPreview_CreateNew = oScrollView
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+&apos; Menu Scrollbar Listener Methods
+&apos;______________________________________________________________________________
+
+&apos;______________________________________________________________________________
+Sub MenuPreviewScrollbar_adjustmentValueChanged(oEvent As Object)
+Dim nX as Long, nY as Long
+	
+	nX = oScrollableArea.PosSize.X &apos;remains the same
+	nY = -(oEvent.Value)
+	
+	oScrollableArea.setPosSize(nX, nY, 0, 0, com.sun.star.awt.PosSize.POS)
+	
+End Sub
+
+&apos;______________________________________________________________________________
+Sub MenuPreviewScrollbar_disposing(oEvent As Object)
+End Sub
+&apos;______________________________________________________________________________
+&apos; END Menu Scrollbar Listener Methods END
+&apos;______________________________________________________________________________
+
+
+&apos;______________________________________________________________________________
+Sub MenuPreview_AddItem(iPos As Integer, aDescriptor As Object)
+Dim oMouseListener As Object
+Dim oMenuItem As Object
+Dim oControl As Object
+
+	If Not aDescriptor.IsSeparator Then &apos;item is a menu
+		oMenuItem = CreateMenuItem()
+		If aDescriptor.IsGroup Then
+			oMenuItem = CreateMenuGroup()
+		End If		
+	Else &apos; item is a separator
+		oMenuItem = CreateMenuSeparator()
+	End If
+	
+	&apos;listen for mouse clicks
+	oMouseListener = CreateUnoListener(&quot;MenuPreviewItem_&quot;, &quot;com.sun.star.awt.XMouseListener&quot;)
+
+	oMenuItem.addMouseListener(oMouseListener)
+	For Each oControl In oMenuItem.Controls()
+		oControl.addMouseListener(oMouseListener)
+	next
+	
+	&apos;add menu item to menu
+	oMenu.addControl(&quot;MenuItem&quot;, oMenuItem)
+	
+	&apos;add the Menu item description to the mMenuItems() array
+	Dim aMenuItemPreview As New MenuPreviewItem
+	aMenuItemPreview.UnoControl = oMenuItem
+	aMenuItemPreview.UIElementDescriptor = aDescriptor
+	
+	InsertByIndex(mMenuItems(), iPos, aMenuItemPreview)
+	
+End Sub
+
+&apos;______________________________________________________________________________
+&apos; Menuitem MouseListener Methods 
+&apos;______________________________________________________________________________
+
+&apos;______________________________________________________________________________
+Sub MenuPreviewItem_mousePressed(oEvent As Object)
+End Sub
+
+&apos;______________________________________________________________________________
+Sub MenuPreviewItem_mouseReleased(oEvent As Object)
+Dim iPos As Integer
+Dim aItem As Object
+
+	&apos;get the new selected item index
+	If oEvent.Source.Model.supportsService(&quot;com.sun.star.awt.UnoControlContainerModel&quot;) Then
+		iPos = GetMenuItemIndex(oEvent.Source)
+	Else
+		iPos = GetMenuItemIndex(oEvent.Source.Context)
+	End If
+	
+	&apos;if double click edit item properties
+	If oEvent.ClickCount = 2 Then
+		aItem = mMenuItems(iPos)
+		ShowItemPropertiesDialog(aItem.UIElementDescriptor)	
+	End If
+	
+	&apos;update selection
+	MenuPreview_SelectItemPos(iPos)
+		
+End Sub
+
+&apos;______________________________________________________________________________
+Sub MenuPreviewItem_mouseEntered(oEvent As Object)
+
+End Sub
+
+&apos;______________________________________________________________________________
+Sub MenuPreviewItem_mouseExited(oEvent As Object)
+	
+End Sub
+
+&apos;______________________________________________________________________________
+Sub MenuPreviewItem_disposing(oEvent As Object)
+
+End Sub
+
+&apos;______________________________________________________________________________
+&apos; END Menuitem MouseListener Methods END
+&apos;______________________________________________________________________________
+
+
+&apos;______________________________________________________________________________
+Sub MenuPreview_Remove(iPos As Integer)
+Dim oControl As Object
+	
+	oControl = mMenuItems(iPos).UnoControl
+	oControl.Visible = False &apos;force redraw the container 
+	oMenu.removeControl(oControl)
+	oControl.dispose
+	
+	RemoveByIndex(mMenuItems(), iPos)
+	
+	&apos;Avoid unconsistent situations
+	If iSelectedItemIndex &gt; UBound(mMenuItems()) Then 
+		iSelectedItemIndex = UBound(mMenuItems())
+	End If
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub MenuPreview_MoveUp(iPos As Integer)
+	SwapElements(mMenuItems(), iPos-1, iPos)
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub MenuPreview_MoveDown(iPos As Integer)
+	SwapElements(mMenuItems(), iPos, iPos+1)
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub MenuPreview_SelectItemPos(iPos As Integer)
+	iSelectedItemIndex = iPos
+	MenuPreview_UpdateControls()
+	
+	&apos;callback event handlers
+	OfficeMenuPreview_SelectionChanged(iPos)
+	AddonMenuPreview_SelectionChanged(iPos)
+	HelpMenuPreview_SelectionChanged(iPos)
+End Sub
+
+
+&apos;______________________________________________________________________________
+Function MenuPreview_IsSeparator(iPos As Integer) As Boolean
+Dim aItem As Object
+	On Error Resume Next
+	aItem = mMenuItems(iPos)
+	MenuPreview_IsSeparator = aItem.UIElementDescriptor.IsSeparator
+End Function
+
+
+&apos;______________________________________________________________________________
+Function MenuPreview_GetSelectedItem() As Object
+Dim aItem As Object
+	aItem = mMenuItems(iSelectedItemIndex)
+	MenuPreview_GetSelectedItem = aItem.UIElementDescriptor
+End Function
+
+
+&apos;______________________________________________________________________________
+Function MenuPreview_GetSelectedItemPos() As Integer
+	MenuPreview_GetSelectedItemPos = iSelectedItemIndex
+End Function
+
+
+&apos;______________________________________________________________________________
+Function MenuPreview_GetItemCount() As Integer
+	MenuPreview_GetItemCount = UBound(mMenuItems()) + 1
+End Function
+
+
+&apos;______________________________________________________________________________
+Function MenuPreview_HasElements() As Boolean
+	MenuPreview_HasElements = CBool(MenuPreview_GetItemCount)
+End Function
+
+
+&apos;______________________________________________________________________________
+Sub MenuPreview_SetPreviewType(iType As Integer)
+	iPreviewType = iType
+	MenuPreview_UpdateControls()	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub MenuPreview_UpdateControls()
+
+Dim aItem As Object
+Dim sImgUrl As String
+
+Dim iMenuWidth As Integer
+Dim iMenuHeight As Integer
+Dim oMenuImage As Object
+Dim oMenuLabel As Object
+Dim oMenuArrow As Object
+Dim oMenuSep As Object
+Dim aRect As Object
+
+Dim nMnXCursor As Long
+Dim I As Integer
+
+Const ICO_MARGIN = 2
+Const BD_SIZE = 1
+Const ICO_LEFT = 6
+Const LBL_LEFT = ICO_LEFT + ICO_SIZE + 6
+Const ARROW_SIZE = ICO_SIZE
+
+	iMenuWidth = oScrollableArea.Size.Width
+	iMenuHeight = ICO_SIZE + 2*ICO_MARGIN + 2*BD_SIZE
+	
+	For I = LBound(mMenuItems()) To UBound(mMenuItems())
+		aItem = mMenuItems(I)
+
+		If Not aItem.UIElementDescriptor.IsSeparator Then &apos;item is a menu
+		
+			Select case iPreviewType
+				Case LC_SMALL_ICO : sImgUrl = aItem.UIElementDescriptor.LC16IconUrl
+				Case HC_SMALL_ICO : sImgUrl = aItem.UIElementDescriptor.HC16IconUrl
+				
+				&apos;the following types are not available for menu items
+				&apos;Case LC_BIG_ICO : sImgUrl = aItem.UIElementDescriptor.LC26IconUrl
+				&apos;Case HC_BIG_ICO : sImgUrl = aItem.UIElementDescriptor.HC26IconUrl
+			End Select
+			
+			oMenuImage = aItem.UnoControl.getControl(&quot;MenuImage&quot;)
+			oMenuImage.Model.ImageUrl = sImgUrl
+			oMenuImage.Model.HelpText = aItem.UIElementDescriptor.DefaultText
+			
+			oMenuLabel = aItem.UnoControl.getControl(&quot;MenuLabel&quot;)
+			oMenuLabel.Model.Label = aItem.UIElementDescriptor.DefaultText
+			oMenuLabel.Model.HelpText = aItem.UIElementDescriptor.DefaultText
+			
+			oMenuImage.setPosSize(ICO_LEFT , ICO_MARGIN, _
+				ICO_SIZE, ICO_SIZE, com.sun.star.awt.PosSize.POSSIZE)
+
+			oMenuLabel.setPosSize(LBL_LEFT, iMenuHeight/2 - oMenuLabel.PreferredSize.Height/2, _
+				iMenuWidth - LBL_LEFT - ARROW_SIZE - 2*BD_SIZE,_
+				oMenuLabel.PreferredSize.Height, _
+				com.sun.star.awt.PosSize.POSSIZE)
+			
+			If aItem.UIElementDescriptor.IsGroup Then &apos;item is a group
+				oMenuArrow = aItem.UnoControl.getControl(&quot;MenuArrow&quot;)
+				oMenuArrow.setPosSize(iMenuWidth - ARROW_SIZE - BD_SIZE , ICO_MARGIN, _
+					ARROW_SIZE, ARROW_SIZE, com.sun.star.awt.PosSize.POSSIZE)
+			End If
+
+			aItem.UnoControl.setPosSize(0, nMnXCursor, iMenuWidth, iMenuHeight, com.sun.star.awt.PosSize.POSSIZE)
+		Else
+
+			oMenuSep = aItem.UnoControl.getControl(&quot;HorizLine&quot;)
+			oMenuSep.setPosSize(0, 0, _
+				iMenuWidth - 8,_
+				iMenuHeight/2, _
+				com.sun.star.awt.PosSize.POSSIZE)
+				
+			aItem.UnoControl.setPosSize(0, nMnXCursor, iMenuWidth, iMenuHeight/2, com.sun.star.awt.PosSize.POSSIZE)
+		End If
+		
+		nMnXCursor = nMnXCursor + aItem.UnoControl.PosSize.Height
+		
+		&apos;***********************
+		&apos;UGLY TRICK IN ORDER TO FORCE CONTROLS TO REDRAW
+		&apos; (SELECT ALL ITEMS AND AFTER DESELECT ALL BUT THE ONE THAT MUST APPEAR SELECTED)
+		With aItem.UnoControl.Model
+			.BackgroundColor = SEL_ITEM_BG_COLOR
+			.BorderColor = SEL_ITEM_BD_COLOR
+		End With
+		If Not aItem.UIElementDescriptor.IsSeparator Then &apos;item is a menu
+			oMenuLabel.Model.TextColor = SEL_ITEM_FORE_COLOR
+		End If
+			
+		&apos;***********************
+		
+		If I = iSelectedItemIndex Then		
+		&apos;	With aItem.UnoControl.Model
+		&apos;		.BackgroundColor = SEL_ITEM_BG_COLOR
+		&apos;		.BorderColor = SEL_ITEM_BD_COLOR
+		&apos;	End With
+		&apos;	If Not aItem.UIElementDescriptor.IsSeparator Then &apos;item is a menu
+		&apos;		oMenuLabel.Model.TextColor = SEL_ITEM_FORE_COLOR
+		&apos;	End If
+		Else
+			With aItem.UnoControl.Model
+				.BackgroundColor = ITEM_BG_COLOR
+				.BorderColor = ITEM_BD_COLOR
+			End With
+			If Not aItem.UIElementDescriptor.IsSeparator Then &apos;item is a menu
+				oMenuLabel.Model.TextColor = -1
+			End If
+		End If
+		
+	Next I
+	
+	&apos;dimension the OfficeMenu
+	oMenu.setPosSize(0, 0, iMenuWidth, nMnXCursor, com.sun.star.awt.PosSize.POSSIZE)
+
+	&apos;dimension the scrollable-area
+	aRect = CreateUnoStruct(&quot;com.sun.star.awt.Rectangle&quot;)
+	With aRect 
+		.Width = oScrollableArea.Size.Width
+		.Height = oMenu.Size.Height 
+	End With
+	oScrollableArea.setPosSize(0, 0, aRect.Width, aRect.Height, com.sun.star.awt.PosSize.SIZE)
+
+	&apos;update the scrollbar control
+	oScrollbar.Maximum = oScrollableArea.Size.Height
+	oScrollbar.VisibleSize = oScrollView.Size.Height
+
+End Sub
+
+
+&apos;______________________________________________________________________________
+Function GetMenuItemIndex(oControl As Object) As Integer
+Dim nIndex As Integer
+Dim aItem As Variant
+Dim I As Integer
+
+	nIndex = -1
+	
+	For I = LBound(mMenuItems()) To UBound(mMenuItems())
+		aItem = mMenuItems(I)
+		If EqualUnoObjects(aItem.UnoControl, oControl) Then
+			nIndex = I
+			Exit For
+		End If
+	Next I
+	
+	GetMenuItemIndex = nIndex
+End Function
+
+
+&apos;______________________________________________________________________________
+Function CreateMenuItem() As Object
+Dim oMenuItem As Object
+Dim oMenuImage As Object
+Dim oMenuLabel As Object
+Dim oCModel As Object
+
+	oMenuItem = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainer&quot;)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainerModel&quot;)
+	oCModel.Border = 2
+	oCModel.BackgroundColor = ITEM_BG_COLOR
+	oMenuItem.setModel(oCModel)
+	
+	&apos;create a label for the menu text
+	oMenuLabel = CreateUnoService(&quot;com.sun.star.awt.UnoControlFixedText&quot;)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlFixedTextModel&quot;)
+	oCModel.Label = GetResString(&quot;Menu item&quot;)
+	oMenuLabel.setModel(oCModel)
+
+	&apos;create an image for the menu icon
+	oMenuImage = CreateUnoService(&quot;com.sun.star.awt.UnoControlImageControl&quot;)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlImageControlModel&quot;)
+	oCModel.Border = 0 &apos;no border
+	oMenuImage.setModel(oCModel)
+
+	&apos;add controls to the menu item (container)
+	oMenuItem.addControl(&quot;MenuLabel&quot;, oMenuLabel)
+	oMenuItem.addControl(&quot;MenuImage&quot;, oMenuImage)
+	
+	CreateMenuItem = oMenuItem
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function CreateMenuGroup() As Object
+Dim oMenuItem As Object
+Dim oMenuArrow As Object
+Dim oCModel As Object
+
+	oMenuItem = CreateMenuItem
+	
+	&apos;create an image for the menu arrow
+	oMenuArrow = CreateUnoService(&quot;com.sun.star.awt.UnoControlImageControl&quot;)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlImageControlModel&quot;)
+	oCModel.Border = 0
+	oCModel.ImageURL = &quot;file:///home/paolo/left.png&quot;
+	oMenuArrow.setModel(oCModel)
+	
+	&apos;add the control to the menu item (container)
+	oMenuItem.addControl(&quot;MenuArrow&quot;, oMenuArrow)
+	
+	CreateMenuGroup = oMenuItem
+		
+End Function
+
+
+&apos;______________________________________________________________________________
+Function CreateMenuSeparator() As Object
+Dim oMenuItem As Object
+Dim oMenuSeparator As Object
+Dim oCModel As Object
+
+	oMenuItem = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainer&quot;)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainerModel&quot;)
+	oCModel.Border = 2
+	oCModel.BackgroundColor = ITEM_BG_COLOR
+	oMenuItem.setModel(oCModel)
+	
+	oMenuSeparator = CreateUnoService(&quot;com.sun.star.awt.UnoControlFixedLine&quot;)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlFixedLineModel&quot;)
+	oCModel.Orientation = 0 &apos;Horizontal Fixed Line
+	oMenuSeparator.setModel(oCModel)
+	
+	&apos;add controls to the menu item (container)
+	oMenuItem.addControl(&quot;HorizLine&quot;, oMenuSeparator)
+	
+	CreateMenuSeparator = oMenuItem
+	
+End Function
+
+
+
+</script:module>

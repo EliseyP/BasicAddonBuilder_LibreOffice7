@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgMacroPicker" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;	
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;	
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module DlgMacroPicker:
+&apos;	
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+
+&apos;private const
+Const PROVIDER_PREFIX = &quot;-- &quot;
+
+
+&apos;private vars
+Private mURIList() &apos;for each macro shown in the dialog we store the corresponding URI
+
+Private lstLibraries As Object
+Private lstModules As Object
+Private lstMacros As Object
+Private cmdOk As Object
+
+Private sLastProvider As String
+Private sLastLibrary As String
+
+
+&apos;______________________________________________________________________________
+Function ShowMacroPicker(aMacroDescriptor As Object, Optional sDialogTitle As String) As Integer
+	
+Dim oLib As Object
+Dim oLibDialog As Object
+Dim oDlg As Object
+Dim oDlgModel As Object
+Dim iDialogResult As Integer
+Dim nInd%
+
+	DialogLibraries.LoadLibrary(&quot;BasicAddonBuilder&quot;)
+	oLib = DialogLibraries.GetByName(&quot;BasicAddonBuilder&quot;)
+	oLibDialog = oLib.GetByName(&quot;DlgMacroPicker&quot;)
+	
+	oDlg = CreateUnoDialog(oLibDialog)
+	oDlgModel = oDlg.Model
+	
+	&apos;translate dialog UI
+	LocalizeDialog(oDlg)
+	
+	&apos;set the dialog title
+	If Not IsMissing(sDialogTitle) Then
+		oDlg.Title = sDialogTitle
+	Else
+		oDlg.Title = GetResString(&quot;Select %productname% Basic Macro&quot;)
+	End If
+
+	&apos;initialize dialog controls
+	With oDlg
+		lstLibraries = .getControl(&quot;lstLibraries&quot;)
+		lstModules = .getControl(&quot;lstModules&quot;)
+		lstMacros = .getControl(&quot;lstMacros&quot;)
+		cmdOk = .getControl(&quot;cmdOk&quot;)
+	End With
+	
+	&apos;load values
+	lstLibraries.Model.stringItemList = PrepareLibraryList()
+	
+	&apos;prepare the initial selection
+	If sLastProvider = &quot;&quot; Then 
+		sLastProvider = g_sDefaultProvider
+	End If
+	
+	If sLastLibrary = &quot;&quot; Then 
+		sLastLibrary = g_sDefaultLibrary
+	End If
+	
+	&apos; On this step if selected ONLY PYTHON aDesc=Empty 
+	&apos; aMacroDescriptor have &quot;MyMacros:Csl2Pdf (g_sDefaultLibrary)&quot;  
+	&apos;select initial items
+	If aMacroDescriptor.Library = &quot;&quot; Then
+		aMacroDescriptor.Provider = sLastProvider
+		aMacroDescriptor.Library = sLastLibrary
+	End If
+	
+	If SelectLibrary(aMacroDescriptor.Provider, aMacroDescriptor.Library) Then
+		If HasItem(lstModules.Items(), aMacroDescriptor.Module) Then
+			nInd = GetItemIndex(lstModules.Items(), aMacroDescriptor.Module)
+			lstModules.selectItem(aMacroDescriptor.Module, True)
+			If HasItem(lstMacros.Items(), aMacroDescriptor.Macro) Then
+				lstMacros.selectItem(aMacroDescriptor.Macro, True)
+			End If
+		End If
+	End If
+	
+	&apos;execute the dialog
+	iDialogResult = oDlg.Execute()
+	
+	&apos;get values from dialog
+	If iDialogResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then		
+		With aMacroDescriptor
+			.Provider = RetrieveProviderName()
+			.Library = lstLibraries.SelectedItem
+			.Module = lstModules.SelectedItem
+			.Macro = lstMacros.SelectedItem
+		End With
+	End if
+	
+	&apos;store current selection for the next time
+	sLastProvider = aMacroDescriptor.Provider
+	sLastLibrary = aMacroDescriptor.Library
+	
+	&apos;exit with the dialog result
+	ShowMacroPicker = iDialogResult
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+&apos;EVENT HANDLERS SECTION
+&apos;______________________________________________________________________________
+
+Sub lstLibraries_itemStateChanged(oEvent As Object)
+Dim sProviderName As String
+Dim sLibraryName As String
+	
+	lstMacros.Model.stringItemList = Array()
+	cmdOk.Enable = False
+
+	sLibraryName = oEvent.source.SelectedItem
+	If Left(sLibraryName, Len(PROVIDER_PREFIX)) = PROVIDER_PREFIX Then
+		lstModules.Model.stringItemList = Array()
+	Else
+		sProviderName = RetrieveProviderName()
+		lstModules.Model.stringItemList = PrepareModuleList(sProviderName, sLibraryName)
+	End If
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub lstModules_itemStateChanged(oEvent As Object)
+Dim sProviderName As String
+Dim sLibraryName As String
+Dim sModuleName As String
+	
+	lstMacros.Model.stringItemList = Array()
+	cmdOk.Enable = False
+	
+	sProviderName = RetrieveProviderName()
+	sLibraryName = lstLibraries.SelectedItem
+	sModuleName = oEvent.source.SelectedItem
+	lstMacros.Model.stringItemList = PrepareMacroList(sProviderName, sLibraryName, sModuleName)
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub lstMacros_itemStateChanged(oEvent As Object)
+	If oEvent.source.selectedItemPos &gt; -1 Then
+		cmdOk.Enable = True
+	Else
+		cmdOk.Enable = False
+	End if
+End Sub
+
+
+&apos;______________________________________________________________________________
+&apos;HELPER FUNCTIONS
+&apos;______________________________________________________________________________
+
+Function PrepareLibraryList() As variant
+Dim oBasicProvider As Object
+Dim sBasicProviderName As String
+Dim oBasicLibrary As Object
+Dim I As Integer
+Dim mLibraryList()
+
+	For I = 0 To UBound(g_mBasicProviders())
+		oBasicProvider = g_mBasicProviders(I).Provider
+		sBasicProviderName = g_mBasicProviders(I).UIName
+		sBasicProviderName = PROVIDER_PREFIX &amp; sBasicProviderName &amp; &quot; &quot;
+		sBasicProviderName = PadRight(sBasicProviderName, &quot;-&quot;, 30)
+		
+		AppendItem(mLibraryList(), sBasicProviderName)
+		For Each oBasicLibrary In oBasicProvider.ChildNodes()
+			AppendItem(mLibraryList(), oBasicLibrary.Name)
+		Next oBasicLibrary
+	Next I
+	
+	If g_sPythonLibrary &lt;&gt; &quot;&quot; Then
+	    sBasicProviderName = &quot;Python&quot;
+	    sBasicProviderName = PROVIDER_PREFIX &amp; sBasicProviderName &amp; &quot; &quot;
+	    sBasicProviderName = PadRight(sBasicProviderName, &quot;-&quot;, 30)
+		AppendItem(mLibraryList(), sBasicProviderName)
+		
+		AppendItem(mLibraryList(), g_sPythonLibrary)	
+	End If
+	
+	PrepareLibraryList = mLibraryList()
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function PrepareModuleList(sProviderName As String, sLibraryName As String) As Variant
+Dim oBasicProvider As Object
+Dim oBasicLibrary As Object
+Dim oBasicModule As Object
+Dim I As Integer
+Dim mModuleList()
+Dim sFileName As String
+Dim sPath$
+	
+	If sProviderName = &quot;Python&quot; Then
+		&apos; Get .py modules in dir
+		I = 0
+		&apos;Start counting over for files
+		sPath = sLibraryName &amp; GetPathSeparator() &amp; &quot;*.py&quot;
+		sFileName = Dir(sPath)
+		InsertByIndex(mModuleList(), I, sFileName)
+		&apos;Get files this time!
+		Do While (sFileName &lt;&gt; &quot;&quot;)
+			I = I + 1
+			sFileName = Dir()
+			If sFileName &lt;&gt; &quot;&quot; Then
+				InsertByIndex(mModuleList(), I, sFileName)
+			End If
+		Loop
+		PrepareModuleList = mModuleList()
+				
+	Else
+		I = GetItemIndex(GetProviderUINames(), sProviderName)
+		oBasicProvider = g_mBasicProviders(I).Provider
+		
+		For Each oBasicLibrary In oBasicProvider.ChildNodes()
+			If oBasicLibrary.Name = sLibraryName Then Exit For
+		Next oBasicLibrary
+		
+		For Each oBasicModule In oBasicLibrary.ChildNodes()
+			AppendItem(mModuleList(), oBasicModule.Name)
+		Next oBasicModule
+		
+		PrepareModuleList = mModuleList()
+	End If
+	
+End Function
+
+Function getExportedFunctionsFromPyScript(sPath$) As Variant
+	Dim mFunctionsList()
+	Dim I%
+	Dim sString$, tmpStr$
+	Dim aSplit()
+	Dim sMacro$
+	&apos;TODO: Parse string: g_exportedScripts = function_name[,]
+	sString = read_data_from_file(sPath)
+	aSplit = Split(sString, &quot;g_exportedScripts&quot;)
+	tmpStr = aSplit(UBound(aSplit))
+	tmpStr = Replace(tmpStr, &quot;=&quot;, &quot;&quot;)
+	tmpStr = Trim(tmpStr)
+	aSplit = Split(tmpStr, &quot;)&quot;)
+	tmpStr = aSplit(LBound(aSplit))
+	tmpStr = Replace(tmpStr, &quot;(&quot;, &quot;&quot;)
+	tmpStr = Trim(tmpStr)
+	aSplit = Split(tmpStr, &quot;,&quot;)
+	
+	For Each sMacro In aSplit()
+		tmpStr = Trim(sMacro)	
+		If tmpStr &lt;&gt; &quot;&quot; Then
+			AppendItem(mFunctionsList(), tmpStr)
+		End If
+	Next sMacro
+	
+	getExportedFunctionsFromPyScript = mFunctionsList()
+End Function
+
+Function read_data_from_file(_file_path$) as String
+	Dim out_string$
+	Dim curLine$
+	Dim n% 
+
+	n = FreeFile
+	Open _file_path For Input As #n
+	Do While NOT EOF(n)
+		Line Input #n, curLine
+		REM Process the input here!
+		out_string = out_string &amp; &quot; &quot; &amp; curLine
+	Loop
+	
+	read_data_from_file = out_string
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function PrepareMacroList(sProviderName As String, sLibraryName As String, sModuleName As String) As Variant
+Dim oBasicProvider As Object
+Dim oBasicLibrary As Object
+Dim oBasicModule As Object
+Dim oBasicMacro As Object
+Dim I As Integer
+Dim mMacroList()
+Dim mFunctionsList()
+Dim sPath$
+
+	Redim mURIList()
+	
+	If sProviderName = &quot;Python&quot; Then
+		sPath = sLibraryName &amp; GetPathSeparator() &amp; sModuleName
+		mFunctionsList = getExportedFunctionsFromPyScript(convertToURL(sPath))
+		
+		PrepareMacroList = mFunctionsList()
+	Else
+	
+		I = GetItemIndex(GetProviderUINames(), sProviderName)
+		oBasicProvider = g_mBasicProviders(I).Provider
+		
+		For Each oBasicLibrary In oBasicProvider.ChildNodes()
+			If oBasicLibrary.Name = sLibraryName Then Exit For
+		Next oBasicLibrary
+		
+		For Each oBasicModule In oBasicLibrary.ChildNodes()
+			If oBasicModule.Name = sModuleName Then Exit For
+		Next oBasicModule
+			
+		For Each oBasicMacro In oBasicModule.ChildNodes()
+			AppendItem(mMacroList(), oBasicMacro.Name)
+			&apos;store the corresponding URI at module level
+			AppendItem(mURIList(), oBasicMacro)
+		Next oBasicmacro
+		
+		PrepareMacroList = mMacroList()
+	End If 	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function RetrieveProviderName() As String
+Dim mList()
+Dim sItem As String
+Dim I As Integer
+Dim aDescriptor As Object
+
+	mList() = lstLibraries.Items()
+	For I = lstLibraries.SelectedItemPos To LBound(mList()) Step -1
+		sItem = mList(I)
+		If Left(sItem, Len(PROVIDER_PREFIX)) = PROVIDER_PREFIX Then Exit For
+	Next I
+	
+	sItem = Right(sItem, Len(sItem) - Len(PROVIDER_PREFIX))
+	
+	&apos; Create g_mBasicProviders() with aDescriptor object
+	If Len(sItem) &gt; 5 AND Left(sItem, 6) = &quot;Python&quot; Then
+		RetrieveProviderName = &quot;Python&quot;
+		Exit Function	
+	End If
+	
+	For Each aDescriptor In g_mBasicProviders()
+		If aDescriptor.UIName = Left(sItem, Len(aDescriptor.UIName)) Then Exit For
+	Next aDescriptor
+	
+	RetrieveProviderName = aDescriptor.UIName
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function SelectLibrary(sProvider As String, sLibrary As String) As Boolean
+Dim mList()
+Dim I As Integer
+Dim sItem As String
+Dim sLocProvider As String
+Dim bProviderFound As Boolean
+Dim iProviderIndex As Integer
+Dim bLibraryFound As Boolean
+
+	&apos;sanity check
+	If sProvider &lt;&gt; &quot;&quot; Then
+		mList() = lstLibraries.Items()
+		sLocProvider = PROVIDER_PREFIX &amp; sProvider
+		For I = LBound(mList()) To UBound(mList())
+			sItem = mList(I)
+			If sLocProvider = Left(sItem, Len(sLocProvider)) Then
+				iProviderIndex = I
+				bProviderFound = True
+				Exit For
+			End If
+		Next I
+	Else
+		bProviderFound = False
+	End If
+	
+	If bProviderFound Then
+		For I = iProviderIndex+1 To UBound(mList())
+			sItem = mList(I)
+			If Left(sItem, Len(PROVIDER_PREFIX)) = PROVIDER_PREFIX Then 
+				Exit For &apos;this is the next provider, so stop the search
+			End If
+			
+			If sLibrary &lt;&gt; &quot;&quot; And sItem = sLibrary Then
+				lstLibraries.selectItemPos(I, True)
+				bLibraryFound = True
+				Exit For
+			End If
+		Next I
+&apos;	Else
+&apos;		lstLibraries.selectItemPos(0, True)
+	End If
+	
+	SelectLibrary = bProviderFound And bLibraryFound
+	
+End Function
+</script:module>

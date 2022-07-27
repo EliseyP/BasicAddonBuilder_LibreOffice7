@@ -1,0 +1,239 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+
+<!--	
+		BasicAddonBuilder for OpenOffice.org 
+		$ Version: 0.6.1 $
+		Copyright (C) 2006-2008 Paolo Mantovani
+		
+		This library is free software; you can redistribute it and/or
+		modify it under the terms of the GNU Lesser General Public
+		License as published by the Free Software Foundation.
+		
+		This library is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+		Lesser General Public License for more details.
+		
+		Please email me with any bug reports, questions or comments:
+		paolomantovani@openoffice.org
+		-->
+
+<oor:component-data xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" oor:name="Configuration" oor:package="ooo.ext.BasicAddonBuilder">
+	
+	<!--  General info -->
+	<node oor:name="ProductInfo">
+		<prop oor:name="ProductName" oor:type="xs:string">
+			<value>BasicAddonBuilder</value>
+		</prop>
+		<prop oor:name="Description" oor:type="xs:string" oor:localized="true">
+			<value>A wizard for creating OpenOffice.org Extensions (Add-on&apos;s) from StarBasic libraries</value>
+			<value xml:lang="en">A wizard for creating OpenOffice.org Extensions (Add-on&apos;s) from StarBasic libraries</value>
+			<value xml:lang="it">Creazione guidata di Estensioni per OpenOffice.org (Add-on&apos;s) in StarBasic</value>
+			<value xml:lang="de">Ein Assistent zum Exportieren von StarBasic Bibliotheken als UNO-Packages </value>
+			<value xml:lang="es-AR">Un asistente para exportar bibliotecas StarBasic como paquetes UNO</value>
+			<value xml:lang="fr">Assistant de cr&#233;ation d&apos;extension OpenOffice.org (Add-ons) &#224; partir de librairies StarBasic</value>
+			<value xml:lang="da">En guide til at danne OpenOffice.org Udvidelser (Add-ons) fra StarBasic biblioteker</value>
+		</prop>
+		<prop oor:name="PatchDescription" oor:type="xs:string" oor:localized="true">
+			<value>This version contains a patch, created by J&#246;rg Schmidt (joesch@calc-info.de). For more information, see the module &quot;patch_information&quot;.  This version contains a patch, created by Derby Russell (jdrussell51@gmail.com). For more information, see the module &quot;patch_information&quot;.</value>
+			<value xml:lang="en">This version contains a patch, created by J&#246;rg Schmidt (joesch@calc-info.de). For more information, see the module &quot;patch_information&quot;.  This version contains a patch, created by Derby Russell (jdrussell51@gmail.com). For more information, see the module &quot;patch_information&quot;.</value>
+			<value xml:lang="it">Questa versione contiene una patch, creato da J&#246;rg Schmidt (joesch@calc-info.de). Per ulteriori informazioni, vedere il modulo &quot;patch_information&quot;.  Questa versione contiene una patch, creato da Derby Russell (jdrussell51@gmail.com). Per ulteriori informazioni, vedere il modulo &quot;patch_information&quot;.</value>
+			<value xml:lang="de">Diese Version beinhaltet einen Patch, erstellt von J&#246;rg Schmidt (joesch@calc-info.de). Weitere Informationen finden Sie im Modul &quot;patch_information&quot;.  Diese Version beinhaltet einen Patch, erstellt von Derby Russell (jdrussell51@gmail.com). Weitere Informationen finden Sie im Modul &quot;patch_information&quot;.</value>
+			<value xml:lang="fr">Cette version contient un patch, cr&#233;&#233; par J&#246;rg Schmidt (joesch@calc-info.de). Pour plus d&apos;informations, consultez le module &quot;patch_information&quot;.  Cette version contient un patch, cr&#233;&#233; par Derby Russell (jdrussell51@gmail.com). Pour plus d&apos;informations, consultez le module &quot;patch_information&quot;.</value>
+			<value xml:lang="da">Denne version indeholder en patch, skabt af J&#246;rg Schmidt (joesch@calc-info.de). For mere information, se modulet &quot;patch_information&quot;.  Denne version indeholder en patch, skabt af Derby Russell (jdrussell51@gmail.com). For mere information, se modulet &quot;patch_information&quot;.</value>
+		</prop>
+		<prop oor:name="Version" oor:type="xs:string">
+			<value>0.6.2</value> <!-- Version --> <!-- do not edit this line -->
+		</prop>
+		<prop oor:name="License" oor:type="xs:string">
+			<value>GNU Lesser General Public License</value>
+		</prop>
+		<prop oor:name="AuthorName" oor:type="xs:string">
+			<value>Paolo Mantovani</value> <!-- AuthorName --> <!-- do not edit this line -->
+		</prop>
+		<prop oor:name="AuthorEmail" oor:type="xs:string">
+			<value>paolomantovani@openoffice.org</value> <!-- AuthorEmail --> <!-- do not edit this line -->
+		</prop>
+		<prop oor:name="Copyright" oor:type="xs:string">
+			<value>Copyright (C) 2006-2008 Paolo Mantovani</value> <!-- Copyright --> <!-- do not edit this line -->
+		</prop>
+		<node oor:name="Contributors"/>
+		<node oor:name="Translators">
+			<node oor:name="t1" oor:op="replace">
+				<prop oor:name="TranslatorName" oor:type="xs:string">
+					<value>Thomas Krumbein</value>
+				</prop>
+				<prop oor:name="Email" oor:type="xs:string">
+					<value>thomaskrumbein@openoffice.org</value>
+				</prop>
+				<prop oor:name="Language" oor:type="xs:string">
+					<value>German</value>
+				</prop>
+			</node>
+			<node oor:name="t2" oor:op="replace">
+				<prop oor:name="TranslatorName" oor:type="xs:string">
+					<value>Ariel Constenla-Haile</value>
+				</prop>
+				<prop oor:name="Email" oor:type="xs:string">
+					<value>ariel@arielconstenlahaile.com.ar</value>
+				</prop>
+				<prop oor:name="Language" oor:type="xs:string">
+					<value>Spanish (Argentina)</value>
+				</prop>
+			</node>
+			<node oor:name="t3" oor:op="replace">
+				<prop oor:name="TranslatorName" oor:type="xs:string">
+					<value>Yves Dutrieux</value>
+				</prop>
+				<prop oor:name="Email" oor:type="xs:string">
+					<value>ydutrieux@gmail.com</value>
+				</prop>
+				<prop oor:name="Language" oor:type="xs:string">
+					<value>French</value>
+				</prop>
+			</node>
+			<node oor:name="t4" oor:op="replace">
+				<prop oor:name="TranslatorName" oor:type="xs:string">
+					<value>Leif Lodahl</value>
+				</prop>
+				<prop oor:name="Email" oor:type="xs:string">
+					<value>lodahl@openoffice.org</value>
+				</prop>
+				<prop oor:name="Language" oor:type="xs:string">
+					<value>Danish</value>
+				</prop>
+			</node>
+			<node oor:name="t5" oor:op="replace">
+				<prop oor:name="TranslatorName" oor:type="xs:string">
+					<value>Paolo Mantovani</value>
+				</prop>
+				<prop oor:name="Email" oor:type="xs:string">
+					<value>paolomantovani@openoffice.org</value>
+				</prop>
+				<prop oor:name="Language" oor:type="xs:string">
+					<value>Italian</value>
+				</prop>
+			</node>
+		</node>
+	</node>
+	
+	<!--  File resources (supports localization) -->
+	<node oor:name="FileResources">
+		<node oor:name="AboutTopImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/abouttop.png</value>
+			</prop>
+		</node>
+		<node oor:name="UpArrowImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/up.png</value>
+			</prop>
+		</node>
+		<node oor:name="DownArrowImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/down.png</value>
+			</prop>
+		</node>
+		<node oor:name="LeftArrowImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/left.png</value>
+			</prop>
+		</node>
+		<node oor:name="RightArrowImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/right.png</value>
+			</prop>
+		</node>
+		<node oor:name="MenuArrowImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/menu.png</value>
+			</prop>
+		</node>
+		<node oor:name="EditPropsImageSmall" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/configure_16.png</value>
+			</prop>
+		</node>
+		<node oor:name="EditPropsImageBig" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/configure_22.png</value>
+			</prop>
+		</node>
+		<node oor:name="TranslateImageSmall" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/locale_16.png</value>
+			</prop>
+		</node>
+		<node oor:name="TranslateImageBig" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/locale_22.png</value>
+			</prop>
+		</node>
+		<node oor:name="SelectMacroImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/macro.png</value>
+			</prop>
+		</node>
+		<node oor:name="AddImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/plus.png</value>
+			</prop>
+		</node>
+		<node oor:name="DeleteImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/delete.png</value>
+			</prop>
+		</node>
+		<node oor:name="WriterImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/writer.png</value>
+			</prop>
+		</node>
+		<node oor:name="CalcImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/calc.png</value>
+			</prop>
+		</node>
+		<node oor:name="ImpressImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/impress.png</value>
+			</prop>
+		</node>
+		<node oor:name="DrawImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/draw.png</value>
+			</prop>
+		</node>
+		<node oor:name="BaseImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/base.png</value>
+			</prop>
+		</node>
+		<node oor:name="MathImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/math.png</value>
+			</prop>
+		</node>
+		<node oor:name="BasicIDEImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/basicide.png</value>
+			</prop>
+		</node>
+		<node oor:name="AboutImage" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value>%origin%/images/aboutleft.png</value>
+			</prop>
+		</node>
+		<!--		<node oor:name="HelpDir" oor:op="replace">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true">
+				<value/>
+				<value xml:lang="en">%origin%/help/en/</value>
+				<value xml:lang="it">%origin%/help/it/</value>
+			</prop>
+		</node>-->
+	</node>
+	
+	<!--  Localized messages -->	
+	<node oor:name="Messages"/>
+	
+</oor:component-data>

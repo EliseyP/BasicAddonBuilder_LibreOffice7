@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_step06" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $ 
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;	
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module DlgWizard_step06:
+&apos;	Management of the step 6 of the dialog.
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+
+Public aRootHelpMenu
+Private aCurrentMenu
+
+
+&apos;______________________________________________________________________________
+Sub Step06_Initialize()
+
+Dim lblHelpMenuPreviewWindow
+Dim lstHelpMenuPreviewType
+Dim iPreviewType
+
+	With g_oDlgWizardModel
+&apos;set step title/description
+		.lblStepTitle.Label = GetRoadmapItem(6).Label
+		.lblStepDescription.Label = GetResString(&quot;Define customized Help menu entries&quot;)
+		
+&apos; enable/disable general controls
+		.cmdBack.Enabled = True
+		.cmdNext.Enabled = True
+&apos; enable/disable roadmap items
+&apos;		.Roadmap(0).Enabled = True
+
+	End With
+
+	lblHelpMenuPreviewWindow = g_oDlgWizard.getControl(&quot;lblHelpMenuPreviewWindow&quot;)
+	lstHelpMenuPreviewType = g_oDlgWizard.getControl(&quot;lstHelpMenuPreviewType&quot;)
+	
+	Select Case lstHelpMenuPreviewType.SelectedItemPos
+		Case 0 : iPreviewType = LC_SMALL_ICO
+		Case 1 : iPreviewType = HC_SMALL_ICO
+		&apos;these are not available for menu
+		&apos;Case 2 : iPreviewType = LC_BIG_ICO
+		&apos;Case 3 : iPreviewType = HC_BIG_ICO
+	End Select	
+	
+	
+	MenuPreview_Initialize(lblHelpMenuPreviewWindow, iPreviewType )
+	RefreshPreview()
+	
+&apos; enable/disable this step controls 
+	EnableStepControls()
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub lstHelpMenuPreviewType_itemStateChanged(oEvent As Object)
+	
+	&apos;this prevents the routine is called twice if
+	&apos;the user click too fast...
+	oEvent.Source.Model.Enabled = False
+	
+	Select Case oEvent.Selected
+		Case 0 : MenuPreview_SetPreviewType(LC_SMALL_ICO)
+		Case 1 : MenuPreview_SetPreviewType(HC_SMALL_ICO)
+		&apos;these are not available for menu
+		&apos;Case 2 : MenuPreview_SetPreviewType(LC_BIG_ICO)
+		&apos;Case 3 : MenuPreview_SetPreviewType(HC_BIG_ICO)
+	End Select
+	EnableStepControls()
+	
+	oEvent.Source.Model.Enabled = True
+	oEvent.Source.setFocus()
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub cmdHelpMenuMoveUp_onClick(oEvent As Object)
+Dim I As Integer
+	I = MenuPreview_GetSelectedItemPos()
+	&apos;move the item in the menu structure
+	SwapElements(aCurrentMenu.SubItems(), I-1, I)
+	
+	&apos;move the item in the preview
+	MenuPreview_MoveUp(I)
+	MenuPreview_SelectItemPos(I- 1)
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub cmdHelpMenuMoveDown_onClick(oEvent As Object)
+Dim I As Integer
+
+	I = MenuPreview_GetSelectedItemPos()
+	&apos;move the item in the menu structure
+	SwapElements(aCurrentMenu.SubItems(), I, I+1)
+	
+	&apos;move the item in the preview
+	MenuPreview_MoveDown(I)
+	MenuPreview_SelectItemPos(I+1)
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub cmdHelpMenuAddItem_onClick(oEvent As Object)
+Dim aDesc As Object
+Dim iDlgResult As Integer
+Dim I As Integer
+
+Static iNum As Integer
+	
+	I = MenuPreview_GetSelectedItemPos()+1
+
+	aDesc = CreateUIElementDescriptor()
+	aDesc.DefaultText = GetResString(&quot;Menu item&quot;) &amp; &quot; &quot; &amp; iNum+1
+	
+	iDlgResult = ShowItemPropertiesDialog(aDesc)
+	If iDlgResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+		
+		&apos;insert the item in the menu structure
+		aDesc.ParentMenu = aCurrentMenu
+		InsertByIndex(aCurrentMenu.SubItems(), I, aDesc)
+		
+		&apos;add the item in the preview
+		MenuPreview_AddItem(I, aDesc)
+		
+		&apos;the new item will appear selected
+		MenuPreview_SelectItemPos(I)
+		
+		iNum = iNum + 1 &apos;update the local counter
+	End If
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub cmdHelpMenuAddSeparator_onClick(oEvent As Object)
+Dim aDesc As Object
+Dim iDlgResult As Integer
+Dim I As Integer
+	
+	I = MenuPreview_GetSelectedItemPos()+1
+	
+	aDesc = CreateUIElementDescriptor()
+	aDesc.DefaultText = &quot;--&quot; &amp; GetResString(&quot;separator&quot;) &amp; &quot;--&quot;
+	aDesc.IsSeparator = True
+		
+	iDlgResult = ShowItemPropertiesDialog(aDesc)
+	If iDlgResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+		
+		&apos;insert the item in the menu structure
+		aDesc.ParentMenu = aCurrentMenu
+		InsertByIndex(aCurrentMenu.SubItems(), I, aDesc)
+		
+		&apos;add the item in the preview
+		MenuPreview_AddItem(I, aDesc)
+		
+		&apos;the new item will appear selected
+		MenuPreview_SelectItemPos(I)
+		
+	End If
+	
+End Sub
+
+&apos;______________________________________________________________________________
+Sub cmdHelpMenuEdit_onClick(oEvent As Object)
+Dim aMenuItem As Object
+Dim iDlgResult As Integer
+	
+	aMenuItem = MenuPreview_GetSelectedItem()
+	iDlgResult = ShowItemPropertiesDialog(aMenuItem)
+	If iDlgResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+		MenuPreview_UpdateControls()
+		If aMenuItem.IsGroup Then
+			RefreshMenuList()
+		End If
+	End if
+		
+End Sub
+
+&apos;______________________________________________________________________________
+Sub cmdHelpMenuDelete_onClick(oEvent As Object)
+Dim aItem As Object
+Dim iPos As Integer
+	
+	&apos;this prevents the routine is called twice if
+	&apos;the user click too fast...
+	oEvent.Source.Model.Enabled = False
+	
+	aItem = MenuPreview_GetSelectedItem()
+	iPos = MenuPreview_GetSelectedItemPos()
+		
+	&apos;remove the item in the menu structure
+	RemoveByIndex(aCurrentMenu.SubItems(), iPos)
+		
+	&apos;and remove the item from the preview
+	MenuPreview_Remove(iPos)
+
+	&apos;no item selected after a deletion
+	MenuPreview_SelectItemPos(-1)
+	
+	&apos;if is a menu group then update the listbox
+	If aItem.IsGroup Then
+		RefreshMenuList()
+	End If
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+&apos; this routine is called from BasicAddonBuilder.MenuPreview_SelectItem
+Sub HelpMenuPreview_SelectionChanged(iPos As Integer)
+	EnableStepControls()
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub EnableStepControls()
+Dim iSel As Integer
+Dim iCount As Integer
+
+	iSel = MenuPreview_GetSelectedItemPos
+	iCount = MenuPreview_GetItemCount
+	
+	With g_oDlgWizardModel
+		.lstHelpMenuPreviewType.Enabled = True
+		.cmdHelpMenuAddItem.Enabled = True
+		.cmdHelpMenuAddSeparator.Enabled = True
+		.cmdHelpMenuMoveUp.Enabled = iSel &gt; 0
+		.cmdHelpMenuMoveDown.Enabled = (iSel &gt;= 0) And (iSel &lt; (iCount-1))
+		.cmdHelpMenuDelete.Enabled = iSel &gt;= 0
+		.cmdHelpMenuEdit.Enabled = iSel &gt;= 0 &apos;And Not(MenuPreview_isSeparator(iSel))
+	End With
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub HelpMenuPreview_InitializeMenuStruct(sRootMenuTitle As String)
+	aRootHelpMenu = CreateUIElementDescriptor()
+	aRootHelpMenu.DefaultText = sRootMenuTitle
+	aRootHelpMenu.IsGroup = True
+	aCurrentMenu = aRootHelpMenu
+	g_oDlgWizardModel.lstHelpMenuTitle.StringItemList = Array(sRootMenuTitle)
+	g_oDlgWizardModel.lstHelpMenuTitle.SelectedItems = (Array(0))
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub RefreshPreview()
+Dim aItem As Object
+Dim iMaxIndex As Integer
+Dim I As Integer
+
+	iMaxIndex =  MenuPreview_GetItemCount() - 1
+
+	&apos;remove all items from the preview
+	While MenuPreview_HasElements()
+		MenuPreview_Remove( MenuPreview_GetItemCount() - 1 )
+	Wend
+	
+	&apos;rebuild all items
+	For I = LBound(aCurrentMenu.SubItems()) To UBound(aCurrentMenu.SubItems())
+		aItem = aCurrentMenu.SubItems(I)
+		MenuPreview_AddItem(I, aItem)
+	Next
+	
+	&apos;select nothing
+	MenuPreview_SelectItemPos(-1)
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub RefreshMenuList()
+Dim mMenuList()
+Dim oListBox As Object
+Dim iOldSelection As Integer
+
+	oListBox = g_oDlgWizard.getControl(&quot;lstHelpMenuTitle&quot;)
+	
+	&apos;remember the current selection
+	iOldSelection = oListBox.SelectedItemPos
+	
+	&apos;get the new menu list
+	GetMenuList(aRootHelpMenu, mMenuList())
+	
+	&apos;replace all items
+	oListBox.Model.StringItemList = mMenuList()
+	
+	&apos;restore the selection
+	oListBox.selectItemPos(iOldSelection, True)
+	
+End Sub
+
+
+</script:module>

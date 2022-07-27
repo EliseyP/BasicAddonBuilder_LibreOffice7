@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_main" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module DlgWizard_main:
+&apos;	Contains routine for initialization and management of the whole dialog.
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+
+&apos;______________________________________________________________________________
+Sub ShowDialog()
+	DialogLibraries.LoadLibrary(&quot;BasicAddonBuilder&quot;)
+	g_oDlgWizard = _
+		CreateUnoDialog(DialogLibraries.BasicAddonBuilder.DlgWizard)
+	
+	g_oDlgWizardModel = g_oDlgWizard.getModel
+	
+	Dialog_Initialize
+	
+	&apos;xray g_oDlgWizardModel
+	
+	g_oDlgWizard.execute
+
+	g_oDlgWizard.dispose
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub Dialog_Initialize
+Dim oBasicProvider As Object
+Dim oBasicLibrary As Object
+Dim mNameList()
+Dim sPkgDesc As String
+
+&apos;setup the objects in the dialog
+	&apos;general controls (step 0)
+	&apos;setup the Roadmap control 
+	&apos;(the &quot;navigation panel&quot; on the left of the dialog)
+	InitializeRoadmap
+
+	&apos;step 01 controls
+	With g_oDlgWizardModel
+		.lstBasicLibraryContainers.StringItemList = GetProviderUINames()
+		.lstBasicLibraryContainers.SelectedItems = (Array(0))
+		
+		oBasicProvider = g_mBasicProviders(0).Provider
+		For Each oBasicLibrary In oBasicProvider.ChildNodes()
+			AppendItem(mNameList(), oBasicLibrary.Name)
+		Next
+		.lstBasicLibraries.stringItemList = mNameList()
+	End With
+	
+	&apos;step 02 controls
+	&apos;...
+	
+	&apos;step 03 controls
+	With g_oDlgWizardModel
+		.cmdToolbarTitleTranslate.ImageUrl = GetResourceUrl(&quot;TranslateImageSmall&quot;)
+		.cmdToolbarMoveLeft.ImageUrl = GetResourceUrl(&quot;LeftArrowImage&quot;)
+		.cmdToolbarMoveRight.ImageUrl = GetResourceUrl(&quot;RightArrowImage&quot;)
+		&apos;.cmdToolbarAddButton.ImageUrl = GetResourceUrl(&quot;AddImage&quot;)
+		&apos;.cmdToolbarAddSeparator.ImageUrl = GetResourceUrl(&quot;AddImage&quot;)
+		.cmdToolbarDelete.ImageUrl = GetResourceUrl(&quot;DeleteImage&quot;)
+		.cmdToolbarEdit.ImageUrl = GetResourceUrl(&quot;EditPropsImageSmall&quot;)
+		.lstToolbarPreviewType.StringItemList = Array( _
+			GetResString(&quot;Small icons - Low contrast&quot;), _
+			GetResString(&quot;Small icons - High Contrast&quot;), _
+			GetResString(&quot;Large icons - Low contrast&quot;), _
+			GetResString(&quot;Large icons - High Contrast&quot;))
+		.lstToolbarPreviewType.SelectedItems = (Array(0))
+	End With
+	
+	ToolbarPreview_Initialize( _
+		g_oDlgWizard.getControl(&quot;lblToolbarPreviewWindow&quot;), GetResString(&quot;[Toolbar title]&quot;), LC_SMALL_ICO)
+	
+	&apos;step 04 controls
+	With g_oDlgWizardModel
+		.cmdOfficeMenuTitleEdit.ImageUrl = GetResourceUrl(&quot;EditPropsImageSmall&quot;)
+		.cmdOfficeMenuMoveUp.ImageUrl = GetResourceUrl(&quot;UpArrowImage&quot;)
+		.cmdOfficeMenuMoveDown.ImageUrl = GetResourceUrl(&quot;DownArrowImage&quot;)
+		&apos;.cmdOfficeMenuAddItem.ImageUrl = GetResourceUrl(&quot;AddImage&quot;)
+		&apos;.cmdOfficeMenuAddGroup.ImageUrl = GetResourceUrl(&quot;AddImage&quot;)
+		&apos;.cmdOfficeMenuAddSeparator.ImageUrl = GetResourceUrl(&quot;AddImage&quot;)
+		.cmdOfficeMenuDelete.ImageUrl = GetResourceUrl(&quot;DeleteImage&quot;)
+		.cmdOfficeMenuEdit.ImageUrl = GetResourceUrl(&quot;EditPropsImageSmall&quot;)
+		.lstOfficeMenuPreviewType.StringItemList = Array( _
+			GetResString(&quot;Small icons - Low contrast&quot;), _
+			GetResString(&quot;Small icons - High Contrast&quot;))
+		.lstOfficeMenuPreviewType.SelectedItems = (Array(0))
+	End With
+	OfficeMenuPreview_InitializeMenuStruct(GetResString(&quot;[OfficeMenu title]&quot;))
+	
+	&apos;step 05 controls
+	With g_oDlgWizardModel
+		.cmdAddonMenuTitleEdit.ImageUrl = GetResourceUrl(&quot;EditPropsImageSmall&quot;)
+		.cmdAddonMenuMoveUp.ImageUrl = GetResourceUrl(&quot;UpArrowImage&quot;)
+		.cmdAddonMenuMoveDown.ImageUrl = GetResourceUrl(&quot;DownArrowImage&quot;)
+		&apos;.cmdAddonMenuAddItem.ImageUrl = GetResourceUrl(&quot;AddImage&quot;)
+		&apos;.cmdAddonMenuAddGroup.ImageUrl = GetResourceUrl(&quot;AddImage&quot;)
+		&apos;.cmdAddonMenuAddSeparator.ImageUrl = GetResourceUrl(&quot;AddImage&quot;)
+		.cmdAddonMenuDelete.ImageUrl = GetResourceUrl(&quot;DeleteImage&quot;)
+		.cmdAddonMenuEdit.ImageUrl = GetResourceUrl(&quot;EditPropsImageSmall&quot;)
+		.lstAddonMenuPreviewType.StringItemList = Array( _
+			GetResString(&quot;Small icons - Low contrast&quot;), _
+			GetResString(&quot;Small icons - High Contrast&quot;))
+		.lstAddonMenuPreviewType.SelectedItems = (Array(0))
+	End With
+	AddonMenuPreview_InitializeMenuStruct(GetResString(&quot;Tools | Addon&apos;s&quot;))
+	
+	&apos;step 06 controls
+	With g_oDlgWizardModel
+		.cmdHelpMenuTitleEdit.ImageUrl = GetResourceUrl(&quot;EditPropsImageSmall&quot;)
+		.cmdHelpMenuMoveUp.ImageUrl = GetResourceUrl(&quot;UpArrowImage&quot;)
+		.cmdHelpMenuMoveDown.ImageUrl = GetResourceUrl(&quot;DownArrowImage&quot;)
+		&apos;.cmdHelpMenuAddItem.ImageUrl = GetResourceUrl(&quot;AddImage&quot;)
+		&apos;.cmdHelpMenuAddGroup.ImageUrl = GetResourceUrl(&quot;AddImage&quot;)
+		&apos;.cmdHelpMenuAddSeparator.ImageUrl = GetResourceUrl(&quot;AddImage&quot;)
+		.cmdHelpMenuDelete.ImageUrl = GetResourceUrl(&quot;DeleteImage&quot;)
+		.cmdHelpMenuEdit.ImageUrl = GetResourceUrl(&quot;EditPropsImageSmall&quot;)
+		.lstHelpMenuPreviewType.StringItemList = Array( _
+			GetResString(&quot;Small icons - Low contrast&quot;), _
+			GetResString(&quot;Small icons - High Contrast&quot;))
+		.lstHelpMenuPreviewType.SelectedItems = (Array(0))
+	End With
+	HelpMenuPreview_InitializeMenuStruct(GetResString(&quot;Help (?)&quot;))
+	
+	&apos;step 07 controls
+	With g_oDlgWizardModel
+		.cmdInfoLicenseTranslate.ImageUrl = GetResourceUrl(&quot;TranslateImageSmall&quot;)
+		
+	End With
+	
+	&apos;step 08 controls
+	With g_oDlgWizardModel
+		.cmdPkgDescriptionTranslate.ImageUrl = GetResourceUrl(&quot;TranslateImageSmall&quot;)
+		
+	End With
+	
+	&apos;step 09 controls
+	&apos;
+	
+	&apos;translate dialog UI
+	LocalizeDialog(g_oDlgWizard)
+	
+	&apos;set the dialog title
+	g_oDlgWizard.Title = GetAppName() &amp; &quot;-&quot; &amp; GetAppVersion() &amp; &quot; - &quot; &amp; pmxGetProductName()
+	
+	&apos;center the dialog on the screen
+	&apos;CenterDialog(g_oDlgWizard)
+
+	&apos;set the dialog on the first step	
+	SetDialogStep(1)
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub InitializeRoadmap
+Dim oRoadmapControl As Object
+Dim oRoadmapModel As Object
+Dim oRoadmapItem As Object
+Dim oListener As Object
+	
+	&apos;setup 
+	oRoadmapModel = g_oDlgWizardModel.createInstance(&quot;com.sun.star.awt.UnoControlRoadmapModel&quot;)
+	g_oDlgWizardModel.insertByName( &quot;Roadmap&quot;, oRoadmapModel )
+	With oRoadmapModel
+		.Step = 0
+		.PositionX = 0
+		.PositionY = 0
+		.Width = g_oDlgWizardModel.ctrlVertLine.PositionX
+		.Height = g_oDlgWizardModel.ctrlHorizLine.PositionY
+		.Text = GetResString(&quot;Steps&quot;)
+		.Name = &quot;Roadmap&quot;
+		.TabIndex = 1
+	End With
+	
+	&apos;setup rodamap items
+	InsertRoadmapItem(0, 1, GetResString(&quot;Library selection&quot;), True)
+	InsertRoadmapItem(1, 2, GetResString(&quot;General options&quot;), False)
+	&apos;
+	&apos;the steps from 3 to 6 are added dinamically
+	&apos;
+	InsertRoadmapItem(2, 7, GetResString(&quot;License and version&quot;), False)
+	InsertRoadmapItem(3, 8, GetResString(&quot;Extension description&quot;), False)
+	InsertRoadmapItem(4, 9, GetResString(&quot;Publish&quot;), False)
+	
+	&apos;listen for item events
+	oRoadmapControl = g_oDlgWizard.getControl(&quot;Roadmap&quot;)
+	oListener = CreateUnoListener(&quot;Roadmap_&quot;, &quot;com.sun.star.awt.XItemListener&quot;)
+	oRoadmapControl.addItemListener(oListener)
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub InsertRoadmapItem(iPos As Integer, nID As Integer, sLabel As String, bEnable As Boolean)
+Dim oRoadmapModel As Object
+Dim oRoadmapItem As Object
+	
+	oRoadmapModel = g_oDlgWizardModel.Roadmap
+	oRoadmapItem = oRoadmapModel.createInstance(&quot;com.sun.star.awt.RoadmapItem&quot;)
+	With oRoadmapItem
+		.ID = nID
+		.Label = sLabel
+		.Enabled = bEnable
+	End With
+	oRoadmapModel.insertByIndex(iPos, oRoadmapItem)
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Function GetRoadmapItem(nID As Integer) As Object
+Dim oRoadmapModel As Object
+Dim oRoadmapItem As Object
+Dim I As Integer
+	
+	oRoadmapModel = g_oDlgWizardModel.Roadmap
+	
+	For I = 0 To oRoadmapModel.Count - 1
+		oRoadmapItem = oRoadmapModel.getByIndex(I)
+		If oRoadmapItem.ID = nID Then Exit For
+	Next I
+	GetRoadmapItem = oRoadmapItem
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetRoadmapItemIndex(nID As Integer) As Integer
+Dim oRoadmapModel As Object
+Dim oRoadmapItem As Object
+Dim I As Integer
+	
+	oRoadmapModel = g_oDlgWizardModel.Roadmap
+	
+	For I = 0 To oRoadmapModel.Count - 1
+		oRoadmapItem = oRoadmapModel.getByIndex(I)
+		If oRoadmapItem.ID = nID Then Exit For
+	Next I
+	GetRoadmapItemIndex = I
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Sub SetDialogStep(iStep As Integer)
+
+	Select Case iStep
+		Case 1: Step01_Initialize
+		Case 2: Step02_Initialize
+		Case 3: Step03_Initialize
+		Case 4:	Step04_Initialize
+		Case 5:	Step05_Initialize
+		Case 6:	Step06_Initialize
+		Case 7:	Step07_Initialize
+		Case 8:	Step08_Initialize
+		Case 9:	Step09_Initialize
+		Case Else: &apos;nothing to do
+	End Select
+
+	g_oDlgWizardModel.Step = iStep
+	g_oDlgWizardModel.Roadmap.CurrentItemID = iStep
+	
+End Sub
+
+
+
+
+</script:module>

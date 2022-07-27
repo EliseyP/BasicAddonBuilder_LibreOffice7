@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgUIElementProperties" dlg:left="136" dlg:top="30" dlg:width="178" dlg:height="241" dlg:closeable="true" dlg:moveable="true" dlg:title="Properties">
+ <dlg:bulletinboard>
+  <dlg:button dlg:id="cmdCancel" dlg:tab-index="1" dlg:left="85" dlg:top="223" dlg:width="40" dlg:height="14" dlg:value="Cancel" dlg:button-type="cancel"/>
+  <dlg:button dlg:id="cmdOk" dlg:tab-index="0" dlg:disabled="true" dlg:left="131" dlg:top="223" dlg:width="40" dlg:height="14" dlg:value="OK" dlg:button-type="ok"/>
+  <dlg:fixedline dlg:id="FixedLine1" dlg:tab-index="2" dlg:left="0" dlg:top="215" dlg:width="177" dlg:height="5"/>
+  <dlg:button dlg:id="cmdTranslate" dlg:tab-index="5" dlg:left="151" dlg:top="22" dlg:width="15" dlg:height="18" dlg:help-text="More languages">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgUIElementProperties.cmdTranslate_onClick?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+  <dlg:fixedline dlg:id="FixedLine2" dlg:tab-index="6" dlg:left="7" dlg:top="7" dlg:width="160" dlg:height="9" dlg:value="Text"/>
+  <dlg:fixedline dlg:id="FixedLine3" dlg:tab-index="7" dlg:left="7" dlg:top="85" dlg:width="160" dlg:height="9" dlg:value="Icons"/>
+  <dlg:fixedline dlg:id="FixedLine4" dlg:tab-index="18" dlg:left="7" dlg:top="151" dlg:width="160" dlg:height="9" dlg:value="Office context"/>
+  <dlg:checkbox dlg:id="chkContextImpress" dlg:tab-index="23" dlg:left="95" dlg:top="167" dlg:width="31" dlg:height="19" dlg:tag="com.sun.star.presentation.PresentationDocument" dlg:value="Impress" dlg:align="center" dlg:image-src="file:///opt/kde3/share/icons/hicolor/16x16/apps/openofficeorg-20-impress.png" dlg:image-position="top-center" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="chkContextCalc" dlg:tab-index="21" dlg:left="55" dlg:top="167" dlg:width="31" dlg:height="19" dlg:tag="com.sun.star.sheet.SpreadsheetDocument" dlg:value="Calc" dlg:align="center" dlg:image-src="file:///opt/kde3/share/icons/hicolor/16x16/apps/openofficeorg-20-calc.png" dlg:image-position="top-center" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="chkContextWriter" dlg:tab-index="19" dlg:left="15" dlg:top="167" dlg:width="31" dlg:height="19" dlg:tag="com.sun.star.text.TextDocument" dlg:value="Writer" dlg:align="center" dlg:image-src="file:///opt/kde3/share/icons/hicolor/16x16/apps/openofficeorg-20-writer.png" dlg:image-position="top-center" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="chkContextDraw" dlg:tab-index="20" dlg:left="15" dlg:top="193" dlg:width="31" dlg:height="19" dlg:tag="com.sun.star.drawing.DrawingDocument" dlg:value="Draw" dlg:align="center" dlg:image-src="file:///opt/kde3/share/icons/hicolor/16x16/apps/openofficeorg-20-draw.png" dlg:image-position="top-center" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="chkContextBase" dlg:tab-index="22" dlg:left="55" dlg:top="193" dlg:width="31" dlg:height="19" dlg:tag="com.sun.star.sdb.OfficeDatabaseDocument" dlg:value="Base" dlg:align="center" dlg:image-src="file:///opt/kde3/share/icons/hicolor/16x16/apps/openofficeorg-20-base.png" dlg:image-position="top-center" dlg:checked="false"/>
+  <dlg:checkbox dlg:id="chkContextMath" dlg:tab-index="24" dlg:left="95" dlg:top="193" dlg:width="31" dlg:height="19" dlg:tag="com.sun.star.formula.FormulaProperties" dlg:value="Math" dlg:align="center" dlg:image-src="file:///opt/kde3/share/icons/hicolor/16x16/apps/openofficeorg-20-math.png" dlg:image-position="top-center" dlg:checked="false"/>
+  <dlg:img dlg:id="imgLC26" dlg:tab-index="8" dlg:left="31" dlg:top="107" dlg:width="24" dlg:height="28" dlg:tag="icon 26x26 normal contrast" dlg:help-text="Click to select an image">
+   <script:event script:event-name="on-mouseup" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgUIElementProperties.imgIcon_onClick?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:img>
+  <dlg:img dlg:id="imgLC16" dlg:tab-index="9" dlg:left="69" dlg:top="115" dlg:width="17" dlg:height="20" dlg:tag="icon 16x16 normal contrast" dlg:help-text="Click to select an image">
+   <script:event script:event-name="on-mouseup" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgUIElementProperties.imgIcon_onClick?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:img>
+  <dlg:img dlg:id="imgHC26" dlg:tab-index="10" dlg:left="108" dlg:top="107" dlg:width="24" dlg:height="28" dlg:tag="icon 26x26 high contrast" dlg:help-text="Click to select an image">
+   <script:event script:event-name="on-mouseup" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgUIElementProperties.imgIcon_onClick?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:img>
+  <dlg:img dlg:id="imgHC16" dlg:tab-index="11" dlg:left="146" dlg:top="115" dlg:width="17" dlg:height="20" dlg:tag="icon 16x16 high contrast" dlg:help-text="Click to select an image">
+   <script:event script:event-name="on-mouseup" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgUIElementProperties.imgIcon_onClick?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:img>
+  <dlg:fixedline dlg:id="FixedLine5" dlg:tab-index="29" dlg:left="7" dlg:top="45" dlg:width="160" dlg:height="9" dlg:value="Command"/>
+  <dlg:textfield dlg:id="txtCommand" dlg:tab-index="26" dlg:left="31" dlg:top="65" dlg:width="117" dlg:height="12" dlg:readonly="true">
+   <script:event script:event-name="on-textchange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgUIElementProperties.txtCommand_textModified?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:textfield>
+  <dlg:textfield dlg:id="txtDefaultText" dlg:tab-index="3" dlg:left="31" dlg:top="27" dlg:width="117" dlg:height="12">
+   <script:event script:event-name="on-textchange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgUIElementProperties.txtDefaultText_textModified?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:textfield>
+  <dlg:button dlg:id="cmdSelectMacro" dlg:tab-index="28" dlg:left="151" dlg:top="60" dlg:width="15" dlg:height="18" dlg:image-src="file:///home/paolo/Documenti/OOoMacros/MyProjects/BasicAddonBuilder/src/images/configure.png">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgUIElementProperties.cmdSelectMacro_onClick?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+  <dlg:checkbox dlg:id="chkContextBasicIDE" dlg:tab-index="25" dlg:left="134" dlg:top="167" dlg:width="35" dlg:height="19" dlg:tag="com.sun.star.script.BasicIDE" dlg:value="Basic IDE" dlg:align="center" dlg:image-src="file:///opt/kde3/share/icons/hicolor/16x16/apps/openofficeorg-20-impress.png" dlg:image-position="top-center" dlg:checked="false"/>
+  <dlg:text dlg:id="lblCommand" dlg:tab-index="27" dlg:left="31" dlg:top="55" dlg:width="116" dlg:height="9" dlg:value="Macro command"/>
+  <dlg:text dlg:id="lblLC26" dlg:tab-index="14" dlg:left="31" dlg:top="137" dlg:width="24" dlg:height="9" dlg:value="26x26" dlg:align="center"/>
+  <dlg:text dlg:id="lblLC16" dlg:tab-index="15" dlg:left="65" dlg:top="137" dlg:width="24" dlg:height="9" dlg:value="16x16" dlg:align="center"/>
+  <dlg:text dlg:id="lblHC26" dlg:tab-index="16" dlg:left="108" dlg:top="137" dlg:width="24" dlg:height="9" dlg:value="26x26" dlg:align="center"/>
+  <dlg:text dlg:id="lblHC16" dlg:tab-index="17" dlg:left="143" dlg:top="137" dlg:width="24" dlg:height="9" dlg:value="16x16" dlg:align="center"/>
+  <dlg:text dlg:id="lblHC" dlg:tab-index="13" dlg:left="108" dlg:top="97" dlg:width="55" dlg:height="9" dlg:value="High contrast"/>
+  <dlg:text dlg:id="lblLC" dlg:tab-index="12" dlg:left="31" dlg:top="97" dlg:width="55" dlg:height="9" dlg:value="Low contrast"/>
+  <dlg:text dlg:id="lblDefaultText" dlg:tab-index="4" dlg:left="31" dlg:top="17" dlg:width="116" dlg:height="9" dlg:value="Item label"/>
+ </dlg:bulletinboard>
+</dlg:window>

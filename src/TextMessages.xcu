@@ -1,0 +1,1266 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+This file has been created with :
+ *** ResXcu generator tool ***
+      (by Paolo Mantovani)
+-->
+
+<oor:component-data xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" oor:name="Configuration" oor:package="ooo.ext.BasicAddonBuilder">
+	<node oor:name="Messages">
+		<node oor:name="[OfficeMenu title]" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>[OfficeMenu title]</value>
+				<value xml:lang="en">[OfficeMenu title]</value>
+				<value xml:lang="it">[Titolo del menu]</value>
+				<value xml:lang="de">[OfficeMen&#252; Titel]</value>
+				<value xml:lang="es">[T&#237;tulo del menu]</value>
+				<value xml:lang="fr">[OfficeMenu title]</value>
+				<value xml:lang="da">[OfficeMenu title]</value>
+			</prop>
+		</node>
+		<node oor:name="[Toolbar title]" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>[Toolbar title]</value>
+				<value xml:lang="en">[Toolbar title]</value>
+				<value xml:lang="it">[Titolo della barra]</value>
+				<value xml:lang="de">[Symbolleisten Titel]</value>
+				<value xml:lang="es">[T&#237;tulo de la barra]</value>
+				<value xml:lang="fr">[Toolbar title]</value>
+				<value xml:lang="da">[Toolbar title]</value>
+			</prop>
+		</node>
+		<node oor:name="%productname% Macros" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>%productname% Macros</value>
+				<value xml:lang="en">%productname% Macros</value>
+				<value xml:lang="it">%productname% - Macro</value>
+				<value xml:lang="fr">Macros %productname%</value>
+				<value xml:lang="da">%productname% Makroer</value>
+			</prop>
+		</node>
+		<node oor:name="%tbname% toolbar" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>%tbname% toolbar</value>
+				<value xml:lang="en">%tbname% toolbar</value>
+				<value xml:lang="it">Barra degli strumenti %tbname%</value>
+				<value xml:lang="fr">barre d&apos;outils %tbname%</value>
+				<value xml:lang="da">%tbname% v&#230;rkt&#248;jslinje</value>
+			</prop>
+		</node>
+		<node oor:name="1. Insert information for FTP connection:" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>1.Insert information for FTP connection:</value>
+				<value xml:lang="en">1. Insert information for FTP connection:</value>
+				<value xml:lang="it">1. Inserire le informazioni per la connessione FTP</value>
+				<value xml:lang="fr">1. Ins&#233;rer les param&#232;tres de connexion FTP:</value>
+				<value xml:lang="da">1. inds&#230;t information om FTP forbindelse:</value>
+			</prop>
+		</node>
+		<node oor:name="16x16" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>16x16</value>
+				<value xml:lang="en">16x16</value>
+				<value xml:lang="it">16x16</value>
+				<value xml:lang="de">16x16</value>
+				<value xml:lang="es">16x16</value>
+				<value xml:lang="fr">16x16</value>
+				<value xml:lang="da">16x16</value>
+			</prop>
+		</node>
+		<node oor:name="2. Test connection:" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>2. Test connection:</value>
+				<value xml:lang="en">2. Test connection:</value>
+				<value xml:lang="it">2. Test della connessione</value>
+				<value xml:lang="fr">2. Tester la connexion:</value>
+				<value xml:lang="da">2. Afpr&#248;v forbindelse:</value>
+			</prop>
+		</node>
+		<node oor:name="26x26" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>26x26</value>
+				<value xml:lang="en">26x26</value>
+				<value xml:lang="it">26x26</value>
+				<value xml:lang="de">26x26</value>
+				<value xml:lang="es">26x26</value>
+				<value xml:lang="fr">26x26</value>
+				<value xml:lang="da">26x26</value>
+			</prop>
+		</node>
+		<node oor:name="3. Select a remote directory (optional):" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>3. Select a remote directory (optional):</value>
+				<value xml:lang="en">3. Select a remote directory (optional):</value>
+				<value xml:lang="it">3. Selezionare una directory remota</value>
+				<value xml:lang="fr">3. S&#233;lectionner le dossier distant (optionnel):</value>
+				<value xml:lang="da">3. V&#230;lg et fjernkatalog (valgfrit):</value>
+			</prop>
+		</node>
+		<node oor:name="Add" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add</value>
+				<value xml:lang="en">Add</value>
+				<value xml:lang="it">Aggiungi</value>
+				<value xml:lang="fr">Ajouter</value>
+				<value xml:lang="da">Tilf&#248;j</value>
+			</prop>
+		</node>
+		<node oor:name="Add a description for the Extension to create." oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add a description for the Extension to create.</value>
+				<value xml:lang="en">Add a description for the Extension to create.</value>
+				<value xml:lang="it">Inserire una descrizione per l&apos; Extension da creare</value>
+				<value xml:lang="de">F&#252;gen Sie eine Beschreibung f&#252;r die Erweiterung hinzu</value>
+				<value xml:lang="es">Agregue una descripci&#243;n para el Add-on a crear</value>
+				<value xml:lang="fr">Ajouter une description de l&apos;extension &#224; cr&#233;er.</value>
+				<value xml:lang="da">Tilf&#248;j en beskrivelse af den udvidelse du vil oprette.</value>
+			</prop>
+		</node>
+		<node oor:name="add a short description here" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>&lt;add a short description here&gt;</value>
+				<value xml:lang="en">&lt;add a short description here&gt;</value>
+				<value xml:lang="it">&lt;Inserire una descrizione breve&gt;</value>
+				<value xml:lang="es">&lt;Agregue una descripci&#243;n breve&gt;</value>
+				<value xml:lang="fr">&lt;ajouter ici un court descriptif&gt;</value>
+				<value xml:lang="da">&lt;tilf&#248;j en kort beskrivelse her&gt;</value>
+			</prop>
+		</node>
+		<node oor:name="Add auto-update information" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add auto-update information</value>
+				<value xml:lang="en">Add auto-update information</value>
+				<value xml:lang="it">Aggiungi informazioni per l&apos;aggiornamento automatico</value>
+				<value xml:lang="fr">Ajouter information mise &#224; jour automatique</value>
+				<value xml:lang="da">Tilf&#248;j information om automatisk opdatering</value>
+			</prop>
+		</node>
+		<node oor:name="Add button" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add button</value>
+				<value xml:lang="en">Add button</value>
+				<value xml:lang="it">Pulsante</value>
+				<value xml:lang="de">Schaltfl&#228;che</value>
+				<value xml:lang="es">Bot&#243;n</value>
+				<value xml:lang="fr">Ajouter bouton</value>
+				<value xml:lang="da">Tilf&#248;j knap</value>
+			</prop>
+		</node>
+		<node oor:name="Add customized office toolbar" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add customized office toolbar</value>
+				<value xml:lang="en">Add customized office toolbar</value>
+				<value xml:lang="it">Aggiungi barra degli strumenti personalizzata</value>
+				<value xml:lang="de">eigene Office-Symbolleiste hinzuf&#252;gen</value>
+				<value xml:lang="es">Agregar barra de herramientas personalizada</value>
+				<value xml:lang="fr">Ajouter barre d&apos;outils office personnalis&#233;e</value>
+				<value xml:lang="da">Tilf&#248;j tilpasset office-v&#230;rkt&#248;jslinje</value>
+			</prop>
+		</node>
+		<node oor:name="Add group" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add group</value>
+				<value xml:lang="en">Add group</value>
+				<value xml:lang="it">Sottomenu</value>
+				<value xml:lang="de">Untermen&#252;</value>
+				<value xml:lang="es">Submen&#250;</value>
+				<value xml:lang="fr">Ajouter groupe</value>
+				<value xml:lang="da">Tilf&#248;j gruppe</value>
+			</prop>
+		</node>
+		<node oor:name="Add item" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add item</value>
+				<value xml:lang="en">Add item</value>
+				<value xml:lang="it">Aggiungi voce</value>
+				<value xml:lang="fr">Ajouter &#233;l&#233;ment</value>
+				<value xml:lang="da">Tilf&#248;j element</value>
+			</prop>
+		</node>
+		<node oor:name="Add items under Help (?) menu" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add items under Help (?) menu</value>
+				<value xml:lang="en">Add items under Help (?) menu</value>
+				<value xml:lang="it">Aggiungi elementi al menu Aiuto (?) </value>
+				<value xml:lang="de">Eintr&#228;ge unter dem Hilfe (?) Men&#252; hinzuf&#252;gen</value>
+				<value xml:lang="es">Agregar elementos al men&#250; Ayuda (?) </value>
+				<value xml:lang="fr">Ajouter &#233;l&#233;ment sous le menu Aide (?)</value>
+				<value xml:lang="da">Tilf&#248;j element I hj&#230;lpemenuen (?)</value>
+			</prop>
+		</node>
+		<node oor:name="Add items under Tools/Add-on menu" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add items under Tools/Add-on menu</value>
+				<value xml:lang="en">Add items under Tools/Add-on menu</value>
+				<value xml:lang="it">Aggiungi elementi al menu Strumenti/Add-on</value>
+				<value xml:lang="de">Eintr&#228;ge unter Extras/Add-Ons hinzuf&#252;gen</value>
+				<value xml:lang="es">Agregar elementos al men&#250; Herramientas/Complementos</value>
+				<value xml:lang="fr">Ajouter &#233;l&#233;ment sous le menu Outils- extensions</value>
+				<value xml:lang="da">Tilf&#248;j element i menuen Funktioner - Tilf&#248;jelsesprogrammer</value>
+			</prop>
+		</node>
+		<node oor:name="Add license" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add license</value>
+				<value xml:lang="en">Add license</value>
+				<value xml:lang="it">Aggiungi licenza</value>
+				<value xml:lang="fr">Ajouter license</value>
+				<value xml:lang="da">Tilf&#248;j licens</value>
+			</prop>
+		</node>
+		<node oor:name="Add menu" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add menu</value>
+				<value xml:lang="en">Add menu</value>
+				<value xml:lang="it">Nuovo menu</value>
+				<value xml:lang="de">Men&#252;</value>
+				<value xml:lang="es">Nuevo men&#250;</value>
+				<value xml:lang="fr">Ajouter menu</value>
+				<value xml:lang="da">Tilf&#248;j menu</value>
+			</prop>
+		</node>
+		<node oor:name="Add separator" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add separator</value>
+				<value xml:lang="en">Add separator</value>
+				<value xml:lang="it">Separatore</value>
+				<value xml:lang="de">Trenner</value>
+				<value xml:lang="es">Separador</value>
+				<value xml:lang="fr">Ajouter s&#233;parateur</value>
+				<value xml:lang="da">Tilf&#248;j separator</value>
+			</prop>
+		</node>
+		<node oor:name="Add top level menu" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add top level menu</value>
+				<value xml:lang="en">Add top level menu</value>
+				<value xml:lang="it">Aggiungi un menu principale</value>
+				<value xml:lang="de">Hauptmen&#252;eintrag hinzuf&#252;gen</value>
+				<value xml:lang="es">Agregar un men&#250; principal</value>
+				<value xml:lang="fr">Ajouter menu principal</value>
+				<value xml:lang="da">Tilf&#248;j topniveau menu</value>
+			</prop>
+		</node>
+		<node oor:name="Addon menu" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Addon menu</value>
+				<value xml:lang="en">Addon menu</value>
+				<value xml:lang="it">Menu Add-on</value>
+				<value xml:lang="de">Men&#252;eintrag f&#252;r die Erweiterung</value>
+				<value xml:lang="es">Men&#250; Add-on</value>
+				<value xml:lang="fr">Ajouter menu</value>
+				<value xml:lang="da">Addon menu</value>
+			</prop>
+		</node>
+		<node oor:name="Back" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>&lt; Back</value>
+				<value xml:lang="en">&lt; Back</value>
+				<value xml:lang="it">&lt; Indietro</value>
+				<value xml:lang="de">&lt; Zur&#252;ck</value>
+				<value xml:lang="es">&lt; Regresar</value>
+				<value xml:lang="fr">&lt; Pr&#233;c&#233;dent</value>
+				<value xml:lang="da">&lt; Tilbage</value>
+			</prop>
+		</node>
+		<node oor:name="Base" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Base</value>
+				<value xml:lang="en">Base</value>
+				<value xml:lang="it">Base</value>
+				<value xml:lang="de">Base</value>
+				<value xml:lang="es">Base</value>
+				<value xml:lang="fr">Base</value>
+				<value xml:lang="da">Base</value>
+			</prop>
+		</node>
+		<node oor:name="Basic IDE" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Basic IDE</value>
+				<value xml:lang="en">Basic IDE</value>
+				<value xml:lang="it">Basic IDE</value>
+				<value xml:lang="de">Basic IDE</value>
+				<value xml:lang="es">Basic IDE</value>
+				<value xml:lang="fr">Basic IDE</value>
+				<value xml:lang="da">Basic IDE</value>
+			</prop>
+		</node>
+		<node oor:name="Build" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Build</value>
+				<value xml:lang="en">Build</value>
+				<value xml:lang="it">Build</value>
+				<value xml:lang="fr">Build</value>
+				<value xml:lang="da">Build</value>
+			</prop>
+		</node>
+		<node oor:name="Calc" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Calc</value>
+				<value xml:lang="en">Calc</value>
+				<value xml:lang="it">Calc</value>
+				<value xml:lang="de">Calc</value>
+				<value xml:lang="es">Calc</value>
+				<value xml:lang="fr">Calc</value>
+				<value xml:lang="da">Calc</value>
+			</prop>
+		</node>
+		<node oor:name="Cancel" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Cancel</value>
+				<value xml:lang="en">Cancel</value>
+				<value xml:lang="it">Annulla</value>
+				<value xml:lang="de">Abbrechen</value>
+				<value xml:lang="es">Cancelar</value>
+				<value xml:lang="fr">Annuler</value>
+				<value xml:lang="da">Annuller</value>
+			</prop>
+		</node>
+		<node oor:name="Click to select an image" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Click to select an image</value>
+				<value xml:lang="en">Click to select an image</value>
+				<value xml:lang="it">Fare click per selezionare un immagine</value>
+				<value xml:lang="de">Klicken um ein Bild zu w&#228;hlen</value>
+				<value xml:lang="es">Haga clic para seleccionar una imagen</value>
+				<value xml:lang="fr">Cliquer pour choisir une image</value>
+				<value xml:lang="da">Klik for at v&#230;lge et billede</value>
+			</prop>
+		</node>
+		<node oor:name="Command" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Command</value>
+				<value xml:lang="en">Command</value>
+				<value xml:lang="it">Comando</value>
+				<value xml:lang="de">Befehl</value>
+				<value xml:lang="es">Comando</value>
+				<value xml:lang="fr">Commande</value>
+				<value xml:lang="da">Kommando</value>
+			</prop>
+		</node>
+		<node oor:name="Configure..." oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Configure...</value>
+				<value xml:lang="en">Configure...</value>
+				<value xml:lang="it">Configura...</value>
+				<value xml:lang="fr">Configurer...</value>
+				<value xml:lang="da">Konfigurer...</value>
+			</prop>
+		</node>
+		<node oor:name="Connect" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Connect</value>
+				<value xml:lang="en">Connect</value>
+				<value xml:lang="it">Connetti</value>
+				<value xml:lang="fr">Connecter</value>
+				<value xml:lang="da">Forbind</value>
+			</prop>
+		</node>
+		<node oor:name="Connection established with success" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Connection established with success</value>
+				<value xml:lang="en">Connection established with success</value>
+				<value xml:lang="it">Conessione effettuata con successo</value>
+				<value xml:lang="fr">Connexion &#233;tablie avec succ&#232;s</value>
+				<value xml:lang="da">Forbindelse etableret med succes</value>
+			</prop>
+		</node>
+		<node oor:name="Connection failed, please check the hostname and login information and try again" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Connection failed, please check the hostname and login information and try again</value>
+				<value xml:lang="en">Connection failed, please check the hostname and login information and try again</value>
+				<value xml:lang="it">Connessione non effettuata, controllare I dati di accesso e riprovare.</value>
+				<value xml:lang="fr">Connexion manqu&#233;e, veuillez v&#233;rifier le nom du Host et les information de connexion et essayez &#224; nouveau</value>
+				<value xml:lang="da">Forbindelse fejlede, kontroller v&#230;rtsnavn og login informationerne og pr&#248;v igen</value>
+			</prop>
+		</node>
+		<node oor:name="Create" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Create</value>
+				<value xml:lang="en">Create</value>
+				<value xml:lang="it">Crea</value>
+				<value xml:lang="fr">Cr&#233;er</value>
+				<value xml:lang="da">Opret</value>
+			</prop>
+		</node>
+		<node oor:name="Define a customized toolbar for the Extension to create" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Define a customized toolbar for the Extension to create</value>
+				<value xml:lang="en">Define a customized toolbar for the Extension to create</value>
+				<value xml:lang="it">Definire una barra degli strumenti personalizzata per l&apos;Extension da creare</value>
+				<value xml:lang="de">Definieren Sie eine eigene Symbolleiste f&#252;r die Erweiterung</value>
+				<value xml:lang="es">Defina una barra de herramientas personalizada para el Add-on a crear</value>
+				<value xml:lang="fr">D&#233;finir une barre personnalis&#233;e pour l&apos;extension &#224; cr&#233;er</value>
+				<value xml:lang="da">Definer en tilpasset v&#230;rkt&#248;jslinje som Udvidelsen skal oprette</value>
+			</prop>
+		</node>
+		<node oor:name="Define a customized top level menu that will be shown between the Tools and the Window menus" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Define a customized top level menu that will be shown between the Tools and the Window menus</value>
+				<value xml:lang="en">Define a customized top level menu that will be shown between the Tools and the Window menus</value>
+				<value xml:lang="it">Definire un menu nella barra principale per l&apos;Extension da creare</value>
+				<value xml:lang="de">Definieren Sie einen eigenen Haupt-Men&#252; Eintrag, der zwischen “Extras” und “Fenster” angezeigt wird</value>
+				<value xml:lang="es">Defina un men&#250; principal personalizado para el Add-on a crear</value>
+				<value xml:lang="fr">D&#233;finir un menu principal qui sera affich&#233; entre les menus Outils et Fen&#234;tres</value>
+				<value xml:lang="da">Definer en tilpasset topniveau menu som vil blive vist mellem menuerne Funktioner og Vinduer</value>
+			</prop>
+		</node>
+		<node oor:name="Define customized Help menu entries" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Define customized Help menu entries</value>
+				<value xml:lang="en">Define customized Help menu entries</value>
+				<value xml:lang="it">Aggiungi voci personalizzate nel menu Help (?)</value>
+				<value xml:lang="es">Defina elementos del men&#250; Ayuda</value>
+				<value xml:lang="fr">D&#233;finir les entr&#233;es personnalis&#233;es du menu Aide</value>
+				<value xml:lang="da">Definer et tilpasset element til hj&#230;lpemenuen</value>
+			</prop>
+		</node>
+		<node oor:name="Define customized menu entries under the Tools->Addon's menu" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Define customized menu entries under the Tools-&gt;Addon&apos;s menu</value>
+				<value xml:lang="en">Define customized menu entries under the Tools-&gt;Addon&apos;s menu</value>
+				<value xml:lang="it">Aggiungi voci personalizzate nel menu Strumenti-&gt;Add-on</value>
+				<value xml:lang="es">Defina elementos para el men&#250; Herramientas -&gt; Complementos</value>
+				<value xml:lang="fr">D&#233;finir les entr&#233;es personnalis&#233;es du menu Outils-Extensions</value>
+				<value xml:lang="da">Definer et tilpasset element til menuen Funktoner – Tilf&#248;jelsesprogrammer</value>
+			</prop>
+		</node>
+		<node oor:name="Del" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Del</value>
+				<value xml:lang="en">Del</value>
+				<value xml:lang="it">Elimina</value>
+				<value xml:lang="fr">Suppr</value>
+				<value xml:lang="da">Slet</value>
+			</prop>
+		</node>
+		<node oor:name="Download URL of the extension (only the path)" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Download URL of the extension (only the path)</value>
+				<value xml:lang="en">Download URL of the extension (only the path)</value>
+				<value xml:lang="it">Specificare URL per il download della extension (solo percorso)</value>
+				<value xml:lang="fr">T&#233;l&#233;charger URL de l&apos;extension (seulement le chemin)</value>
+				<value xml:lang="da">Download URL for udvidelsen (kun sti)</value>
+			</prop>
+		</node>
+		<node oor:name="Draw" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Draw</value>
+				<value xml:lang="en">Draw</value>
+				<value xml:lang="it">Draw</value>
+				<value xml:lang="de">Draw</value>
+				<value xml:lang="es">Draw</value>
+				<value xml:lang="fr">Draw</value>
+				<value xml:lang="da">Draw</value>
+			</prop>
+		</node>
+		<node oor:name="Edit" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Edit</value>
+				<value xml:lang="en">Edit</value>
+				<value xml:lang="it">Modifica</value>
+				<value xml:lang="de">&#196;ndern</value>
+				<value xml:lang="es">Editar</value>
+				<value xml:lang="fr">Editer</value>
+				<value xml:lang="da">Rediger</value>
+			</prop>
+		</node>
+		<node oor:name="Edit text" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Edit text</value>
+				<value xml:lang="en">Edit text</value>
+				<value xml:lang="it">Modifica testo</value>
+				<value xml:lang="fr">Editer le texte</value>
+				<value xml:lang="da">Rediger tekst</value>
+			</prop>
+		</node>
+		<node oor:name="Extension description" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Extension description</value>
+				<value xml:lang="en">Extension description</value>
+				<value xml:lang="it">Descrizione extension</value>
+				<value xml:lang="fr">Description de l&apos;extension</value>
+				<value xml:lang="da">Udvidelsesbeskrivelse</value>
+			</prop>
+		</node>
+		<node oor:name="FTP address" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>FTP address</value>
+				<value xml:lang="en">FTP address</value>
+				<value xml:lang="it">Indirizzo FTP</value>
+				<value xml:lang="fr">Adresse FTP</value>
+				<value xml:lang="da">FTP adresse</value>
+			</prop>
+		</node>
+		<node oor:name="FTP connection settings" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>FTP connection settings</value>
+				<value xml:lang="en">FTP connection settings</value>
+				<value xml:lang="it">Impostazioni di  connessione FTP</value>
+				<value xml:lang="fr">Param&#232;tres de connexion FTP</value>
+				<value xml:lang="da">Indstillinger for FTP forbindelse</value>
+			</prop>
+		</node>
+		<node oor:name="General options" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>General options</value>
+				<value xml:lang="en">General options</value>
+				<value xml:lang="it">Opzioni generali</value>
+				<value xml:lang="de">Generelle Optionen</value>
+				<value xml:lang="es">Opciones generales</value>
+				<value xml:lang="fr">Options g&#233;n&#233;rales</value>
+				<value xml:lang="da">Generelle indstillinger</value>
+			</prop>
+		</node>
+		<node oor:name="Help (?)" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Help (?)</value>
+				<value xml:lang="en">Help (?)</value>
+				<value xml:lang="it">Aiuto (?)</value>
+				<value xml:lang="de">Hilfe (?)</value>
+				<value xml:lang="es">Ayuda (?)</value>
+				<value xml:lang="fr">Aide (?)</value>
+				<value xml:lang="da">Hj&#230;lp (?)</value>
+			</prop>
+		</node>
+		<node oor:name="Help menu" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Help menu</value>
+				<value xml:lang="en">Help menu</value>
+				<value xml:lang="it">Menu Aiuto (?)</value>
+				<value xml:lang="de">Hilfe Men&#252;</value>
+				<value xml:lang="es">Men&#250; Ayuda</value>
+				<value xml:lang="fr">Menu d&apos;aide</value>
+				<value xml:lang="da">Hj&#230;lpemenu</value>
+			</prop>
+		</node>
+		<node oor:name="High contrast" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>High contrast</value>
+				<value xml:lang="en">High contrast</value>
+				<value xml:lang="it">Contrasto elevato</value>
+				<value xml:lang="de">Hoher Kontrast</value>
+				<value xml:lang="es">Contraste alto</value>
+				<value xml:lang="fr">Contraster &#233;l&#233;v&#233;</value>
+				<value xml:lang="da">H&#248;j kontrast</value>
+			</prop>
+		</node>
+		<node oor:name="Icons" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Icons</value>
+				<value xml:lang="en">Icons</value>
+				<value xml:lang="it">Icone</value>
+				<value xml:lang="de">Icons</value>
+				<value xml:lang="es">Iconos</value>
+				<value xml:lang="fr">Ic&#244;nes</value>
+				<value xml:lang="da">Ikoner</value>
+			</prop>
+		</node>
+		<node oor:name="Impress" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Impress</value>
+				<value xml:lang="en">Impress</value>
+				<value xml:lang="it">Impress</value>
+				<value xml:lang="de">Impress</value>
+				<value xml:lang="es">Impress</value>
+				<value xml:lang="fr">Impress</value>
+				<value xml:lang="da">Impress</value>
+			</prop>
+		</node>
+		<node oor:name="Item label" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Item label</value>
+				<value xml:lang="en">Item label</value>
+				<value xml:lang="it">Titolo dell&apos;elemento</value>
+				<value xml:lang="de">Beschriftung</value>
+				<value xml:lang="es">T&#237;tulo del elemento</value>
+				<value xml:lang="fr">&#233;l&#233;ment &#233;tiquette</value>
+				<value xml:lang="da">Elementetiket</value>
+			</prop>
+		</node>
+		<node oor:name="Language" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Language</value>
+				<value xml:lang="en">Language</value>
+				<value xml:lang="it">Lingua</value>
+				<value xml:lang="fr">Langue</value>
+				<value xml:lang="da">Sprog</value>
+			</prop>
+		</node>
+		<node oor:name="Large icons - High Contrast" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Large icons - High Contrast</value>
+				<value xml:lang="en">Large icons - High Contrast</value>
+				<value xml:lang="it">Icone grandi - alta visibilit&#224;</value>
+				<value xml:lang="de">Gro&#223;e Symbole - hoher Kontrast</value>
+				<value xml:lang="es">Iconos grandes - contraste alto</value>
+				<value xml:lang="fr">Grande ic&#244;nes – Contraste &#233;lev&#233;</value>
+				<value xml:lang="da">Store ikoner – H&#248;j kontrast</value>
+			</prop>
+		</node>
+		<node oor:name="Large icons - Low contrast" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Large icons - Low contrast</value>
+				<value xml:lang="en">Large icons - Low contrast</value>
+				<value xml:lang="it">Icone grandi - visibilit&#224; normale</value>
+				<value xml:lang="de">Gro&#223;e Symbole - niedriger Kontrast</value>
+				<value xml:lang="es">Iconos grandes - contraste bajo</value>
+				<value xml:lang="fr">Grande ic&#244;nes – Contraste faible</value>
+				<value xml:lang="da">Store ikoner – Lav kontrast</value>
+			</prop>
+		</node>
+		<node oor:name="Library selection" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Library selection</value>
+				<value xml:lang="en">Library selection</value>
+				<value xml:lang="it">Selezione libreria</value>
+				<value xml:lang="de">Auswahl der Bibliothek</value>
+				<value xml:lang="es">Selecci&#243;n de la biblioteca</value>
+				<value xml:lang="fr">S&#233;lection librairies</value>
+				<value xml:lang="da">Biblioteksvalg</value>
+			</prop>
+		</node>
+		<node oor:name="License and version" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>License and version</value>
+				<value xml:lang="en">License and version</value>
+				<value xml:lang="it">Licenza e versione</value>
+				<value xml:lang="fr">License et version</value>
+				<value xml:lang="da">Licens og version</value>
+			</prop>
+		</node>
+		<node oor:name="Low contrast" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Low contrast</value>
+				<value xml:lang="en">Low contrast</value>
+				<value xml:lang="it">Contrasto normale</value>
+				<value xml:lang="de">Niedriger Kontrast</value>
+				<value xml:lang="es">Contraste bajo</value>
+				<value xml:lang="fr">Contraste faible</value>
+				<value xml:lang="da">Lav kontrast</value>
+			</prop>
+		</node>
+		<node oor:name="Macro command" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Macro command</value>
+				<value xml:lang="en">Macro command</value>
+				<value xml:lang="it">Comando macro</value>
+				<value xml:lang="de">verkn&#252;pftes Makro</value>
+				<value xml:lang="es">Comando macro</value>
+				<value xml:lang="fr">Commande macro</value>
+				<value xml:lang="da">Makro kommando</value>
+			</prop>
+		</node>
+		<node oor:name="Macros" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Macros</value>
+				<value xml:lang="en">Macros</value>
+				<value xml:lang="it">Macro</value>
+				<value xml:lang="de">Makros</value>
+				<value xml:lang="es">Macros</value>
+				<value xml:lang="fr">Macros</value>
+				<value xml:lang="da">Makroer</value>
+			</prop>
+		</node>
+		<node oor:name="Major" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Major</value>
+				<value xml:lang="en">Major</value>
+				<value xml:lang="it">Major</value>
+				<value xml:lang="fr">Majeure</value>
+				<value xml:lang="da">&#216;vre</value>
+			</prop>
+		</node>
+		<node oor:name="Math" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Math</value>
+				<value xml:lang="en">Math</value>
+				<value xml:lang="it">Math</value>
+				<value xml:lang="de">Math</value>
+				<value xml:lang="es">Math</value>
+				<value xml:lang="fr">Math</value>
+				<value xml:lang="da">Math</value>
+			</prop>
+		</node>
+		<node oor:name="Menu group" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Menu group</value>
+				<value xml:lang="en">Menu group</value>
+				<value xml:lang="it">Sottomenu</value>
+				<value xml:lang="de">Men&#252; Gruppe</value>
+				<value xml:lang="es">Submen&#250;</value>
+				<value xml:lang="fr">Groupe Menu</value>
+				<value xml:lang="da">Menu gruppe</value>
+			</prop>
+		</node>
+		<node oor:name="Menu item" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Menu item</value>
+				<value xml:lang="en">Menu item</value>
+				<value xml:lang="it">Menu</value>
+				<value xml:lang="de">Men&#252; Eintrag</value>
+				<value xml:lang="es">Men&#250;</value>
+				<value xml:lang="fr">&#233;l&#233;ment de menu</value>
+				<value xml:lang="da">Menu element</value>
+			</prop>
+		</node>
+		<node oor:name="Menu title" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Menu title</value>
+				<value xml:lang="en">Menu title</value>
+				<value xml:lang="it">Titolo del menu</value>
+				<value xml:lang="de">Men&#252; Titel</value>
+				<value xml:lang="es">T&#237;tulo del men&#250;</value>
+				<value xml:lang="fr">&#233;l&#233;ment de titre</value>
+				<value xml:lang="da">Menu titel</value>
+			</prop>
+		</node>
+		<node oor:name="Minor" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Minor</value>
+				<value xml:lang="en">Minor</value>
+				<value xml:lang="it">Minor</value>
+				<value xml:lang="fr">Mineure</value>
+				<value xml:lang="da">Nedre</value>
+			</prop>
+		</node>
+		<node oor:name="Modules" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Modules</value>
+				<value xml:lang="en">Modules</value>
+				<value xml:lang="it">Moduli</value>
+				<value xml:lang="de">Module</value>
+				<value xml:lang="es">M&#243;dulos</value>
+				<value xml:lang="fr">Modules</value>
+				<value xml:lang="da">Moduler</value>
+			</prop>
+		</node>
+		<node oor:name="More languages" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>More languages</value>
+				<value xml:lang="en">More languages</value>
+				<value xml:lang="it">Altre lingue</value>
+				<value xml:lang="de">Weitere Sprachen</value>
+				<value xml:lang="es">Otros idiomas</value>
+				<value xml:lang="fr">Plus de langues</value>
+				<value xml:lang="da">Flere sprog</value>
+			</prop>
+		</node>
+		<node oor:name="Move down" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Move down</value>
+				<value xml:lang="en">Move down</value>
+				<value xml:lang="it">Sposta in basso</value>
+				<value xml:lang="de">nach unten</value>
+				<value xml:lang="es">Abajo</value>
+				<value xml:lang="fr">Descendre</value>
+				<value xml:lang="da">Flyt ned</value>
+			</prop>
+		</node>
+		<node oor:name="Move up" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Move up</value>
+				<value xml:lang="en">Move up</value>
+				<value xml:lang="it">Sposta in alto</value>
+				<value xml:lang="de">nach oben</value>
+				<value xml:lang="es">Arriba</value>
+				<value xml:lang="fr">Monter</value>
+				<value xml:lang="da">Flyt op</value>
+			</prop>
+		</node>
+		<node oor:name="My Macros" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>My Macros</value>
+				<value xml:lang="en">My Macros</value>
+				<value xml:lang="it">Macro personali</value>
+				<value xml:lang="fr">Mes Macros</value>
+				<value xml:lang="da">Mine makroer</value>
+			</prop>
+		</node>
+		<node oor:name="Next" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Next &gt;</value>
+				<value xml:lang="en">Next &gt;</value>
+				<value xml:lang="it">Avanti &gt;</value>
+				<value xml:lang="fr">Suivant &gt;</value>
+				<value xml:lang="da">N&#230;ste &gt;</value>
+			</prop>
+		</node>
+		<node oor:name="Office context" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Office context</value>
+				<value xml:lang="en">Office context</value>
+				<value xml:lang="it">Contesto</value>
+				<value xml:lang="de">Office Umgebung</value>
+				<value xml:lang="es">Contexto</value>
+				<value xml:lang="fr">Contexte Office</value>
+				<value xml:lang="da">Office sammenh&#230;ng</value>
+			</prop>
+		</node>
+		<node oor:name="Office menubar" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Office menubar</value>
+				<value xml:lang="en">Office menubar</value>
+				<value xml:lang="it">Menu principale</value>
+				<value xml:lang="de">Office Men&#252;leiste</value>
+				<value xml:lang="es">Men&#250; principal</value>
+				<value xml:lang="fr">Barre de menu Office</value>
+				<value xml:lang="da">Office menulinje</value>
+			</prop>
+		</node>
+		<node oor:name="Office toolbar" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Office toolbar</value>
+				<value xml:lang="en">Office toolbar</value>
+				<value xml:lang="it">Barra degli strumenti</value>
+				<value xml:lang="de">Office Symbolleiste</value>
+				<value xml:lang="es">Barra de herramientas</value>
+				<value xml:lang="fr">Barre d&apos;outils Office</value>
+				<value xml:lang="da">Office v&#230;rkt&#248;jslinje</value>
+			</prop>
+		</node>
+		<node oor:name="OK" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>OK</value>
+				<value xml:lang="en">OK</value>
+				<value xml:lang="it">OK</value>
+				<value xml:lang="de">OK</value>
+				<value xml:lang="es">OK</value>
+				<value xml:lang="fr">OK</value>
+				<value xml:lang="da">OK</value>
+			</prop>
+		</node>
+		<node oor:name="Password:" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Password:</value>
+				<value xml:lang="en">Password:</value>
+				<value xml:lang="it">Password:</value>
+				<value xml:lang="fr">Mot de passe:</value>
+				<value xml:lang="da">Password:</value>
+			</prop>
+		</node>
+		<node oor:name="Preview" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Preview</value>
+				<value xml:lang="en">Preview</value>
+				<value xml:lang="it">Anteprima</value>
+				<value xml:lang="de">Vorschau</value>
+				<value xml:lang="es">Vista previa</value>
+				<value xml:lang="fr">Pr&#233;visualisation</value>
+				<value xml:lang="da">Forh&#229;ndsvining</value>
+			</prop>
+		</node>
+		<node oor:name="Properties" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Properties</value>
+				<value xml:lang="en">Properties</value>
+				<value xml:lang="it">Propriet&#224;</value>
+				<value xml:lang="fr">Propri&#233;t&#233;s</value>
+				<value xml:lang="da">Egenskaber</value>
+			</prop>
+		</node>
+		<node oor:name="Publish" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Publish</value>
+				<value xml:lang="en">Publish</value>
+				<value xml:lang="it">Pubblica</value>
+				<value xml:lang="fr">Publier</value>
+				<value xml:lang="da">Publis&#232;r</value>
+			</prop>
+		</node>
+		<node oor:name="Remove" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Remove</value>
+				<value xml:lang="en">Remove</value>
+				<value xml:lang="it">Elimina</value>
+				<value xml:lang="de">Entfernen</value>
+				<value xml:lang="es">Eliminar</value>
+				<value xml:lang="fr">Enlever</value>
+				<value xml:lang="da">Fjern</value>
+			</prop>
+		</node>
+		<node oor:name="Remove item" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Remove item</value>
+				<value xml:lang="en">Remove item</value>
+				<value xml:lang="it">Elimina voce</value>
+				<value xml:lang="fr">Enlever &#233;l&#233;ment</value>
+				<value xml:lang="da">Fjern element</value>
+			</prop>
+		</node>
+		<node oor:name="Save the extension in this computer" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Save the extension in this computer</value>
+				<value xml:lang="en">Save the extension in this computer</value>
+				<value xml:lang="it">Salva l&apos;Extension in questo computer</value>
+				<value xml:lang="fr">Sauver l&apos;extension dans cet ordinateur</value>
+				<value xml:lang="da">Gem udvidelsen p&#229; denne computer</value>
+			</prop>
+		</node>
+		<node oor:name="Select %productname% Basic Macro" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Select %productname% Basic Macro</value>
+				<value xml:lang="en">Select %productname% Basic Macro</value>
+				<value xml:lang="it">Selezionare una Macro %productname% Basic</value>
+				<value xml:lang="fr">S&#233;lectionner %productname% Basic Macro</value>
+				<value xml:lang="da">V&#230;lg %productname% Basic Makro</value>
+			</prop>
+		</node>
+		<node oor:name="Select icon 16x16 high contrast" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Select icon 16x16 high contrast</value>
+				<value xml:lang="en">Select icon 16x16 high contrast</value>
+				<value xml:lang="it">Selezionare icona 16x16 alta visibilit&#224;</value>
+				<value xml:lang="fr">S&#233;lectionner ic&#244;nes 16x16 contraste &#233;lev&#233;</value>
+				<value xml:lang="da">V&#230;lg ikon 16x16 h&#248;j kontrast</value>
+			</prop>
+		</node>
+		<node oor:name="Select icon 16x16 normal contrast" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Select icon 16x16 normal contrast</value>
+				<value xml:lang="en">Select icon 16x16 normal contrast</value>
+				<value xml:lang="it">Selezionare icona 16x16 visibilit&#224; normale</value>
+				<value xml:lang="fr">S&#233;lectionner ic&#244;nes 16x16 contraste normal</value>
+				<value xml:lang="da">V&#230;lg ikon 16x16 normal kontrast</value>
+			</prop>
+		</node>
+		<node oor:name="Select icon 26x26 high contrast" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Select icon 26x26 high contrast</value>
+				<value xml:lang="en">Select icon 26x26 high contrast</value>
+				<value xml:lang="it">Selezionare icona 26x26 alta visibilit&#224;</value>
+				<value xml:lang="fr">S&#233;lectionner ic&#244;nes 26x26 contraste &#233;lev&#233;</value>
+				<value xml:lang="da">V&#230;lg ikon 26x26 h&#248;j kontrast</value>
+			</prop>
+		</node>
+		<node oor:name="Select icon 26x26 normal contrast" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Select icon 26x26 normal contrast</value>
+				<value xml:lang="en">Select icon 26x26 normal contrast</value>
+				<value xml:lang="it">Selezionare icona 26x26 visibilit&#224; normale</value>
+				<value xml:lang="fr">S&#233;lectionner ic&#244;nes 26x26 contraste normal</value>
+				<value xml:lang="da">V&#230;lg ikon 26x26 normal kontrast</value>
+			</prop>
+		</node>
+		<node oor:name="Select library" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Select library</value>
+				<value xml:lang="en">Select library</value>
+				<value xml:lang="it">Selezionare una libreria</value>
+				<value xml:lang="de">Bibliothek w&#228;hlen</value>
+				<value xml:lang="es">Seleccione una biblioteca</value>
+				<value xml:lang="fr">S&#233;lectionner librairies</value>
+				<value xml:lang="da">V&#230;lg bibliotek</value>
+			</prop>
+		</node>
+		<node oor:name="Select the options that you want activate for the Extension to create" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Select the options that you want activate for the Extension to create</value>
+				<value xml:lang="en">Select the options that you want activate for the Extension to create</value>
+				<value xml:lang="it">Selezionare le opzioni desiderate per l&apos;Extension da creare</value>
+				<value xml:lang="de">W&#228;hlen Sie die Optionen, die das Add-On erzeugen soll</value>
+				<value xml:lang="es">Seleccione las opciones que desea para el Add-on a crear</value>
+				<value xml:lang="fr">S&#233;lectionner les options &#224; activer pour l&apos;extension &#224; cr&#233;er</value>
+				<value xml:lang="da">V&#230;lg de indstillinger som du &#248;nsker aktiveret for Udvidelsen du opretter</value>
+			</prop>
+		</node>
+		<node oor:name="Select the StarBasic library to deploy as %productname% Extension (Add-on)" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Select the StarBasic library to deploy as %productname% Extension (Add-on)</value>
+				<value xml:lang="en">Select the StarBasic library to deploy as %productname% Extension (Add-on)</value>
+				<value xml:lang="it">Selezionare la libreria StarBasic da distribuire come %productname% Extension</value>
+				<value xml:lang="de">W&#228;hlen Sie die Bibliothek, die als Add-On erstellt werden soll</value>
+				<value xml:lang="es">Seleccione la biblioteca StarBasic para distribuir como Add-on</value>
+				<value xml:lang="fr">S&#233;lectionner la librairie StarBasic &#224; d&#233;ployer comme extension (Add-on)  %productname%</value>
+				<value xml:lang="da">V&#230;lg det StarBasic bibliotek som skal implementeres som %productname% Udvidelse</value>
+			</prop>
+		</node>
+		<node oor:name="Select the StarBasic library to export" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Select the StarBasic library to export</value>
+				<value xml:lang="en">Select the StarBasic library to export</value>
+				<value xml:lang="it">Selezionare la libreria StarBasic da esportare</value>
+				<value xml:lang="de">StarBasic Bibliothek zum Export ausw&#228;hlen</value>
+				<value xml:lang="es">Seleccione la biblioteca StarBasic a exportar</value>
+				<value xml:lang="fr">S&#233;lectionner la librairie StarBasic &#224; exporter</value>
+				<value xml:lang="da">V&#230;lg det StarBasic bibliotek som skal eksporteres</value>
+			</prop>
+		</node>
+		<node oor:name="separator" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>separator</value>
+				<value xml:lang="en">separator</value>
+				<value xml:lang="it">Separatore</value>
+				<value xml:lang="de">Trenner</value>
+				<value xml:lang="es">Separador</value>
+				<value xml:lang="fr">s&#233;parateur</value>
+				<value xml:lang="da">adskiller</value>
+			</prop>
+		</node>
+		<node oor:name="Server name or IP address:" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Server name or IP address:</value>
+				<value xml:lang="en">Server name or IP address:</value>
+				<value xml:lang="it">Nome server o indirizzo IP:</value>
+				<value xml:lang="fr">Nom du serveur ou Adresse IP</value>
+				<value xml:lang="da">Servernavn eller IP adresse</value>
+			</prop>
+		</node>
+		<node oor:name="Set the version number and select a license for the Extension to create." oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Set the version number and select a license for the Extension to create.</value>
+				<value xml:lang="en">Set the version number and select a license for the Extension to create.</value>
+				<value xml:lang="it">Impostare il numero di versione e scegliere una licenza per l&apos;Extension da creare</value>
+				<value xml:lang="fr">Fixer le num&#233;ro de version et s&#233;lectionner une license pour l&apos;extension &#224; cr&#233;er</value>
+				<value xml:lang="da">Angiv versionsnummer og licens for Udvidelsen som skal dannes.</value>
+			</prop>
+		</node>
+		<node oor:name="Small icons - High Contrast" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Small icons - High Contrast</value>
+				<value xml:lang="en">Small icons - High Contrast</value>
+				<value xml:lang="it">Icone piccole - alta visibilit&#224;</value>
+				<value xml:lang="de">Kleine Symbole - hoher Kontrast</value>
+				<value xml:lang="es">Iconos peque&#241;os - contraste alto</value>
+				<value xml:lang="fr">Petites ic&#244;nes – Contraste &#233;lev&#233;</value>
+				<value xml:lang="da">Sm&#229; ikoner – H&#248;j kontrast</value>
+			</prop>
+		</node>
+		<node oor:name="Small icons - Low contrast" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Small icons - Low contrast</value>
+				<value xml:lang="en">Small icons - Low contrast</value>
+				<value xml:lang="it">Icone piccole - visibilit&#224; normale</value>
+				<value xml:lang="de">Kleine Symbole - niedriger Kontrast</value>
+				<value xml:lang="es">Iconos peque&#241;os - contraste bajo</value>
+				<value xml:lang="fr">Petites ic&#244;nes – Contraste faible</value>
+				<value xml:lang="da">Sm&#229; ikoner – Lav kontrast</value>
+			</prop>
+		</node>
+		<node oor:name="Steps" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Steps</value>
+				<value xml:lang="en">Steps</value>
+				<value xml:lang="it">Passi</value>
+				<value xml:lang="de">Schritte</value>
+				<value xml:lang="es">Pasos</value>
+				<value xml:lang="fr">Etape</value>
+				<value xml:lang="da">Trin</value>
+			</prop>
+		</node>
+		<node oor:name="Store the created Extension locally or publish it via FTP" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Store the created Extension locally or publish it via FTP</value>
+				<value xml:lang="en">Store the created Extension locally or publish it via FTP</value>
+				<value xml:lang="it">Salvare l&apos;Extension nel computer locale e/o effettuare l&apos;upload in una server FTP remoto</value>
+				<value xml:lang="fr">Enregistrer l&apos;extension localement ou la publier via FTP</value>
+				<value xml:lang="da">Gem den dannede udvidelse lokalt eller publis&#232;r den vha. FTP</value>
+			</prop>
+		</node>
+		<node oor:name="Text" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Text</value>
+				<value xml:lang="en">Text</value>
+				<value xml:lang="it">Testo</value>
+				<value xml:lang="de">Text</value>
+				<value xml:lang="es">Texto</value>
+				<value xml:lang="fr">Texte</value>
+				<value xml:lang="da">Tekst</value>
+			</prop>
+		</node>
+		<node oor:name="The description will be shown as tool-tip text in the Extension manager dialog" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>The description will be shown as tool-tip text in the Extension manager dialog</value>
+				<value xml:lang="en">The description will be shown as tool-tip text in the Extension manager dialog</value>
+				<value xml:lang="it">La descrizione verr&#224; mostrata nel testo di aiuto del pacchetto installato.</value>
+				<value xml:lang="de">Diese Beschreibung wird im Tool-Tip Text der installierten Erweiterung angezeigt</value>
+				<value xml:lang="es">La descripci&#243;n se mostrar&#225; en el texto de ayuda del paquete instalado,</value>
+				<value xml:lang="fr">La description sera affich&#233;e comme texte tool-tip dans la fen&#234;tre du gestionnaire d&apos;extension</value>
+				<value xml:lang="da">Beskrivelsen vil blive vist som tips (alternativtekst) I dialogen Udvidelsesadministration</value>
+			</prop>
+		</node>
+		<node oor:name="The files must contain unformatted text using Utf8 encoding" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>The files must contain unformatted text using Utf8 encoding</value>
+				<value xml:lang="en">The files must contain unformatted text using Utf8 encoding</value>
+				<value xml:lang="it">Il file deve contenere testo codificato utf8 non formattato </value>
+				<value xml:lang="fr">les fichiers doivent contenir du texte non format&#233; utilisant l&apos;encodage utf8</value>
+				<value xml:lang="da">Filen skal best&#229; af uformatteret tekst med UTF8 indkodning</value>
+			</prop>
+		</node>
+		<node oor:name="Toolbar button" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Toolbar button</value>
+				<value xml:lang="en">Toolbar button</value>
+				<value xml:lang="it">Pulsante</value>
+				<value xml:lang="de">Symbolleisten Icon</value>
+				<value xml:lang="es">Bot&#243;n de la barra de herramientas</value>
+				<value xml:lang="fr">Bouton Barre d&apos;outils</value>
+				<value xml:lang="da">V&#230;rkt&#248;jslinje knap</value>
+			</prop>
+		</node>
+		<node oor:name="Toolbar title" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Toolbar title</value>
+				<value xml:lang="en">Toolbar title</value>
+				<value xml:lang="it">Titolo della barra degli strumenti</value>
+				<value xml:lang="de">Titel der Symbolleiste</value>
+				<value xml:lang="es">T&#237;tulo de la barra de herramientas</value>
+				<value xml:lang="fr">Titre Barre d&apos;outils</value>
+				<value xml:lang="da">V&#230;rkt&#248;jslinje titel</value>
+			</prop>
+		</node>
+		<node oor:name="Tools | Addon's" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Tools | Addon&apos;s</value>
+				<value xml:lang="en">Tools | Addon&apos;s</value>
+				<value xml:lang="it">Strumenti | Add-on</value>
+				<value xml:lang="de">Extras | Add-Ons</value>
+				<value xml:lang="es">Herramientas | Complementos</value>
+				<value xml:lang="fr">Outils | Extensions</value>
+				<value xml:lang="da">V&#230;rkt&#248;j | Addons</value>
+			</prop>
+		</node>
+		<node oor:name="Translate" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Translate</value>
+				<value xml:lang="en">Translate</value>
+				<value xml:lang="it">Traduci</value>
+				<value xml:lang="de">&#220;bersetze</value>
+				<value xml:lang="es">Traducir</value>
+				<value xml:lang="fr">Traduire</value>
+				<value xml:lang="da">Overs&#230;t</value>
+			</prop>
+		</node>
+		<node oor:name="Translate text strings" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Translate text strings</value>
+				<value xml:lang="en">Translate text strings</value>
+				<value xml:lang="it">Traduzione testo</value>
+				<value xml:lang="fr">Traduire cha&#238;nes de texte</value>
+				<value xml:lang="da">Overs&#230;t tekststrenge</value>
+			</prop>
+		</node>
+		<node oor:name="Unique identifier" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Unique identifier</value>
+				<value xml:lang="en">Unique identifier</value>
+				<value xml:lang="it">Indentificatore univoco</value>
+				<value xml:lang="fr">Identificateur unique</value>
+				<value xml:lang="da">Unik identifikator</value>
+			</prop>
+		</node>
+		<node oor:name="Unknown connection status" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Unknown connection status</value>
+				<value xml:lang="en">Unknown connection status</value>
+				<value xml:lang="it">Stato della connessione sconosciuto</value>
+				<value xml:lang="fr">Etat de connexion inconnu</value>
+				<value xml:lang="da">Ukendt forbindelsesstatus</value>
+			</prop>
+		</node>
+		<node oor:name="Upload on a remote Web server via FTP (experimental)" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Upload on a remote Web server via FTP (experimental)</value>
+				<value xml:lang="en">Upload on a remote Web server via FTP (experimental)</value>
+				<value xml:lang="it">Upload su un sito Web via FTP (sperimentale)</value>
+				<value xml:lang="fr">Publier sur un serveur WEB distant via FTP (experimental)</value>
+				<value xml:lang="da">Upload til en fjern webserver vha. FTP (eksperimenterende)</value>
+			</prop>
+		</node>
+		<node oor:name="User name:" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>User name:</value>
+				<value xml:lang="en">User name:</value>
+				<value xml:lang="it">Nome utente:</value>
+				<value xml:lang="fr">Nom d&apos;utilisateur:</value>
+				<value xml:lang="da">Brugernavn:</value>
+			</prop>
+		</node>
+		<node oor:name="Version number" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Version number</value>
+				<value xml:lang="en">Version number</value>
+				<value xml:lang="it">Numero versione</value>
+				<value xml:lang="fr">Num&#233;ro de version</value>
+				<value xml:lang="da">Versionsnummer</value>
+			</prop>
+		</node>
+		<node oor:name="Writer" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Writer</value>
+				<value xml:lang="en">Writer</value>
+				<value xml:lang="it">Writer</value>
+				<value xml:lang="de">Writer</value>
+				<value xml:lang="es">Writer</value>
+				<value xml:lang="fr">Writer</value>
+				<value xml:lang="da">Writer</value>
+			</prop>
+		</node>
+		<node oor:name="You can also specify more localized versions of the license" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>You can also specify more localized versions of the license</value>
+				<value xml:lang="en">You can also specify more localized versions of the license</value>
+				<value xml:lang="it">E&apos; possibile specificare versioni tradotte in pi&#249; lingue della licenza</value>
+				<value xml:lang="fr">Vous pouvez aussi indiquer des versions license plus localis&#233;es</value>
+				<value xml:lang="da">Du kan ogs&#229; angive flere oversatte versioner af licensen</value>
+			</prop>
+		</node>
+		<node oor:name="Compatible with AOO 4.0.0 and higher versions" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Compatible with AOO 4.0.0 and higher versions</value>
+				<value xml:lang="en">Toolbar compatible with AOO 4.x</value>
+				<value xml:lang="it">Compatibile con AOO 4.0.0 e versioni superiori</value>
+				<value xml:lang="de">kompatibel mit AOO ab Version 4.0.0</value>
+				<value xml:lang="es">Versiones compatibles con AOO 4.0.0 y m&#225;s</value>
+				<value xml:lang="fr">Compatible avec les versions AOO 4.0.0 et plus</value>
+				<value xml:lang="da">Kompatibel med AOO 4.0.0, og h&#248;jere versioner</value>
+			</prop>
+		</node>
+		<node oor:name="Compatible up to AOO 3.4.1" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Compatible up to AOO 3.4.1</value>
+				<value xml:lang="en">Compatible up to AOO 3.4.1</value>
+				<value xml:lang="it">Compatibile fino a AOO 3.4.1</value>
+				<value xml:lang="de">kompatibel mit AOO bis Version 3.4.1</value>
+				<value xml:lang="es">Compatible hasta AOO 3.4.1</value>
+				<value xml:lang="fr">Compatible jusqu'&#224; AOO 3.4.1</value>
+				<value xml:lang="da">Kompatibel op til AOO 3.4.1</value>
+			</prop>
+		</node>
+		<node oor:name="Publisher name" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Publisher:</value>
+				<value xml:lang="en">Publisher:</value>
+				<value xml:lang="it">Editore:</value>
+				<value xml:lang="de">Herausgeber:</value>
+				<value xml:lang="es">Editor:</value>
+				<value xml:lang="fr">&#201;diteur:</value>
+				<value xml:lang="da">Publisher:</value>
+			</prop>
+		</node>
+		<node oor:name="Add publisher" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Add publisher</value>
+				<value xml:lang="en">Add publisher</value>
+				<value xml:lang="it">Aggiungi editore</value>
+				<value xml:lang="de">Herausgeber hinzufügen</value>
+				<value xml:lang="es">A&#241;adir editor</value>
+				<value xml:lang="fr">Ajoutez &#233;diteur</value>
+				<value xml:lang="da">Tilf&#248;j udgiver</value>
+			</prop>
+		</node>
+		<node oor:name="Publisher url" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Publisher url:</value>
+				<value xml:lang="en">Publisher url:</value>
+				<value xml:lang="it">URL Editore:</value>
+				<value xml:lang="de">Herausgeber Webadresse:</value>
+				<value xml:lang="es">Publisher url:</value>
+				<value xml:lang="fr">Editeur url:</value>
+				<value xml:lang="da">Publisher url:</value>
+			</prop>
+		</node>
+	</node>
+</oor:component-data>

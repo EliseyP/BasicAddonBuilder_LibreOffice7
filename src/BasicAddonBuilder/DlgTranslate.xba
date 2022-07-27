@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgTranslate" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $ 
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;	
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module DlgTranslate:
+&apos;	
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+Dim oDlgTranslate As Object
+
+
+&apos;______________________________________________________________________________
+Function ShowTranslateDialog(sDefaultText As String, mTranslations(), _
+	bFileMode As Boolean, mFilters(), Optional sDialogTitle As String) As Integer
+	
+Dim oLib As Object
+Dim oLibDialog As Object
+Dim oDlg As Object
+Dim oDlgModel As Object
+Dim lblTranslateControlWindow As Object
+Dim aStrPair As Object
+Dim I As Integer
+Dim iDialogResult As Integer
+
+	DialogLibraries.LoadLibrary(&quot;BasicAddonBuilder&quot;)
+	oLib = DialogLibraries.GetByName(&quot;BasicAddonBuilder&quot;)
+	oLibDialog = oLib.GetByName(&quot;DlgTranslate&quot;)
+	
+	oDlg = CreateUnoDialog(oLibDialog)
+	oDlgModel = oDlg.Model
+		
+	&apos;put the dialog in the scope of the whole module
+	oDlgTranslate = oDlg
+	
+	&apos;translate dialog UI
+	LocalizeDialog(oDlg)
+	
+	&apos;set the dialog title
+	If Not IsMissing(sDialogTitle) Then
+		oDlg.Title = sDialogTitle
+	End If
+
+	&apos;load icons and images
+	With oDlgModel
+		.cmdAddTranslation.ImageUrl = GetResourceUrl(&quot;AddImage&quot;)
+		.cmdRemoveTranslation.ImageUrl = GetResourceUrl(&quot;DeleteImage&quot;)
+	End With
+	
+	&apos;initialize dialog controls
+	With oDlg
+	 	lblTranslateControlWindow = .getControl(&quot;lblTranslateControlWindow&quot;)
+	End With
+	TranslateBox_Initialize(lblTranslateControlWindow, bFileMode, mFilters())
+
+	&apos;load values on dialog
+	Dim aDefaultItem As New com.sun.star.beans.StringPair
+	&apos;aDefaultItem.First = &quot;&quot; &apos;no locale specified (default item)
+	aDefaultItem.Second = sDefaultText
+	TranslateBox_AddItem(0, aDefaultItem, True)
+	I = 1
+	For Each aStrPair In mTranslations()
+		TranslateBox_AddItem(I, aStrPair)
+		I = I + 1
+	Next
+	
+	TranslateBox_UpdateControls()
+	
+	&apos;execute the dialog
+	iDialogResult = oDlg.Execute()
+	
+	&apos;get values from dialog
+	If iDialogResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+		Dim mLocTranslations()
+		If TranslateBox_HasElements() Then
+			
+			&apos;get the default text (the first item)
+			sDefaultText = TranslateBox_GetItem(0).Second
+
+			&apos;put all subsequential items into an array of 
+			&apos;text-translations (representend by StringPair UNO structures)
+			If TranslateBox_GetItemCount() &gt; 1 Then
+				For I = 1 To TranslateBox_GetItemCount() - 1
+					Redim Preserve mLocTranslations(I-1)
+					mLocTranslations(I-1) = TranslateBox_GetItem(I)
+				Next I
+			End If		
+		End If
+		mTranslations() = mLocTranslations()
+	End If
+	
+	&apos;exit with the dialog result
+	ShowTranslateDialog = iDialogResult
+	
+End Function
+
+&apos;______________________________________________________________________________
+&apos;	DIALOG CONTROLS EVENT HANDLERS
+&apos;______________________________________________________________________________
+
+&apos;______________________________________________________________________________
+Sub cmdAddTranslation_onClick(oEvent As Object)
+Dim iPos As Integer
+Dim aItem As New com.sun.star.beans.StringPair
+	
+	&apos;avoid multiple calls
+	oEvent.source.Enable = False
+	
+	iPos = TranslateBox_GetItemCount()
+	TranslateBox_AddItem(iPos, aItem)
+	TranslateBox_SelectItemPos(iPos)
+	TranslateBox_UpdateControls()
+	
+	oEvent.source.Enable = True
+End Sub
+
+&apos;______________________________________________________________________________
+Sub cmdRemoveTranslation_onClick(oEvent As Object)
+Dim iPos As Integer
+
+	&apos;avoid multiple calls
+	oEvent.source.Enable = False
+	
+	iPos = TranslateBox_GetSelectedItemPos()
+	TranslateBox_RemoveItem(iPos)
+	TranslateBox_SelectItemPos(iPos)
+	TranslateBox_UpdateControls()
+End Sub
+
+&apos;______________________________________________________________________________
+&apos; this routine is called from:
+&apos; BasicAddonBuilder.CtrlTranslateBox.TranslateBox_SelectItemPos
+&apos; BasicAddonBuilder.CtrlTranslateBox.TranslateBox_RemoveItem
+Sub TranslateBox_SelectionChanged(iPos As Integer)
+Dim oBtnModel As Object
+	oBtnModel = oDlgTranslate.Model.cmdRemoveTranslation
+	oBtnModel.Enabled = (iPos &gt; 0)
+	
+End Sub
+
+
+
+</script:module>

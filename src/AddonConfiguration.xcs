@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--	
+	BasicAddonBuilder for OpenOffice.org 
+	$ Version: 0.6.1 $
+	Copyright (C) 2006-2008 Paolo Mantovani
+	
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation.
+	
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+	Lesser General Public License for more details.
+	
+	Please email me with any bug reports, questions or comments:
+	paolomantovani@openoffice.org
+-->
+
+<oor:component-schema oor:name="Configuration" oor:package="ooo.ext.BasicAddonBuilder" xml:lang="en-US" xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<templates>
+		<group oor:name="Contributor">
+			<prop oor:name="ContributorName" oor:type="xs:string"/>
+			<prop oor:name="Email" oor:type="xs:string"/>
+			<prop oor:name="Copyright" oor:type="xs:string"/>
+		</group>
+		<group oor:name="Translator">
+			<prop oor:name="TranslatorName" oor:type="xs:string"/>
+			<prop oor:name="Email" oor:type="xs:string"/>
+			<prop oor:name="Language" oor:type="xs:string"/>
+		</group>
+		<group oor:name="Message">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true"/>
+		</group>
+		<group oor:name="FileResource">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true"/>
+		</group>
+	</templates>
+	<component>
+		<group oor:name="ProductInfo">
+			<prop oor:name="ProductName" oor:type="xs:string"/>
+			<prop oor:name="Description" oor:type="xs:string" oor:localized="true"/>
+			<prop oor:name="PatchDescription" oor:type="xs:string" oor:localized="true"/>
+			<prop oor:name="Version" oor:type="xs:string"/>
+			<prop oor:name="License" oor:type="xs:string"/>
+			<prop oor:name="AuthorName" oor:type="xs:string"/>
+			<prop oor:name="AuthorEmail" oor:type="xs:string"/>
+			<prop oor:name="Copyright" oor:type="xs:string"/>
+			<set oor:name="Contributors" oor:node-type="Contributor"/>
+			<set oor:name="Translators" oor:node-type="Translator"/>
+		</group>
+		<set oor:name="FileResources" oor:node-type="FileResource"/>
+		<set oor:name="Messages" oor:node-type="Message"/>
+	</component>
+</oor:component-schema>

@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="BABProject" script:language="StarBasic">REM  *****  BASIC  *****
+
+Option Explicit
+
+sub test
+&apos;	oReg = createunoservice(&quot;com.sun.star.registry.SimpleRegistry&quot;)
+&apos;	oReg.open(&quot;file:///home/paolo/testreg.dat&quot;, True, False)
+&apos;	oRoot = oReg.getRootkey()
+&apos;	xray oRoot
+end sub
+
+&apos;______________________________________________________________________________
+Sub storeprj
+Dim sUrl, sName
+
+
+	sUrl = &quot;file:///home/paolo/testreg.dat&quot;
+	sName = &quot;TestPrj&quot;
+	
+	StoreBABProject(sUrl, sName)
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub loadprj
+Dim sUrl, sName
+
+
+	sUrl = &quot;file:///home/paolo/testreg.dat&quot;
+	sName = &quot;TestPrj&quot;
+	
+	LoadBABProject(sUrl, sName)
+End Sub
+
+
+
+&apos;______________________________________________________________________________
+Sub LoadBABProject(sRegistryURL AS String, sProjectName As String)
+Dim oReg As Object
+Dim oRoot As Object
+Dim oPrjKey As Object
+Dim oRegKey As Object
+Dim oRegSubKey As Object
+Dim aUIElem As Variant
+Dim aUIChild As Variant
+Dim sPrjName As String
+Dim sTbTitle As String
+Dim bReadOnly As Boolean
+Dim bCreate As Boolean
+Dim mKeyNames()
+Dim I as integer
+
+	oReg = createunoservice(&quot;com.sun.star.registry.SimpleRegistry&quot;)
+	
+	bReadOnly = True
+	bCreate = False
+	oReg.open(sRegistryURL, bReadOnly, bCreate)
+	oRoot = oReg.getRootkey()
+	
+	sPrjName = oRoot.getResolvedName(sProjectName)
+	oPrjKey = oRoot.openKey(sPrjName)
+	
+	g_sDefaultProvider = GetKeyValue(oPrjKey, &quot;ProviderName&quot;)
+	g_sDefaultLibrary = GetKeyValue(oPrjKey, &quot;LibraryName&quot;)
+	With g_oDlgWizard
+		.getControl(&quot;lstBasicLibraryContainers&quot;).selectItem(g_sDefaultProvider, True)
+		.getControl(&quot;lstBasicLibraries&quot;).selectItem(g_sDefaultLibrary, True)
+	End With
+
+	With g_oDlgWizardModel
+		.chkToolbar.State = GetKeyValue(oPrjKey, &quot;UIOptions/Toolbar&quot;)
+		.chkAddonMenu.State = GetKeyValue(oPrjKey, &quot;UIOptions/AddonMenu&quot;)
+		.chkOfficeMenu.State = GetKeyValue(oPrjKey, &quot;UIOptions/OfficeMenu&quot;)
+		.chkHelpMenu.State = GetKeyValue(oPrjKey, &quot;UIOptions/HelpMenu&quot;)
+		.txtInfoIdentifier.Text = GetKeyValue(oPrjKey, &quot;UUID&quot;)
+		.numInfoVersionMajor.Value = GetKeyValue(oPrjKey, &quot;Version/Major&quot;)
+		.numInfoVersionMinor.Value = GetKeyValue(oPrjKey, &quot;Version/Minor&quot;)
+		.numInfoVersionMicro.Value = GetKeyValue(oPrjKey, &quot;Version/Build&quot;)
+		.txtInfoLicenseUrl.Text = ConvertFromUrl(GetKeyValue(oPrjKey, &quot;License/DefaultLicenseURL&quot;))
+		.txtPackageDescription.Text = GetKeyValue(oPrjKey, &quot;Description/DefaultText&quot;)
+		.txtPackageDescription.Tag = &quot;Initialized&quot;
+		
+		.chkStore.State = GetKeyValue(oPrjKey, &quot;HasStoreURL&quot;)
+		.txtStoreUrl.Text = ConvertFromUrl(GetKeyValue(oPrjKey, &quot;StoreURL&quot;))
+		.chkUpload.State = GetKeyValue(oPrjKey, &quot;HasUploadURL&quot;)
+		.txtUploadFtpUrl.Tag = GetKeyValue(oPrjKey, &quot;UploadURL&quot;)
+		.chkUpdateInfo.State = GetKeyValue(oPrjKey, &quot;HasUpdateURL&quot;)
+		.txtDownloadUrl.Text = GetKeyValue(oPrjKey, &quot;UpdateURL&quot;)
+	End With
+	
+	sTbTitle = GetKeyValue(oPrjKey, &quot;Toolbar/Title&quot;)
+	ToolbarPreview_SetToolbarTitle(sTbTitle)
+	With g_oDlgWizardModel
+		.txtToolbarTitle.Text = sTbTitle
+		.txtToolbarTitle.Tag = &quot;Initialized&quot;
+	End With
+
+	oRegKey = oPrjKey.openKey(&quot;License/Translations&quot;)
+	g_mLicenseTranslations() = GetLocalizedStringsFromKey(oRegKey)
+	
+	oRegKey = oPrjKey.openKey(&quot;Description/Translations&quot;)
+	g_mPkgDescTranslations() = GetLocalizedStringsFromKey(oRegKey)
+	
+	oRegKey = oPrjKey.openKey(&quot;Toolbar/Title/Translations&quot;)
+	mToolbarTitleTranslations() = GetLocalizedStringsFromKey(oRegKey)
+	
+	oRegKey = oPrjKey.openKey(&quot;Toolbar/UIElements&quot;)
+	mKeyNames() = oRegKey.getKeyNames()
+	For I = LBound(mKeyNames()) To UBound(mKeyNames())
+		oRegSubKey = oRegKey.openKey(I)
+		aUIChild = GetUIElementFromKey(oRegSubKey)
+
+		&apos;add the item in the toolbar structure
+		InsertByIndex(mToolbarUIElements(), I, aUIChild)
+		ToolbarPreview_AddItem(I, aUIChild)
+	Next I
+
+	ToolbarPreview_UpdateControls()
+	
+	oRegKey = oPrjKey.openKey(&quot;OfficeMenu&quot;)
+	aRootOfficeMenu = GetUIElementFromKey(oRegKey)
+	
+	oRegKey = oPrjKey.openKey(&quot;AddonMenu&quot;)
+	aRootAddonMenu = GetUIElementFromKey(oRegKey)
+	
+	oRegKey = oPrjKey.openKey(&quot;HelpMenu&quot;)
+	aRootHelpMenu = GetUIElementFromKey(oRegKey)
+		
+	oReg.close()
+	
+	UpdateRoadmapItems()
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub StoreBABProject(sRegistryURL AS String, sProjectName As String)
+Dim oReg As Object
+Dim oRoot As Object
+Dim oPrjKey As Object
+Dim oRegKey As Object
+Dim aUIElem As Variant
+Dim sPrjName As String
+Dim I As Integer
+Dim bReadOnly As Boolean
+Dim bCreate As Boolean
+Dim mKeyNames()
+
+	oReg = createunoservice(&quot;com.sun.star.registry.SimpleRegistry&quot;)
+	
+	bReadOnly = False
+	bCreate = True
+	oReg.open(sRegistryURL, bReadOnly, bCreate)
+	oRoot = oReg.getRootkey()
+	sPrjName = oRoot.getResolvedName(sProjectName)
+
+	mKeyNames() = oRoot.getKeyNames
+	If HasItem(mKeyNames, sPrjName) Then
+		oRoot.deleteKey(sPrjName)
+	End If
+	
+	oPrjKey = oRoot.createKey(sPrjName)
+
+	SetKeyValue(oPrjKey, &quot;ProviderName&quot;, g_sDefaultProvider)
+	SetKeyValue(oPrjKey, &quot;LibraryName&quot;, g_sDefaultLibrary)
+	SetKeyValue(oPrjKey, &quot;UIOptions/Toolbar&quot;, g_oDlgWizardModel.chkToolbar.State)
+	SetKeyValue(oPrjKey, &quot;UIOptions/AddonMenu&quot;, g_oDlgWizardModel.chkAddonMenu.State)
+	SetKeyValue(oPrjKey, &quot;UIOptions/OfficeMenu&quot;, g_oDlgWizardModel.chkOfficeMenu.State)
+	SetKeyValue(oPrjKey, &quot;UIOptions/HelpMenu&quot;, g_oDlgWizardModel.chkHelpMenu.State)
+	SetKeyValue(oPrjKey, &quot;UUID&quot;, g_oDlgWizardModel.txtInfoIdentifier.Text)
+	SetKeyValue(oPrjKey, &quot;Version/Major&quot;, g_oDlgWizardModel.numInfoVersionMajor.Value)
+	SetKeyValue(oPrjKey, &quot;Version/Minor&quot;, g_oDlgWizardModel.numInfoVersionMinor.Value)
+	SetKeyValue(oPrjKey, &quot;Version/Build&quot;, g_oDlgWizardModel.numInfoVersionMicro.Value)
+	
+	SetKeyValue(oPrjKey, &quot;License/DefaultLicenseURL&quot;, _
+		ConvertToUrl(g_oDlgWizardModel.txtInfoLicenseUrl.Text))
+
+	oRegKey = oPrjKey.createKey(&quot;License/Translations&quot;)
+	AppendLocalizedStringKeys(oRegKey, g_mLicenseTranslations())
+	
+	SetKeyValue(oPrjKey, &quot;Description/DefaultText&quot;, g_oDlgWizardModel.txtPackageDescription.Text)
+
+	oRegKey = oPrjKey.createKey(&quot;Description/Translations&quot;)
+	AppendLocalizedStringKeys(oRegKey, g_mPkgDescTranslations())
+	
+	SetKeyValue(oPrjKey, &quot;HasStoreURL&quot;, g_oDlgWizardModel.chkStore.State)
+	SetKeyValue(oPrjKey, &quot;StoreURL&quot;, ConvertToUrl(g_oDlgWizardModel.txtStoreUrl.Text))
+	SetKeyValue(oPrjKey, &quot;HasUploadURL&quot;, g_oDlgWizardModel.chkUpload.State)
+	SetKeyValue(oPrjKey, &quot;UploadURL&quot;, g_oDlgWizardModel.txtUploadFtpUrl.Tag)
+	SetKeyValue(oPrjKey, &quot;HasUpdateURL&quot;, g_oDlgWizardModel.chkUpdateInfo.State)
+	SetKeyValue(oPrjKey, &quot;UpdateURL&quot;, g_oDlgWizardModel.txtDownloadUrl.Text)
+	
+	SetKeyValue(oPrjKey, &quot;Toolbar/Title&quot;, g_oDlgWizardModel.txtToolbarTitle.Text)
+	
+	oRegKey = oPrjKey.createKey(&quot;Toolbar/Title/Translations&quot;)
+	AppendLocalizedStringKeys(oRegKey, mToolbarTitleTranslations())
+	
+	oPrjKey.createKey(&quot;Toolbar/UIElements&quot;)
+	For I = LBound(mToolbarUIElements()) To UBound(mToolbarUIElements())
+		aUIElem = mToolbarUIElements(I)
+		oRegKey = oPrjKey.createKey(&quot;Toolbar/UIElements/&quot; &amp; I)
+		AppendUIElementKey(oRegKey, aUIElem)
+	Next I
+	
+	If Not IsEmpty(aRootOfficeMenu) Then
+		oRegKey = oPrjKey.createKey(&quot;OfficeMenu&quot;)
+		AppendUIElementKey(oRegKey, aRootOfficeMenu)
+	End If
+	
+	If Not IsEmpty(aRootAddonMenu) Then
+		oRegKey = oPrjKey.createKey(&quot;AddonMenu&quot;)
+		AppendUIElementKey(oRegKey, aRootAddonMenu)
+	End If
+	
+	If Not IsEmpty(aRootHelpMenu) Then
+		oRegKey = oPrjKey.createKey(&quot;HelpMenu&quot;)
+		AppendUIElementKey(oRegKey, aRootHelpMenu)
+	End If
+	
+	oReg.close()
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Function GetUIElementFromKey(oRegKey As Object) As Variant
+Dim oRegSubKey As Object
+Dim sKeyName As String
+Dim mKeyNames()
+Dim aUIElem, aUIChild, mUIChilds()
+Dim I As Integer
+
+	aUIElem = CreateUIElementDescriptor()
+
+	With aUIElem
+		.IsGroup = GetKeyValue(oRegKey, &quot;IsGroup&quot;)
+		.IsSeparator = GetKeyValue(oRegKey, &quot;IsSeparator&quot;)
+	 	.DefaultText = GetKeyValue(oRegKey, &quot;DefaultText&quot;)
+		.LC26IconUrl = GetKeyValue(oRegKey, &quot;LC26IconUrl&quot;)
+		.LC16IconUrl = GetKeyValue(oRegKey, &quot;LC16IconUrl&quot;)
+		.HC26IconUrl = GetKeyValue(oRegKey, &quot;HC26IconUrl&quot;)
+		.HC16IconUrl = GetKeyValue(oRegKey, &quot;HC16IconUrl&quot;)
+		.OfficeContext = GetKeyValue(oRegKey, &quot;OfficeContext&quot;)
+		.MacroDescriptor.Provider = GetKeyValue(oRegKey, &quot;MacroDescriptor/Provider&quot;)
+		.MacroDescriptor.Library = GetKeyValue(oRegKey, &quot;MacroDescriptor/Library&quot;)
+		.MacroDescriptor.Module = GetKeyValue(oRegKey, &quot;MacroDescriptor/Module&quot;)
+		.MacroDescriptor.Macro = GetKeyValue(oRegKey, &quot;MacroDescriptor/Macro&quot;)
+		.MacroDescriptor.URI = GetKeyValue(oRegKey, &quot;MacroDescriptor/URI&quot;)
+	End With
+	
+	&apos;retrieve text translations
+	oRegSubKey = oRegKey.openKey(&quot;TextTranslations&quot;)
+	aUIElem.TextTranslations = GetLocalizedStringsFromKey(oRegSubKey)
+
+	&apos;retrieve children
+	oRegSubKey = oRegKey.openKey(&quot;SubItems&quot;)
+	mKeyNames() = oRegSubKey.getKeyNames()
+	For I = LBound(mKeyNames()) To UBound(mKeyNames())
+		aUIChild = GetUIElementFromKey(oRegSubKey.openKey(I))
+		aUIChild.ParentMenu = aUIElem
+		AppendItem(mUIChilds(), aUIChild)		
+	Next I
+	aUIElem.SubItems() = mUIChilds()
+	
+	GetUIElementFromKey = aUIElem
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Sub AppendUIElementKey(oRegKey As Object, aUIElem)
+Dim oRegSubKey As Object
+Dim I As Integer
+Dim aSubItem
+
+	SetKeyValue(oRegKey, &quot;IsGroup&quot;, CInt(aUIElem.IsGroup))
+	SetKeyValue(oRegKey, &quot;IsSeparator&quot;, CInt(aUIElem.IsSeparator))
+	SetKeyValue(oRegKey, &quot;DefaultText&quot;, aUIElem.DefaultText)
+	SetKeyValue(oRegKey, &quot;LC26IconUrl&quot;, aUIElem.LC26IconUrl)
+	SetKeyValue(oRegKey, &quot;LC16IconUrl&quot;, aUIElem.LC16IconUrl)
+	SetKeyValue(oRegKey, &quot;HC26IconUrl&quot;, aUIElem.HC26IconUrl)
+	SetKeyValue(oRegKey, &quot;HC16IconUrl&quot;, aUIElem.HC16IconUrl)
+	SetKeyValue(oRegKey, &quot;OfficeContext&quot;, aUIElem.OfficeContext)
+	
+	SetKeyValue(oRegKey, &quot;MacroDescriptor/Provider&quot;, aUIElem.MacroDescriptor.Provider)
+	SetKeyValue(oRegKey, &quot;MacroDescriptor/Library&quot;, aUIElem.MacroDescriptor.Library)
+	SetKeyValue(oRegKey, &quot;MacroDescriptor/Module&quot;, aUIElem.MacroDescriptor.Module)
+	SetKeyValue(oRegKey, &quot;MacroDescriptor/Macro&quot;, aUIElem.MacroDescriptor.Macro)
+	SetKeyValue(oRegKey, &quot;MacroDescriptor/URI&quot;, aUIElem.MacroDescriptor.URI)
+
+	oRegSubKey = oRegKey.createKey(&quot;TextTranslations&quot;)
+	AppendLocalizedStringKeys(oRegSubKey, aUIElem.TextTranslations())
+
+	oRegKey.createKey(&quot;SubItems&quot;)
+	For I = LBound(aUIElem.SubItems()) To UBound(aUIElem.SubItems())
+		aSubItem = aUIElem.SubItems(I)
+		oRegSubKey = oRegKey.createKey(&quot;SubItems/&quot; &amp; I)
+		AppendUIElementKey(oRegSubKey, aSubItem)
+	Next I
+
+End Sub
+
+
+&apos;______________________________________________________________________________
+Function GetLocalizedStringsFromKey(oRegKey As Object) As Variant
+Dim aStrPair As Object
+Dim I As Integer
+Dim mKeyNames()
+Dim mLocalized()
+
+	mKeyNames() = oRegKey.getKeyNames()
+	For I = LBound(mKeyNames()) To UBound(mKeyNames())
+		aStrPair = CreateUnoStruct(&quot;com.sun.star.beans.StringPair&quot;)
+		aStrPair.First = GetKeyValue(oRegKey, CStr(I) &amp; &quot;/Locale&quot;)
+		aStrPair.Second = GetKeyValue(oRegKey, CStr(I) &amp; &quot;/Text&quot;)
+		AppendItem(mLocalized(), aStrPair)
+	Next I
+		
+	GetLocalizedStringsFromKey = mLocalized()
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Sub AppendLocalizedStringKeys(oRegKey As Object, mLocalizedStrings())
+Dim I As Integer
+Dim aStrPair
+
+	For I = LBound(mLocalizedStrings()) To UBound(mLocalizedStrings())
+		aStrPair = mLocalizedStrings(I)
+		SetKeyValue(oRegKey, CStr(I) &amp; &quot;/Locale&quot;, aStrPair.First)
+		SetKeyValue(oRegKey, CStr(I) &amp; &quot;/Text&quot;, aStrPair.Second)
+	Next I
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Function GetKeyValue(oRegKey As Object, sKeyName As String, Optional iType As Integer) As Variant
+Dim oKey As Object
+Dim iLocType As Integer
+Dim vValue
+
+	&apos;set a default type or use the parameter
+	iLocType = com.sun.star.registry.RegistryValueType.STRING
+	If Not IsMissing(iType) Then
+		iLocType = iType
+	End If
+	
+	oKey = oRegKey.openKey(sKeyName)
+	Select Case iLocType
+		Case com.sun.star.registry.RegistryValueType.STRING
+			vValue = oKey.getStringValue()
+		Case com.sun.star.registry.RegistryValueType.LONG
+			vValue = oKey.getLongValue()
+		Case com.sun.star.registry.RegistryValueType.STRINGLIST
+			vValue = oKey.getStringListValue()
+		Case com.sun.star.registry.RegistryValueType.LONGLIST
+			vValue = oKey.getLongListValue()
+		Case Else &apos;try the string-type anyway..
+			vValue = oKey.getStringValue()
+	End Select
+	
+	GetKeyValue = vValue
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Sub SetKeyValue(oRegKey As Object, sKeyName As String, vValue As Variant, Optional iType As Integer)
+Dim oKey As Object
+Dim iLocType As Integer
+
+	&apos;set a default type or use the parameter
+	iLocType = com.sun.star.registry.RegistryValueType.STRING
+	If Not IsMissing(iType) Then
+		iLocType = iType
+	End If
+	
+	oKey = oRegKey.createKey(sKeyName)
+	
+	Select Case iLocType
+		Case com.sun.star.registry.RegistryValueType.STRING
+			oKey.setStringValue(vValue)
+		Case com.sun.star.registry.RegistryValueType.LONG
+			oKey.setLongValue(vValue)
+		Case com.sun.star.registry.RegistryValueType.STRINGLIST
+			oKey.setStringListValue(vValue)
+		Case com.sun.star.registry.RegistryValueType.LONGLIST
+			oKey.setLongListValue(vValue)
+		Case Else &apos;try the string-type anyway..
+			oKey.setStringValue(vvalue)
+	End Select
+	
+End Sub
+
+
+
+</script:module>

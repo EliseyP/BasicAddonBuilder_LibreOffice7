@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgTextEdit" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $ 
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;	
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module DlgTextEdit:
+&apos;	
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+&apos;private const
+
+&apos;private vars
+
+&apos;______________________________________________________________________________
+Function ShowTextEdit(sTextToEdit As String, Optional sDialogTitle As String) As Integer
+	
+Dim oLib As Object
+Dim oLibDialog As Object
+Dim oDlg As Object
+Dim oDlgModel As Object
+Dim oTxtEdit As Object
+Dim iDialogResult As Integer
+
+	DialogLibraries.LoadLibrary(&quot;BasicAddonBuilder&quot;)
+	oLib = DialogLibraries.GetByName(&quot;BasicAddonBuilder&quot;)
+	oLibDialog = oLib.GetByName(&quot;DlgTextEdit&quot;)
+	
+	oDlg = CreateUnoDialog(oLibDialog)
+	oDlgModel = oDlg.Model
+	
+	&apos;translate dialog UI
+	LocalizeDialog(oDlg)
+	
+	&apos;set the dialog title
+	If Not IsMissing(sDialogTitle) Then
+		oDlg.Title = sDialogTitle
+	End If
+
+	&apos;initialize dialog controls
+	oTxtEdit = oDlg.getControl(&quot;txtEdit&quot;)
+	oTxtEdit.Text = sTextToEdit
+	
+	Dim aSel As New com.sun.star.awt.Selection
+	aSel.Min = 0
+	aSel.Max = Len(oTxtEdit.Text)
+	oTxtEdit.setSelection(aSel)
+	oTxtEdit.setFocus
+	&apos;execute the dialog
+	iDialogResult = oDlg.Execute()
+	
+	&apos;get values from dialog
+	sTextToEdit = oDlgModel.txtEdit.Text
+
+	&apos;exit with the dialog result
+	ShowTextEdit = iDialogResult
+	
+End Function
+
+</script:module>

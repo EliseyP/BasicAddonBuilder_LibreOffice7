@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgFtpConnection" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $ 
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;	
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module DlgFtpConnection:
+&apos;	
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+&apos; private vars
+Private oDlgFtpConnection As Object
+Private oURLTransformer As Object
+
+
+&apos; private const
+Private Const MSG_CONN_UNKNOWN = &quot;Unknown connection status&quot;
+Private Const MSG_CONN_FAILED = &quot;Connection failed, please check the hostname and login information and try again&quot;
+Private Const MSG_CONN_OK = &quot;Connection established with success&quot;
+
+
+&apos;______________________________________________________________________________
+Function ShowFtpConnectionDialog(ByRef sFtpUrl As String, Optional sDialogTitle As String) As Integer
+Dim oLib As Object
+Dim oLibDialog As Object
+Dim oDlg As Object
+Dim oDlgModel As Object
+Dim bValidUrl As Boolean
+Dim iDialogResult As Integer
+
+	&apos;initialize common services
+	oURLTransformer = CreateUnoService(&quot;com.sun.star.util.URLTransformer&quot;)	
+		
+	DialogLibraries.LoadLibrary(&quot;BasicAddonBuilder&quot;)
+	oLib = DialogLibraries.GetByName(&quot;BasicAddonBuilder&quot;)
+	oLibDialog = oLib.GetByName(&quot;DlgFtpConnection&quot;)
+	
+	oDlg = CreateUnoDialog(oLibDialog)
+	oDlgModel = oDlg.Model
+	
+	&apos;put the dialog in the scope of the whole module
+	oDlgFtpConnection = oDlg
+	
+	&apos;setup initial values
+	Dim aUrl As New com.sun.star.util.URL
+	aUrl.Complete = sFtpUrl
+	oURLTransformer.parseStrict(aUrl)
+	
+	&apos;translate dialog UI
+	LocalizeDialog(oDlg)
+	
+	With oDlgModel
+		.lblConnectionInfo.Label = GetResString(MSG_CONN_UNKNOWN)
+		.txtUserName.Text = aUrl.User
+		.txtPassword.Text = aUrl.Password
+		.txtServerName.Text = aUrl.Server
+		.txtRemoteDir.Text = aUrl.Path
+		.cmdConnect.Enabled = (aUrl.Server &lt;&gt; &quot;&quot;)
+	End With
+	
+	&apos;set the dialog title
+	If Not IsMissing(sDialogTitle) Then
+		oDlg.Title = sDialogTitle
+	End If
+	
+	&apos;execute the dialog
+	iDialogResult = oDlg.Execute()
+	
+	&apos;get values from dialog
+	If iDialogResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+		aUrl.Protocol = &quot;ftp:&quot;
+		aUrl.Server = oDlgModel.txtServerName.Text
+		aUrl.Path = oDlgModel.txtRemoteDir.Text
+		aUrl.User = oDlgModel.txtUserName.Text
+		aUrl.Password = oDlgModel.txtPassword.Text
+		oURLTransformer.assemble(aUrl)
+		
+		&apos;propagate the FtpUrl to the caller
+		sFtpUrl = aUrl.Complete
+	End if
+	
+	&apos;exit with the dialog result
+	ShowFtpConnectionDialog = iDialogResult
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+&apos;EVENT HANDLERS SECTION
+&apos;______________________________________________________________________________
+Sub txtServerName_textModified(oEvent As Object)
+
+	With oDlgFtpConnection.getModel()
+		.cmdConnect.Enabled = (oEvent.Source.Text &lt;&gt; &quot;&quot;)
+		.lblConnectionInfo.Label = GetResString(MSG_CONN_UNKNOWN)
+		.lblRemoteDir.Enabled = False
+		.txtRemoteDir.Enabled = False
+		.txtRemoteDir.Text = &quot;/&quot;
+		.cmdRemoteDir.Enabled = False
+		.cmdOk.Enabled = False
+	End With
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub txtUserName_textModified(oEvent As Object)
+
+	With oDlgFtpConnection.getModel()
+		.lblConnectionInfo.Label = GetResString(MSG_CONN_UNKNOWN)
+		.lblRemoteDir.Enabled = False
+		.txtRemoteDir.Enabled = False
+		.txtRemoteDir.Text = &quot;/&quot;
+		.cmdRemoteDir.Enabled = False
+		.cmdOk.Enabled = False
+	End With
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub txtPassword_textModified(oEvent As Object)
+
+	With oDlgFtpConnection.getModel()
+		.lblConnectionInfo.Label = GetResString(MSG_CONN_UNKNOWN)
+		.lblRemoteDir.Enabled = False
+		.txtRemoteDir.Enabled = False
+		.txtRemoteDir.Text = &quot;/&quot;
+		.cmdRemoteDir.Enabled = False
+		.cmdOk.Enabled = False
+	End With
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub cmdConnect_onClick(oEvent As Object)
+Dim oUcb As Object
+	
+	Dim aUrl As New com.sun.star.util.URL
+
+	With oDlgFtpConnection.getModel()
+		aUrl.Protocol = &quot;ftp:&quot;
+		aUrl.User = .txtUserName.Text
+		aUrl.Password = .txtPassword.Text
+		aUrl.Server = .txtServerName.Text
+		aUrl.Path = .txtRemoteDir.Text
+	End With
+
+	oURLTransformer.assemble(aUrl)
+
+	oUcb = CreateUnoService(&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
+&apos;	oUcb.setInteractionHandler( _
+&apos;		CreateUnoService(&quot;com.sun.star.task.InteractionHandler&quot;))
+		
+	If oUcb.isFolder(aUrl.Complete) Then
+	
+		With oDlgFtpConnection.getModel()
+			.lblConnectionInfo.Label = GetResString(MSG_CONN_OK)
+			.lblRemoteDir.Enabled = True
+			.txtRemoteDir.Enabled = True
+			.cmdRemoteDir.Enabled = True
+			.cmdOk.Enabled = True
+		End With
+		
+	Else
+	
+		With oDlgFtpConnection.getModel()
+			.lblConnectionInfo.Label = GetResString(MSG_CONN_FAILED)
+
+		End With
+		
+	End If
+
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub cmdRemoteDir_onClick(oEvent As Object)
+Dim oFolderDialog As Object
+Dim iAccept As Integer
+
+	Dim aUrl As New com.sun.star.util.URL
+
+	With oDlgFtpConnection.getModel()
+		aUrl.Protocol = &quot;ftp:&quot;
+		aUrl.User = .txtUserName.Text
+		aUrl.Server = .txtServerName.Text
+		aUrl.Path = .txtRemoteDir.Text
+	End With
+	oURLTransformer.assemble(aUrl)
+	
+	oFolderDialog = CreateUnoService(&quot;com.sun.star.ui.dialogs.FolderPicker&quot;)
+	With oFolderDialog
+		.setControlProperty(&quot;DefaultLocationButton&quot;, &quot;Enabled&quot;, False)
+		.setControlProperty(&quot;LevelUpButton&quot;, &quot;Enabled&quot;, False)
+		.SetDisplayDirectory(aUrl.complete)
+	End With
+	
+	iAccept = oFolderDialog.Execute()
+	If iAccept = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+		aUrl.complete = FixDirPath(oFolderDialog.Directory)
+		oURLTransformer.parseStrict(aUrl)
+		With oDlgFtpConnection.getModel()
+			.txtRemoteDir.Text = FixDirPath(aUrl.Path)
+			
+		End With
+	End if
+	
+End Sub
+
+</script:module>

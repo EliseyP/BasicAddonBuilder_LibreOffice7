@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgImagePicker" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $ 
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;	
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module DlgImagePicker:
+&apos;	
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+Private oFilePicker As Object
+Private oGraphicProvider As Object
+Private oShape As Object
+Private oUCB As Object
+
+
+&apos;reduce the size of the preview to save performances
+&apos;use values in the range 0.00 - 1.00
+Private Const ZOOM_FACTOR = 0.70
+
+Function ShowImagePicker(sFileURL As String, Optional sDialogTitle As String) As Integer
+
+Dim oHiddenDoc As Object
+Dim oFilePickerListener As Object
+Dim mFiles()
+Dim iDialogResult As Integer
+
+Static sInitialDirUrl As String
+
+	&apos;setup the SimpleFileAccess service for later use
+	oUCB = CreateUnoService(&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
+	
+	&apos;setup the GraphicProvider service for later use
+	oGraphicProvider = createUnoService(&quot;com.sun.star.graphic.GraphicProvider&quot;)
+	
+	&apos;setup a hidden document with an emply shape(used for the preview)
+	Dim mArgs(0) As New com.sun.star.beans.PropertyValue
+	mArgs(0).Name  = &quot;Hidden&quot;
+	mArgs(0).Value = True
+	oHiddenDoc = StarDesktop.loadComponentFromURL(&quot;private:factory/swriter&quot;,&quot;_default&quot;,0,mArgs())
+	oShape = oHiddenDoc.createInstance(&quot;com.sun.star.drawing.GraphicObjectShape&quot;)
+	oHiddenDoc.getDrawPage().add(oShape)
+	
+	&apos;prepare the file picker
+	Dim sFilePickerArgs(0) As Variant
+	sFilePickerArgs(0) = com.sun.star.ui.dialogs.TemplateDescription.FILEOPEN_LINK_PREVIEW
+	
+	oFilePicker = CreateUnoService( &quot;com.sun.star.ui.dialogs.OfficeFilePicker&quot; )
+	
+	&apos;set the dialog title
+	If Not IsMissing(sDialogTitle) Then
+		oFilePicker.Title = sDialogTitle
+	End If
+		
+	With oFilePicker
+		.Initialize( sFilePickerArgs() )
+		.setMultiSelectionMode(False)
+		.appendFilter(&quot;Graphics Files (bmp, gif, jpg, png)&quot;,&quot;*.bmp;*.gif;*.jpg;*.png&quot; )
+		.DisplayDirectory = sInitialDirUrl
+		.enableControl(com.sun.star.ui.dialogs.ExtendedFilePickerElementIds.CHECKBOX_LINK, False)
+		.setValue(com.sun.star.ui.dialogs.ExtendedFilePickerElementIds.CHECKBOX_PREVIEW, 0, True)
+	End With
+
+	&apos;register a listener for the file picker dialog events
+	oFilePickerListener = _
+	CreateUnoListener(&quot;FilePicker_&quot;, &quot;com.sun.star.ui.dialogs.XFilePickerListener&quot;)
+	oFilePicker.addFilePickerListener( oFilePickerListener )
+	
+	&apos;execute the file picker dialog
+	iDialogResult = oFilePicker.execute()
+	If iDialogResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+		mFiles() = oFilePicker.getFiles()
+		sFileURL = mFiles(0)
+	End If
+
+	&apos;store the last dir used for the next call
+	sInitialDirUrl = oFilePicker.DisplayDirectory
+
+	&apos;clean up and exit
+	With oFilePicker
+		.removeFilePickerListener(oFilePickerListener)
+		.Dispose()
+	End With
+	oHiddenDoc.close(False)
+	
+	&apos;result of the function
+	ShowImagePicker = iDialogResult
+	
+End Function
+
+
+
+&apos;====================================================
+&apos;	FilePickerListener&apos;s methods implementation
+&apos;====================================================
+Sub FilePicker_fileSelectionChanged(oEvent As Object)
+	RefreshPreview(False)
+end Sub
+
+sub FilePicker_directoryChanged(oEvent As Object)
+&apos; do nothing
+End Sub
+
+Sub FilePicker_helpRequested(oEvent As Object)
+&apos; do nothing
+End Sub
+
+Sub FilePicker_controlStateChanged(oEvent As Object)
+	If oEvent.ElementID = com.sun.star.ui.dialogs.ExtendedFilePickerElementIds.CHECKBOX_PREVIEW Then
+		RefreshPreview(False)	
+	End If
+End Sub
+
+Sub FilePicker_dialogSizeChanged()
+	RefreshPreview(True)
+End Sub
+
+Sub FilePicker_disposing(oEvent As Object)
+&apos; do nothing
+End Sub
+
+
+
+&apos;====================================================
+&apos;	Helper functions
+&apos;====================================================
+Sub RefreshPreview(bSizeOnly As Boolean)
+
+Dim mFiles()
+Dim sFileUrl As String
+
+Dim bExist As Boolean
+Dim bNoFolder As Boolean
+Dim bShowPreview As Boolean
+
+Dim oGraph As Object
+Dim lMaxWidth As Long
+Dim lMaxHeight As Long
+Dim sngRatio As Single
+Dim sngMaxRatio As Single
+Dim sngMm100PerPixelX As Single
+Dim sngMm100PerPixelY As Single
+
+Dim mDib() As Variant
+Dim vUnoVal As Variant
+
+	mFiles() = oFilePicker.getFiles()
+	sFileUrl = mFiles(0)
+	bExist = oUCB.Exists(sFileUrl)
+	bNoFolder = Not oUCB.IsFolder(sFileUrl)
+	bShowPreview = oFilePicker.getValue(com.sun.star.ui.dialogs.ExtendedFilePickerElementIds.CHECKBOX_PREVIEW, 0)
+	
+	If bShowPreview And bNoFolder And bExist Then
+		
+		If bSizeOnly Then
+			oGraph = oShape.Graphic
+		Else
+			Dim oPropsIN(0)as new com.sun.star.beans.PropertyValue
+			oPropsIN(0).Name  = &quot;URL&quot;
+			oPropsIN(0).Value = sFileUrl
+		
+			oGraph = oGraphicProvider.queryGraphic(oPropsIN())
+			oShape.Graphic = oGraph
+		End if		
+		
+		&apos;resize the bitmap
+		sngMm100PerPixelX = oShape.Size.Width / oShape.Bitmap.Size.Width
+		sngMm100PerPixelY = oShape.Size.Height / oShape.Bitmap.Size.Height
+		
+		lMaxWidth = oFilePicker.getAvailableWidth() * ZOOM_FACTOR
+		lMaxHeight = oFilePicker.getAvailableHeight() * ZOOM_FACTOR
+		
+		sngRatio = oGraph.sizePixel.Height / oGraph.sizePixel.Width
+		sngMaxRatio = lMaxHeight / lMaxWidth
+		
+		Dim aSize As New com.sun.star.awt.Size
+		If sngRatio &gt; sngMaxRatio Then
+			aSize.Height = sngMm100PerPixelY * lMaxHeight
+			aSize.Width = aSize.Height / sngRatio
+		Else
+			aSize.Width = sngMm100PerPixelX * lMaxWidth
+			aSize.Height = aSize.Width * sngRatio
+		End If
+	
+		oShape.Size = aSize
+		mDIB = oShape.Bitmap.getDib()
+		vUnoVal = CreateUnoValue(&quot;[]byte&quot;, mDib())
+		oFilePicker.setImage( com.sun.star.ui.dialogs.FilePreviewImageFormats.BITMAP, vUnoVal)
+	Else
+		oFilePicker.setImage( com.sun.star.ui.dialogs.FilePreviewImageFormats.BITMAP, Array())
+	End If
+	
+End Sub
+
+
+
+</script:module>

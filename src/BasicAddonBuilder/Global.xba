@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Global" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $ 
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;	
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module Global:
+&apos;	Contains declarations of public and global variables, used from other modules
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+&apos; public types
+Type UIElementDescriptor
+	IsGroup As Boolean
+	IsSeparator As Boolean
+	ParentMenu As Object
+	SubItems As Variant
+	DefaultText As String
+	TextTranslations As Variant
+	MacroDescriptor As Object
+	LC26IconUrl As String
+	LC16IconUrl As String
+	HC26IconUrl As String
+	HC16IconUrl As String
+	OfficeContext As String
+End Type
+
+Type MacroDescriptor
+	Provider As String
+	Library As String
+	Module As String
+	Macro As String
+	URI As String
+End Type
+
+Type ProviderDescriptor
+	UIName As String
+	Provider As Object
+	BasicLibraries As Object
+	DialogLibraries As Object
+	Document As Object
+End Type
+
+Type UIImageElementDescriptor
+	MacroDescriptor As Object
+	LC26IconUrl As String
+	LC16IconUrl As String
+	HC26IconUrl As String
+	HC16IconUrl As String
+End Type
+
+&apos; Public const
+
+Public Const MNU_PATH_SEP = &quot; | &quot; &apos;the menu preview path separator
+
+&apos;icon types
+Public Const LC_SMALL_ICO = 0
+Public Const HC_SMALL_ICO = 1
+Public Const LC_BIG_ICO = 2
+Public Const HC_BIG_ICO = 3
+
+&apos;UI elements office context
+Public Const CTX_WRITER = &quot;com.sun.star.text.TextDocument&quot;
+Public Const CTX_CALC = &quot;com.sun.star.sheet.SpreadsheetDocument&quot;
+Public Const CTX_DRAW = &quot;com.sun.star.drawing.DrawingDocument&quot;
+Public Const CTX_IMPRESS = &quot;com.sun.star.presentation.PresentationDocument&quot;
+Public Const CTX_BASE = &quot;com.sun.star.sdb.OfficeDatabaseDocument&quot;
+Public Const CTX_MATH = &quot;com.sun.star.formula.FormulaProperties&quot;
+Public Const CTX_BASICIDE = &quot;com.sun.star.script.BasicIDE&quot;
+
+&apos; Public variables
+Global g_mBasicProviders()
+
+&apos;the dialog
+Global g_oDlgWizard As Object
+Global g_oDlgWizardModel As Object
+
+&apos;the selected basic provider and library
+Global g_sDefaultProvider As String
+Global g_sDefaultLibrary As String
+Global g_sPythonLibrary As String
+Global g_sExtensionWithOnlyPythonName As String
+Global g_sExtVersion As String
+Global g_bOnlyPython As Boolean
+Global g_bOnlyBasic As Boolean
+Global g_bBasicAndPython As Boolean
+&apos;general controls (step 0)
+&apos;...
+
+&apos;step 01 controls
+&apos;...
+&apos;...
+
+
+&apos;______________________________________________________________________________
+Function CreateUIElementDescriptor() As Object
+Dim aDesc As Object
+Dim mTextTranslations()
+	
+	aDesc = CreateObject(&quot;UIElementDescriptor&quot;)
+	aDesc.SubItems = Array()
+	aDesc.TextTranslations = mTextTranslations()
+	aDesc.MacroDescriptor = CreateObject(&quot;MacroDescriptor&quot;)
+	
+	CreateUIElementDescriptor = aDesc
+	
+End Function
+
+Function CreateUIImageElementDescriptor() As Object
+Dim aDesc As Object
+	
+	aDesc = CreateObject(&quot;UIImageElementDescriptor&quot;)
+	&apos;aDesc.SubItems = Array()
+	&apos;aDesc.TextTranslations = mTextTranslations()
+	aDesc.MacroDescriptor = CreateObject(&quot;MacroDescriptor&quot;)
+	
+	CreateUIImageElementDescriptor = aDesc
+	
+End Function
+
+
+
+&apos;______________________________________________________________________________
+Function CreateMacroDescriptor() As Object
+	CreateMacroDescriptor = _
+		CreateObject(&quot;MacroDescriptor&quot;)
+End Function
+
+
+&apos;______________________________________________________________________________
+Function CreateProviderDescriptor() As Object
+	CreateProviderDescriptor = _
+		CreateObject(&quot;ProviderDescriptor&quot;)
+End Function
+
+
+&apos;______________________________________________________________________________
+
+
+Sub InitializeBasicProviders()
+Dim mLocBasicProviders()
+Dim oBrowseNodeFactory As Object
+Dim aMasterProviders()
+Dim oMasterProvider As Object
+Dim olanguageProvider As Object
+Dim iViewType As Integer
+Dim oDoc As Object
+Dim aDescriptor As Object
+
+	oBrowseNodeFactory = _
+		GetDefaultContext.getValueByName(&quot;/singletons/com.sun.star.script.browse.theBrowseNodeFactory&quot;)
+
+	iViewType = com.sun.star.script.browse.BrowseNodeFactoryViewTypes.MACROORGANIZER
+	aMasterProviders() = oBrowseNodeFactory.createView(iViewType).ChildNodes()
+
+	For Each oMasterProvider in aMasterProviders()
+		For Each oLanguageProvider In oMasterProvider.ChildNodes()
+			If HasUnoInterfaces(oLanguageProvider, &quot;com.sun.star.lang.XServiceInfo&quot;) Then
+				If oLanguageProvider.supportsService(&quot;com.sun.star.script.provider.ScriptProviderForBasic&quot;) Then
+					
+					aDescriptor = CreateProviderDescriptor()
+					aDescriptor.Provider = oLanguageProvider
+					aDescriptor.BasicLibraries = BasicLibraries
+					aDescriptor.DialogLibraries = DialogLibraries
+					
+					If oMasterProvider.Name = &quot;user&quot; Then
+						aDescriptor.UIName = GetResString(&quot;My Macros&quot;)
+						AppendItem(mLocBasicProviders(), aDescriptor)
+						
+					ElseIf oMasterProvider.Name = &quot;share&quot; Then
+						aDescriptor.UIName = GetResString(&quot;%productname% Macros&quot;)
+						AppendItem(mLocBasicProviders(), aDescriptor)
+						
+					End If					
+				End if
+			End if
+		Next oLanguageProvider
+	Next oMasterProvider
+	
+
+	For Each oDoc In StarDesktop.Components
+		If CStr(Tools.Misc.GetDocumentType(oDoc)) &lt;&gt; &quot;&quot; Then
+			For Each oLanguageProvider In oDoc.ScriptProvider.ChildNodes
+				If HasUnoInterfaces(oLanguageProvider, &quot;com.sun.star.lang.XServiceInfo&quot;) Then
+					If oLanguageProvider.supportsService(&quot;com.sun.star.script.provider.ScriptProviderForBasic&quot;) Then
+
+						aDescriptor = CreateProviderDescriptor()
+						aDescriptor.UIName = GetDocumentUITitle(oDoc)
+						aDescriptor.Provider = oLanguageProvider
+						aDescriptor.BasicLibraries = oDoc.BasicLibraries
+						&apos;aDescriptor.DialogLibraries =  *** missing API!!!
+						aDescriptor.Document = oDoc &apos;this is needed to workaround the missing API problem
+						AppendItem(mLocBasicProviders(), aDescriptor)
+						
+					End If
+				End If
+			Next oLanguageProvider
+		End If
+	Next oDoc
+	
+	g_mBasicProviders() = mLocBasicProviders()
+	
+End Sub
+
+
+
+</script:module>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="patch_information" script:language="StarBasic">&apos;----------------------------------------------------------------
+&apos;patch for BasicAddonBuilder for AOO 4.0 and later versions
+&apos;----------------------------------------------------------------
+&apos;author: Jörg Schmidt (joesch@calc-info.de)
+&apos;license: LGPL 2.1 (only 2.1)
+&apos;date: 16. August 2013
+&apos;----------------------------------------------------------------
+	
+&apos;This is a patch for Basic Addon Builder in AOO 4.0 and later versions.
+&apos;The patch is necessary because of a change in the addons.xcu for extensions in AOO 4.0 and later versions.
+
+&apos;Please read the following discussion:
+&apos;http://mail-archives.apache.org/mod_mbox/openoffice-dev/201308.mbox/%3cCEA36B047734466CBDAC3A918A7F9E99@Esprimo7935%3e
+
+&apos;or take a look at:
+&apos;http://wiki.openoffice.org/wiki/Extensions/Extensions_and_Apache_OpenOffice_4.0#addons.xcu_changes
+
+
+&apos;additional changes:
+&apos;-embed the publisher, in the description.xml file
+
+&apos;Changes made by Derby Russell for 0.5.2
+&apos;In the PkgExporter module:
+&apos;the line 74 was changed from:
+&apos;     sTempDirUrl = GetTempFile() &amp; &quot;/&quot;
+&apos; to
+&apos;     sTempDirUrl = GetTempFile()
+&apos;line 75 was added:
+&apos;     sTempDirUrl = EnsureFolderNameIsLongType(sTempDirUrl)
+&apos;line 76 was added:
+&apos;     sTempDirUrl = sTempDirUrl &amp; &quot;/&quot;
+&apos;at line 597 a new function: pmxInStrRev was added
+&apos;at line 639 a new function: SplitFolderPath was added
+&apos;at line 652 a new function: SplitFolderName was added
+&apos;at line 664 a new function: SplitFolderNamePath was added
+&apos;at line 690 a new function: EnsureFolderNameIsLongType was added
+
+
+</script:module>

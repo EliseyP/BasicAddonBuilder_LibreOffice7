@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="CtrlTranslateBox" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $ 
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;	
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module CtrlTranslateBox:
+&apos;	
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+&apos;private const
+Const ITEM_HEIGHT = 20
+Const COL1_REL_WIDTH = 0.35
+Const COL2_REL_WIDTH = 0.65
+
+&apos; Color &quot;theme&quot;
+Const GRID_COLOR = &amp;HC0C0C0 &apos;gray
+
+&apos;private vars
+
+Private bIsFileMode As Boolean  &apos;If true the TranslateBox is used for selecting files
+								&apos;rather than typing text.
+								
+Private mFilterNames()			&apos;Filters for the FileDialog
+								
+Private iSelectedItemIndex As Integer 
+
+Private oScrollView As Object
+Private oScrollBar As Object
+Private oScrollableArea As Object
+Private oTranslateBox As Object
+Private oAddNewItem As Object
+
+Private mTranslateBoxItems()
+Private mLocaleDescriptions()
+
+&apos;______________________________________________________________________________
+&apos;	TRANSLATE-BOX MANAGEMENT
+&apos;______________________________________________________________________________
+
+&apos;______________________________________________________________________________
+Sub TranslateBox_Initialize(oBaseControl As Object, bFileMode As Boolean, mFilters())
+Dim oTranslateBoxCtrl As Object
+
+	&apos;This &quot;complex control&quot; has two modes:
+	&apos;File mode: Shows a file picker dialog for selecting files
+	&apos;Text mode: Shows a small dialog for editig text more comfortably
+
+	&apos;set the param values in the scope of the whole module
+	bIsFileMode = bFileMode
+	mFilterNames() = mFilters()
+	
+	&apos;create the&quot;control&quot; in the window of the BaseControl
+	oTranslateBoxCtrl = TranslateBox_CreateNew(oBaseControl)
+	
+	&apos;setup variables at module level
+	mTranslateBoxItems() = Array()
+	mLocaleDescriptions() = GetAllLocaleDescriptions()
+	InsertByIndex(mLocaleDescriptions(), 0, &quot;(Default)&quot;)
+	
+	oScrollView = oTranslateBoxCtrl
+	oScrollBar = oTranslateBoxCtrl.getControl(&quot;ScrollBar&quot;)
+	oScrollableArea = oTranslateBoxCtrl.getControl(&quot;ScrollableArea&quot;)
+	oTranslateBox = oScrollableArea.getControl(&quot;TranslateBox&quot;)
+	
+	&apos;update TranslateBox properties 
+	iSelectedItemIndex = -1
+	TranslateBox_SelectItemPos(-1) &apos;no Items - no selection
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Function TranslateBox_CreateNew(oBaseControl As Object) As Object
+
+Dim oScrollViewFrame As Object
+Dim oScrollViewBase As Object
+Dim oColumnTitle As Object
+Dim aPosSize As Object
+Dim oListener As Object
+Dim nWidth As Long 
+Dim nHeight As Long
+Dim nTableWidth As Long
+Dim nTableHeight As Long
+
+	&apos;create a child window in the area of the oBaseControl
+	aPosSize = GetRect(0, 0, oBaseControl.Size.Width, oBaseControl.Size.Height)
+	oScrollViewFrame = CreateChildFrame(oBaseControl.Peer, aPosSize)
+	
+	&apos;create a control container service that will host the whole TranslateBox
+	oScrollViewBase = CreateUnoControl(&quot;Container&quot;)
+	With oScrollViewBase.Model
+		.Border = 1 &apos; 3D border
+		&apos;.BackgroundColor = //
+	End With
+	
+	&apos;attach the controlcontainter to the ScrollView Frame
+	oScrollViewBase.createPeer(oScrollViewFrame.ContainerWindow.Toolkit, oScrollViewFrame.ContainerWindow)
+	oScrollViewFrame.setComponent(oScrollViewBase, Null)
+	
+	&apos;store the size of the control container for later use
+	nWidth = oScrollViewBase.Size.Width
+	nHeight = oScrollViewBase.Size.Height
+	nTableHeight = nHeight - ITEM_HEIGHT
+	nTableWidth = nWidth - 20
+	
+	&apos;add a new control container that will host the table that will contain the data
+	oScrollView = AddNewControl(oScrollViewBase, &quot;Container&quot;, &quot;ScrollView&quot;)
+	&apos;setup properties
+&apos;	With oScrollView.Model
+&apos;		&apos;.Border = -1 &apos; no border
+&apos;		&apos;.BackgroundColor = //
+&apos;	End With	
+	&apos;dimension the control
+	oScrollView.setPosSize(0, ITEM_HEIGHT, nWidth, nTableHeight, com.sun.star.awt.PosSize.POSSIZE) 
+	
+	&apos;create two buttons for the column titles
+	oColumnTitle = AddNewControl(oScrollViewBase, &quot;Button&quot;, &quot;Column1 Title&quot;)
+	&apos;setup properties
+	With oColumnTitle.Model
+		.Label = GetResString(&quot;Language&quot;)
+		.HelpText = GetResString(&quot;Language&quot;)
+		.Tabstop = False
+		.FocusOnClick = False
+	End With
+	&apos;position the control
+	oColumnTitle.setPosSize(0, 0, nTableWidth*COL1_REL_WIDTH, ITEM_HEIGHT, com.sun.star.awt.PosSize.POSSIZE) 
+
+	oColumnTitle = AddNewControl(oScrollViewBase, &quot;Button&quot;, &quot;Column2 Title&quot;)
+	&apos;setup properties
+	With oColumnTitle.Model
+		.Label = GetResString(&quot;Text&quot;)
+		.HelpText = GetResString(&quot;Text&quot;)
+		.Tabstop = False
+		.FocusOnClick = False
+	End With
+	&apos;position the control
+	oColumnTitle.setPosSize(nTableWidth*COL1_REL_WIDTH, 0, nTableWidth*COL2_REL_WIDTH, ITEM_HEIGHT, com.sun.star.awt.PosSize.POSSIZE) 
+	
+	&apos;add a further control to fill the remaining space
+	oColumnTitle = AddNewControl(oScrollViewBase, &quot;Button&quot;, &quot;filler&quot;)
+	&apos;setup properties
+	With oColumnTitle.Model
+		.Tabstop = False
+		.FocusOnClick = False
+		&apos;.State = 1
+	End With
+	&apos;position the control
+	oColumnTitle.setPosSize(nTableWidth, 0, 16, ITEM_HEIGHT, com.sun.star.awt.PosSize.POSSIZE) 
+
+	&apos;add a scrollbar in the left side of the scrollview container
+	oScrollBar = AddNewControl(oScrollView, &quot;ScrollBar&quot;, &quot;ScrollBar&quot;)
+	&apos;setup properties
+	With oScrollBar.Model
+		.Border = -1 &apos;no border
+		.LiveScroll = True
+		.Orientation = com.sun.star.awt.ScrollBarOrientation.VERTICAL
+		.LineIncrement = ITEM_HEIGHT
+		.BlockIncrement = 5*ITEM_HEIGHT
+	End With
+	&apos;position the control
+	oScrollBar.setPosSize(nTableWidth, 0, 20, nTableHeight-4, com.sun.star.awt.PosSize.POSSIZE) 
+	&apos;listen for adjustment events
+	oListener = CreateUnoListener(&quot;TranslateBoxScrollbar_&quot;, &quot;com.sun.star.awt.XAdjustmentListener&quot;)
+	oScrollBar.AddAdjustmentListener(oListener)
+	
+	&apos;Add another container that will be the scrollable area
+	oScrollableArea = AddNewControl(oScrollView, &quot;Container&quot;, &quot;ScrollableArea&quot;)
+	&apos;setup properties
+&apos;	With oScrollableArea.Model
+&apos;		&apos;.Border = 0 &apos; no border
+&apos;		&apos;.BackgroundColor = //
+&apos;	End With
+	&apos;position the control
+	oScrollableArea.setPosSize(0, 0, nTableWidth, nTableHeight, com.sun.star.awt.PosSize.POSSIZE)
+	
+	&apos;Add another container that will host the TranslateBox-Items
+	oTranslateBox = AddNewControl(oScrollableArea, &quot;Container&quot;, &quot;TranslateBox&quot;)
+&apos;	With oTranslateBox.Model
+&apos;		&apos;.Border = 0 &apos; no border
+&apos;		&apos;.BackgroundColor = //
+&apos;	End With
+	
+	TranslateBox_CreateNew = oScrollView
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+&apos;	TRANSLATE-BOX PUBLIC &quot;METHODS&quot;
+&apos;______________________________________________________________________________
+Sub TranslateBox_AddItem(iPos As Integer, aStringPair As Object, Optional bIsDefault As Boolean)
+Dim oMouseListener As Object
+Dim oKeyListener As Object
+Dim oItemListener As Object
+Dim oActionListener As Object
+Dim oTranslateBoxItem As Object
+Dim oControl As Object
+Dim bLocIsDefault As Boolean
+Dim sLang As String
+Dim sText As String
+Static iCtrlIndex As Integer
+
+	&apos;check the optional param
+	If Not IsMissing(bIsDefault) Then 
+		bLocIsDefault = bIsDefault
+	End If
+
+	&apos;used to create an unique identifier for this control
+	iCtrlIndex = iCtrlIndex + 1
+	
+	&apos;create the empty item
+	If bLocIsDefault Then 
+		sLang = GetResString(&quot;(Default)&quot;)
+	Else
+		sLang = GetDescriptionFromLocaleID(aStringPair.First)
+	End If
+	sText = aStringPair.Second
+	oTranslateBoxItem = CreateTranslateBoxItem(sLang, sText)
+
+	&apos;listen for mouse clicks and for keyboard events etc.
+	oMouseListener = CreateUnoListener(&quot;TranslateBoxItem_&quot;, &quot;com.sun.star.awt.XMouseListener&quot;)
+	oKeyListener = CreateUnoListener(&quot;TranslateBoxItem_&quot;, &quot;com.sun.star.awt.XKeyListener&quot;)
+  	oItemListener = CreateUnoListener(&quot;LanguageList_&quot;, &quot;com.sun.star.awt.XItemListener&quot;)
+  	oActionListener = CreateUnoListener(&quot;EditButton_&quot;, &quot;com.sun.star.awt.XActionListener&quot;)
+  	
+	oControl = GetItemControl(oTranslateBoxItem, &quot;LanguageLabel&quot;)
+	oControl.addMouseListener(oMouseListener)
+&apos;	oControl.addKeyListener(oKeyListener)
+
+	&apos;listen for item modified events
+	oControl = GetItemControl(oTranslateBoxItem, &quot;LanguageList&quot;)
+	oControl.addItemListener(oItemListener)
+	If bLocIsDefault Then oControl.Model.ReadOnly = True
+		
+	oControl = GetItemControl(oTranslateBoxItem, &quot;LocalizedTextField&quot;)
+	&apos;listen for mouse and key events
+	oControl.addMouseListener(oMouseListener)
+	oControl.addKeyListener(oKeyListener)
+
+  	&apos;listen for button action events
+ 	oControl = GetItemControl(oTranslateBoxItem, &quot;EditButton&quot;)
+	oControl.addActionListener(oActionListener)
+
+	&apos;add TranslateBox item to the TranslateBox control
+	oTranslateBox.addControl(&quot;TranslateBoxItem&quot; &amp; iCtrlIndex, oTranslateBoxItem)
+	
+	&apos;add the TranslateBox item to the mTranslateBoxItems() array
+	InsertByIndex(mTranslateBoxItems(), iPos, oTranslateBoxItem)
+
+End Sub
+
+&apos;______________________________________________________________________________
+Sub TranslateBox_RemoveItem(iPos As Integer)
+Dim oControl As Object
+
+	&apos;sanity checks
+	If iPos &lt; 0 Then Exit Sub &apos;before the first item: nothing to remove
+	If iPos &gt; Ubound(mTranslateBoxItems()) Then Exit Sub &apos;after the last item: nothing to remove
+	If Ubound(mTranslateBoxItems()) &lt; 0 Then Exit Sub &apos;no items: nothing to remove
+
+	&apos;if we are here, it should be all ok...
+	
+	oControl = mTranslateBoxItems(iPos)
+	oTranslateBox.removeControl(oControl)
+	oControl.dispose
+	
+	RemoveByIndex(mTranslateBoxItems(), iPos)
+	
+	&apos;Avoid unconsistent selections
+	If iSelectedItemIndex &gt; iPos Then 
+		iSelectedItemIndex = iSelectedItemIndex - 1
+		
+		&apos;callback event handlers
+		TranslateBox_SelectionChanged(iSelectedItemIndex)
+	End If
+	
+	If iSelectedItemIndex = iPos Then 
+		iSelectedItemIndex = -1
+		
+		&apos;callback event handlers
+		TranslateBox_SelectionChanged(iSelectedItemIndex)
+	End If
+
+		
+End Sub
+
+&apos;______________________________________________________________________________
+Sub TranslateBox_SelectItemPos(iPos As Integer)
+Dim oOldItem As Object
+Dim oNewItem As Object
+
+Dim oLanguageFrame As Object
+Dim oLanguageLabel As Object
+Dim oLanguageList As Object
+Dim oLocalizedTextFrame As Object
+Dim oLocalizedTextField As Object
+Dim oEditButton As Object
+
+Dim aRect As Object
+Dim iOldPos As Integer
+Dim l, t, w, h, nVal
+
+	&apos;sanity checks
+	If iPos &lt; 0 Then Exit Sub &apos;before the first item: nothing to select
+	If iPos &gt; Ubound(mTranslateBoxItems()) Then Exit Sub &apos;after the last item: nothing to select
+	If Ubound(mTranslateBoxItems()) &lt; 0 Then Exit Sub &apos;no items: nothing to select
+	
+	iOldPos = iSelectedItemIndex
+	If iOldPos = iPos Then Exit Sub &apos;same selection: nothing to do
+	
+	&apos;if we are here, all seems to be ok...
+	
+	If iOldPos &gt;= 0 Then &apos;the previous selection was not null
+		oOldItem = mTranslateBoxItems(iOldPos)	
+		&apos;de-highlight the previously selected item:
+		&apos;hide the language listbox
+		oLanguageList = GetItemControl(oOldItem, &quot;LanguageList&quot;)
+		oLanguageList.Visible = False
+		&apos;restore the visibility of the language label
+		oLanguageLabel = GetItemControl(oOldItem, &quot;LanguageLabel&quot;)
+		oLanguageLabel.Visible = True
+		
+		&apos;hide the edit button
+		oEditButton = GetItemControl(oOldItem, &quot;EditButton&quot;)
+		oEditButton.Visible = False
+		
+		&apos;restore the width of the LocalizedTextField
+		oLocalizedTextField = GetItemControl(oOldItem, &quot;LocalizedTextField&quot;)
+		w = oLocalizedTextField.Size.Width + oEditButton.Size.Width
+		h = oLocalizedTextField.Size.Height
+		oLocalizedTextField.setPosSize(0, 0, w, h, com.sun.star.awt.PosSize.SIZE)
+		
+	End If
+	
+	&apos;now select the new item:
+	&apos;first check if the new selected item is visible
+	oNewItem = mTranslateBoxItems(iPos)
+	aRect = oNewItem.PosSize
+	If (aRect.Y + aRect.Height + oScrollableArea.PosSize.Y) &gt; oScrollbar.VisibleSize Then
+		&apos;item not visible -&gt; scroll down
+		nVal = oScrollbar.Value
+		nVal = nVal + ITEM_HEIGHT
+		oScrollableArea.setPosSize(oScrollableArea.PosSize.X, _
+			-nVal, 0, 0, com.sun.star.awt.PosSize.POS)	 
+		oScrollbar.Model.ScrollValue = nVal
+
+	ElseIf (aRect.Y + oScrollableArea.PosSize.Y) &lt; 0 Then
+		&apos;item not visible -&gt; scroll up
+		nVal = oScrollbar.Value
+		nVal = nVal - ITEM_HEIGHT
+		If nVal &lt; 0 Then nVal = 0
+		oScrollableArea.setPosSize(oScrollableArea.PosSize.X, _
+			-nVal, 0, 0, com.sun.star.awt.PosSize.POS)	
+		oScrollbar.Model.ScrollValue = nVal
+
+	End If
+	
+	&apos;now highlight the item, so it&apos;ll looks &quot;selected&quot;:
+	&apos;hide the language label
+	oLanguageLabel = GetItemControl(oNewItem, &quot;LanguageLabel&quot;)
+	oLanguageLabel.Visible = False
+	
+	&apos;show the language listbox
+	oLanguageList = GetItemControl(oNewItem, &quot;LanguageList&quot;)
+
+	&apos;load the available language list
+	oLanguageList.Model.StringItemList = GetAvailableLangList(iPos)
+	If oLanguageLabel.Text &lt;&gt; &quot;&quot; Then
+		oLanguageList.selectItem(oLanguageLabel.Text, True)
+	Else
+		oLanguageList.selectItemPos(0, True)
+	End If
+	oLanguageList.Visible = True
+	
+	&apos;show the edit button
+	oEditButton = GetItemControl(oNewItem, &quot;EditButton&quot;)
+	oEditButton.Visible = True	
+	&apos;select the whole text in the LocalizedTextField
+	oLocalizedTextField = GetItemControl(oNewItem, &quot;LocalizedTextField&quot;)
+
+	&apos;restore the width of the LocalizedTextField
+	oLocalizedTextField = GetItemControl(oNewItem, &quot;LocalizedTextField&quot;)
+	w = oLocalizedTextField.Size.Width - oEditButton.Size.Width
+	h = oLocalizedTextField.Size.Height
+	oLocalizedTextField.setPosSize(0, 0, w, h, com.sun.star.awt.PosSize.SIZE)
+
+	Dim aSel As New com.sun.star.awt.Selection
+	aSel.Min = 0
+	aSel.Max = Len(oLocalizedTextField.Text)
+	oLocalizedTextField.setSelection(aSel)
+	oLocalizedTextField.setFocus()
+	
+	&apos;update the SelectedItem Index and Column at module level
+	iSelectedItemIndex = iPos
+	
+	&apos;callback event handlers
+	TranslateBox_SelectionChanged(iPos)
+	
+End Sub
+
+&apos;______________________________________________________________________________
+Function TranslateBox_GetItem(iPos) As Object
+Dim oItem As Object
+Dim sLang As String
+Dim sText As String
+
+	oItem = mTranslateBoxItems(iPos)
+	Dim aStrPair As New com.sun.star.beans.StringPair
+	
+	sLang = GetItemControl(oItem, &quot;LanguageLabel&quot;).Text
+	aStrPair.First = GetLocaleIDFromDescription(sLang)
+
+	sText = GetItemControl(oItem, &quot;LocalizedTextField&quot;).Text
+	If bIsFileMode Then
+		aStrPair.Second = ConvertToUrl(sText)
+	Else
+		aStrPair.Second = sText
+	End If
+	
+	TranslateBox_GetItem = aStrPair
+End Function
+
+&apos;______________________________________________________________________________
+Function TranslateBox_GetSelectedItem() As Object
+Dim oItem As Object
+Dim sLang As String
+Dim sText As String
+
+	oItem = mTranslateBoxItems(iSelectedItemIndex)
+	Dim aStrPair As New com.sun.star.beans.StringPair
+	
+	sLang = GetItemControl(oItem, &quot;LanguageLabel&quot;).Text
+	aStrPair.First = GetLocaleIDFromDescription(sLang)
+
+	sText = GetItemControl(oItem, &quot;LocalizedTextField&quot;).Text
+	If bIsFileMode Then
+		aStrPair.Second = ConvertToUrl(sText)
+	Else
+		aStrPair.Second = sText
+	End If
+	
+	TranslateBox_GetSelectedItem = aStrPair
+End Function
+
+&apos;______________________________________________________________________________
+Function TranslateBox_GetSelectedItemPos() As Integer
+	TranslateBox_GetSelectedItemPos = iSelectedItemIndex
+End Function
+
+&apos;______________________________________________________________________________
+Function TranslateBox_GetItemCount() As Integer
+	TranslateBox_GetItemCount = UBound(mTranslateBoxItems()) + 1
+End Function
+
+&apos;______________________________________________________________________________
+Function TranslateBox_HasElements() As Boolean
+	TranslateBox_HasElements = CBool(TranslateBox_GetItemCount)
+End Function
+
+&apos;______________________________________________________________________________
+Sub TranslateBox_UpdateControls()
+Dim oItem As Object
+Dim iItemWidth As Integer
+Dim nMnXCursor As Long
+Dim I As Integer
+Dim l, t, w, h
+	
+	iItemWidth = oScrollableArea.Size.Width
+	
+	For I = LBound(mTranslateBoxItems()) To UBound(mTranslateBoxItems())
+		oItem = mTranslateBoxItems(I)
+		l=0: t=nMnXCursor: w=iItemWidth: h=ITEM_HEIGHT
+		oItem.setPosSize(l, t, w, h, com.sun.star.awt.PosSize.POSSIZE)
+		nMnXCursor = nMnXCursor + ITEM_HEIGHT
+	Next I
+	
+	&apos;dimension the TranslateBox
+	oTranslateBox.setPosSize(0, 0, iItemWidth, nMnXCursor, com.sun.star.awt.PosSize.POSSIZE)
+	
+	&apos;dimension the scrollable-area
+	l=0: t=0: w=oScrollableArea.Size.Width: h=oTranslateBox.Size.Height + ITEM_HEIGHT
+	oScrollableArea.setPosSize(l, t, w, h, com.sun.star.awt.PosSize.SIZE)
+
+	&apos;update the scrollbar control
+	oScrollbar.Maximum = oScrollableArea.Size.Height
+	oScrollbar.VisibleSize = oScrollView.Size.Height
+
+End Sub
+
+
+&apos;______________________________________________________________________________
+&apos;	TRANSLATE-BOX PRIVATE &quot;METHODS&quot;
+&apos;______________________________________________________________________________
+Function GetTranslateBoxItemIndex(oControl As Object) As Integer
+Dim nIndex As Integer
+Dim oItem As Variant
+Dim I As Integer
+
+	nIndex = -1
+	
+	For I = LBound(mTranslateBoxItems()) To UBound(mTranslateBoxItems())
+		oItem = mTranslateBoxItems(I)
+		If EqualUnoObjects(oItem, oControl) Then
+			nIndex = I
+			Exit For
+		End If
+	Next I
+	
+	GetTranslateBoxItemIndex = nIndex
+End Function
+
+&apos;______________________________________________________________________________
+Function CreateTranslateBoxItem(sLang As String, sText As String) As Object
+
+Dim oTranslateBoxItem As Object 
+Dim oLanguageFrame As Object
+Dim oLanguageLabel As Object
+Dim oLanguageList As Object
+Dim oLocalizedTextFrame As Object
+Dim oLocalizedTextField As Object
+Dim oEditButton As Object
+Dim iItemWidth As Long
+Dim iCol1Width As Long
+Dim iCol2Width As Long
+Dim l As Long, t As Long, w As Long, h As Long
+
+Const TXTMARGIN = 3
+
+	iItemWidth = oScrollableArea.Size.Width
+	iCol1Width = iItemWidth*COL1_REL_WIDTH
+	iCol2Width = iItemWidth*COL2_REL_WIDTH
+	
+	&apos;create a container that will act as a row in a table
+	oTranslateBoxItem = CreateUnoControl(&quot;Container&quot;)
+	With oTranslateBoxItem.Model
+		.Border = 0 &apos;no border
+		&apos;.BackgroundColor = //
+	End With
+	
+	&apos;Add two sub containers that will look as two cells on a single row
+	oLanguageFrame = AddNewControl(oTranslateBoxItem, &quot;Container&quot;, &quot;LanguageFrame&quot;)
+	With oLanguageFrame.Model
+		.Border = 2 &apos;simple border
+		.BorderColor = GRID_COLOR
+		&apos;.BackgroundColor = //
+	End With
+	&apos;position the control
+	l=0: t=-1: w=1+iCol1Width: h=1+ITEM_HEIGHT
+	oLanguageFrame.setPosSize(l, t, w, h, com.sun.star.awt.PosSize.POSSIZE)
+		
+	oLocalizedTextFrame = AddNewControl(oTranslateBoxItem, &quot;Container&quot;, &quot;LocalizedTextFrame&quot;)
+	With oLocalizedTextFrame.Model
+		.Border = 2 &apos;simple border
+		.BorderColor = GRID_COLOR
+		&apos;.BackgroundColor = //
+	End With
+	&apos;position the control
+	l=iCol1Width: t=-1: w=iCol2Width: h=1+ITEM_HEIGHT
+	oLocalizedTextFrame.setPosSize(l, t, w, h, com.sun.star.awt.PosSize.POSSIZE)
+		
+	&apos;Add controls to sub containers
+	oLanguageLabel = AddNewControl(oLanguageFrame, &quot;FixedText&quot;, &quot;LanguageLabel&quot;)
+	With oLanguageLabel.Model
+		.Border = 0 &apos;no border
+		.Label = sLang
+		.HelpText = sLang
+	End With
+	&apos;position the control
+	l = TXTMARGIN: 
+	t = ITEM_HEIGHT/2-oLanguageLabel.PreferredSize.Height/2
+	w = iCol1Width-2*TXTMARGIN
+	h = oLanguageLabel.PreferredSize.Height
+	oLanguageLabel.setPosSize(l, t, w, h, com.sun.star.awt.PosSize.POSSIZE)
+	
+	&apos;Now create a Listbox for the lang selection
+	&apos;this controls will be dinamically shown when the item is selected
+	oLanguageList = AddNewControl(oLanguageFrame, &quot;ListBox&quot;, &quot;LanguageList&quot;)
+	With oLanguageList.Model
+		.Border = 0 &apos; no border
+		.DropDown = True
+	End With
+	&apos;position the control
+	l=0: t=0: w=iCol1Width-1: h=ITEM_HEIGHT-1
+	oLanguageList.setPosSize(l, t, w, h, com.sun.star.awt.PosSize.POSSIZE)
+	&apos;hide the language list
+	oLanguageList.Visible = False
+	
+	oLocalizedTextField = AddNewControl(oLocalizedTextFrame, &quot;Edit&quot;, &quot;LocalizedTextField&quot;)
+	With oLocalizedTextField.Model
+		.Border = 0 &apos;no border
+		.Tabstop = False
+	End With
+	
+	&apos;check the bIsFileMode value
+	If bIsFileMode Then
+		oLocalizedTextField.Model.Text = ConvertFromUrl(sText)
+		oLocalizedTextField.Model.ReadOnly = True
+	Else
+		oLocalizedTextField.Model.Text = sText
+	End If
+		
+	&apos;position the control
+	l=TXTMARGIN: t=0: w=iCol2Width-2*TXTMARGIN: h=ITEM_HEIGHT
+	oLocalizedTextField.setPosSize(l, t, w, h, com.sun.star.awt.PosSize.POSSIZE)
+
+	&apos;Now create a button for opening a edit dialog or a filepicker
+	&apos;this control will be dinamically positioned in the selected item
+	oEditButton = AddNewControl(oLocalizedTextFrame, &quot;Button&quot;, &quot;EditButton&quot;)
+	With oEditButton.Model
+		.Label = &quot;...&quot;
+		.TabStop = False
+	End With
+	&apos;position the control
+	l=iCol2Width-ITEM_HEIGHT: t=0: w=ITEM_HEIGHT-1: h=ITEM_HEIGHT-1
+	oEditButton.setPosSize(l, t, w, h, com.sun.star.awt.PosSize.POSSIZE)
+	&apos;hide the button
+	oEditButton.Visible = False
+
+	&apos;exit with the result
+	CreateTranslateBoxItem = oTranslateBoxItem
+
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetItemControl(oTranslateBoxItem As Object, sControlName As String) As Object
+Dim oCCont As Object &apos;a control container
+Dim oCtrl As Object
+	
+	Select Case sControlName
+		Case &quot;LanguageFrame&quot;
+			oCCont = oTranslateBoxItem
+			oCtrl = oCCont.getControl(sControlName)
+			
+		Case &quot;LanguageLabel&quot;
+			oCCont = oTranslateBoxItem.getControl(&quot;LanguageFrame&quot;)
+			oCtrl = oCCont.getControl(sControlName)
+			
+		Case &quot;LanguageList&quot;
+			oCCont = oTranslateBoxItem.getControl(&quot;LanguageFrame&quot;)
+			oCtrl = oCCont.getControl(sControlName)
+			
+		Case &quot;LocalizedTextFrame&quot;
+			oCCont = oTranslateBoxItem
+			oCtrl = oCCont.getControl(sControlName)
+			
+		Case &quot;LocalizedTextField&quot;
+			oCCont = oTranslateBoxItem.getControl(&quot;LocalizedTextFrame&quot;)
+			oCtrl = oCCont.getControl(sControlName)
+			
+		Case &quot;EditButton&quot;
+			oCCont = oTranslateBoxItem.getControl(&quot;LocalizedTextFrame&quot;)
+			oCtrl = oCCont.getControl(sControlName)
+			
+	End Select
+	
+	&apos;exit with the result
+	GetItemControl = oCtrl
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetAvailableLangList(iPos As Integer) As Variant
+Dim oItem As Object
+Dim sLang As String
+Dim I As Integer
+Dim mLocList()
+	
+	mLocList() = mLocaleDescriptions()
+	For I = LBound(mTranslateBoxItems()) To Ubound(mTranslateBoxItems())
+		If I &lt;&gt; iPos Then
+			oItem = mTranslateBoxItems(I)
+			sLang = GetItemControl(oItem, &quot;LanguageLabel&quot;).Text
+			RemoveItemFromStringList(mLocList(), sLang)
+		End if
+	Next
+	
+	GetAvailableLangList = mLocList()
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+&apos;	TRANSLATE-BOX EVENT HANDLERS
+&apos;______________________________________________________________________________
+
+&apos;______________________________________________________________________________
+&apos; TranslateBox Scrollbar Listener Methods
+&apos;______________________________________________________________________________
+Sub TranslateBoxScrollbar_adjustmentValueChanged(oEvent As Object)
+Dim nX as Long, nY as Long
+	
+	nX = oScrollableArea.PosSize.X &apos;remains the same
+	nY = -(oEvent.Value)
+	
+	oScrollableArea.setPosSize(nX, nY, 0, 0, com.sun.star.awt.PosSize.POS)
+	
+End Sub
+
+&apos;______________________________________________________________________________
+Sub TranslateBoxScrollbar_disposing(oEvent As Object)
+End Sub
+
+
+&apos;______________________________________________________________________________
+&apos; LanguageList Item Listener Methods
+&apos;______________________________________________________________________________
+Sub LanguageList_itemStateChanged(oEvent As Object)
+Dim oLanguageLabel As Object
+	&apos;update the content of the LanguageLabel
+	oLanguageLabel = oEvent.source.Context.getControl(&quot;LanguageLabel&quot;)
+	oLanguageLabel.Text = oEvent.source.SelectedItem
+End Sub
+
+&apos;______________________________________________________________________________
+Sub LanguageList_disposing(oEvent As Object)
+End Sub
+
+
+&apos;______________________________________________________________________________
+&apos; EditButton Action Listener Methods
+&apos;______________________________________________________________________________
+Sub EditButton_actionPerformed(oEvent As Object)
+Dim oItem As Object
+Dim oCtrl As Object
+Dim iDlgResult As Integer
+Dim sTextToEdit As String
+Dim sFileUrl As String
+
+	&apos;This button has two modes:
+	&apos;File mode: Shows a file picker dialog for selecting files
+	&apos;Text mode: Shows a small dialog for editig text more comfortably
+	
+	&apos;get the selected item
+	oItem = mTranslateBoxItems(iSelectedItemIndex)
+	oCtrl = GetItemControl(oItem, &quot;LocalizedTextField&quot;)
+	
+	&apos;check the bIsFileMode value
+	If bIsFileMode Then		
+		sFileUrl = ConvertToUrl(oCtrl.Model.Text)
+		iDlgResult = ShowFileDialog(sFileUrl, mFilterNames())
+		If iDlgResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+			oCtrl.Model.Text = ConvertFromUrl(sFileUrl)
+		End If	
+	Else
+		sTextToEdit = oCtrl.Model.Text
+		iDlgResult = ShowTextEdit(sTextToEdit)
+		If iDlgResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+			oCtrl.Model.Text = sTextToEdit
+		End if
+	End If
+
+End Sub
+
+&apos;______________________________________________________________________________
+Sub EditButton_disposing(oEvent As Object)
+End Sub
+
+
+&apos;______________________________________________________________________________
+&apos; TranslateBoxItem MouseListener Methods 
+&apos;______________________________________________________________________________
+Sub TranslateBoxItem_mousePressed(oEvent As Object)
+Dim iPos As Integer
+	
+	&apos;get the new selected item index (row index)
+	iPos = GetTranslateBoxItemIndex(oEvent.Source.Context.Context)
+	
+&apos;	If oEvent.ClickCount = 2 Then
+&apos;	End If
+
+	&apos;update selection
+	TranslateBox_SelectItemPos(iPos)
+	
+End Sub
+
+&apos;______________________________________________________________________________
+Sub TranslateBoxItem_mouseReleased(oEvent As Object)	
+End Sub
+
+&apos;______________________________________________________________________________
+Sub TranslateBoxItem_mouseEntered(oEvent As Object)
+End Sub
+
+&apos;______________________________________________________________________________
+Sub TranslateBoxItem_mouseExited(oEvent As Object)	
+End Sub
+
+
+&apos;______________________________________________________________________________
+&apos; TranslateBoxItem KeyListener Methods 
+&apos;______________________________________________________________________________
+Sub TranslateBoxItem_keyPressed(oEvent As Object)
+
+Static bRunning As Boolean
+	
+	&apos;a a Flag to avoid parallel calls
+	If bRunning Then Exit Sub
+	
+	bRunning = True
+	Select Case oEvent.KeyCode
+		Case com.sun.star.awt.Key.TAB
+			If oEvent.Modifiers = com.sun.star.awt.KeyModifier.SHIFT Then
+				&apos;select the previous item
+				TranslateBox_SelectItemPos(iSelectedItemIndex-1)
+			Else
+				&apos;select the next item
+				TranslateBox_SelectItemPos(iSelectedItemIndex+1)
+			End If
+			
+		Case com.sun.star.awt.Key.UP
+			&apos;select the previous item
+			TranslateBox_SelectItemPos(iSelectedItemIndex-1)
+			
+		Case com.sun.star.awt.Key.DOWN
+			&apos;select the next item
+			TranslateBox_SelectItemPos(iSelectedItemIndex+1)
+	End Select
+	
+	bRunning = False
+	
+End Sub
+
+&apos;______________________________________________________________________________
+Sub TranslateBoxItem_keyReleased(oEvent As Object)
+End Sub
+
+
+&apos;______________________________________________________________________________
+&apos; TranslateBoxItem XEventListener Methods (generic)
+&apos;______________________________________________________________________________
+Sub TranslateBoxItem_disposing(oEvent As Object)
+End Sub
+
+
+</script:module>

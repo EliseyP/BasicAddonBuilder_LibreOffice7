@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_step09" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $ 
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;	
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module DlgWizard_step09:
+&apos;	Management of the step 9 of the dialog. 
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+&apos;______________________________________________________________________________
+Sub Step09_Initialize() 
+	
+	&apos;xray g_oDlgWizardModel.txtExtPyOnlyName
+	
+	With g_oDlgWizardModel
+&apos;		If g_bOnlyPython = True Then
+&apos;			.txtExtPyOnlyName.Enabled = True
+&apos;		Else
+&apos;			.txtExtPyOnlyName.Enabled = False
+&apos;			.txtExtPyOnlyName.EnableVisible = False
+&apos;			.lblExtPyOnlyName.EnableVisible = False
+&apos;		End If
+
+&apos;set step title/description
+		.lblStepTitle.Label = GetRoadmapItem(9).Label
+		.lblStepDescription.Label = GetResString(&quot;Store the created Extension locally or publish it via FTP&quot;)
+&apos; enable/disable general controls
+		.cmdBack.Enabled = True
+		.cmdNext.Enabled = False &apos;this is the last step (at the moment...)
+		
+&apos; enable/disable roadmap items
+&apos;		.Roadmap(0).Enabled = True
+
+	End With
+	
+	EnableStepControls()
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub chkStore_statusChanged(oEvent As Object)
+	EnableStepControls()
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub cmdStoreUrl_onClick(oEvent As Object)
+Dim sPkgName As String
+Dim sPkgVer As String
+Dim sStoreUrl As String
+Dim mFilters(1,1) As String
+Dim iDlgResult As Integer
+	
+	sStoreUrl = g_oDlgWizardModel.txtStoreUrl.Text
+	If sStoreUrl = &quot;&quot; Then
+		&apos;build an initial Url
+		sStoreUrl = PmxGetPathSettings(&quot;Work&quot;) &amp; GetDefaultPackageName()
+	Else
+		&apos;convert the path shown in the text control
+		sStoreUrl = ConvertToUrl(sStoreUrl)
+	End If
+	
+	&apos;prepare filters for the file dialog
+	mFilters(0,0) = &quot;%productname% extension (*.oxt)&quot;
+	mFilters(0,1) = &quot;*.oxt&quot;
+	
+	iDlgResult = ShowFileDialog(sStoreUrl, mFilters(), _
+		com.sun.star.ui.dialogs.TemplateDescription.FILESAVE_AUTOEXTENSION)
+		
+	If iDlgResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+		g_oDlgWizardModel.txtStoreUrl.Text = ConvertFromUrl(sStoreUrl)
+		EnableStepControls()
+	End If
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub chkUpload_statusChanged(oEvent As Object)
+	EnableStepControls()
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub cmdUploadConfig_onClick(oEvent As Object)
+Dim oURLTransformer As Object
+Dim sFtpUrl As String
+Dim iDlgResult As Integer
+
+	oURLTransformer = CreateUnoService(&quot;com.sun.star.util.URLTransformer&quot;)
+	
+	&apos;the complete url (w/username+passwd) is stored in the Tag property
+	sFtpUrl = g_oDlgWizardModel.txtUploadFtpUrl.Tag
+	
+	iDlgResult = ShowFtpConnectionDialog(sFtpUrl)
+	If iDlgResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+	
+		&apos;the complete url is stored in the Tag property
+		g_oDlgWizardModel.txtUploadFtpUrl.Tag = sFtpUrl
+		
+		&apos;display the Url without username and password 
+		Dim aUrl As New com.sun.star.util.URL
+		aUrl.Complete = sFtpUrl
+		oURLTransformer.parseStrict(aUrl)
+		aUrl.User = &quot;&quot;
+		aUrl.Password = &quot;&quot;
+		oURLTransformer.assemble(aUrl)
+		g_oDlgWizardModel.txtUploadFtpUrl.Text = aUrl.Complete
+		EnableStepControls()
+	End If
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub chkUpdateInfo_statusChanged(oEvent As Object)
+	EnableStepControls()
+End Sub
+
+
+
+
+&apos;______________________________________________________________________________
+Sub EnableStepControls()
+Dim bExtPyOnlyName As Boolean
+Dim bStore As Boolean
+Dim bUpload As Boolean
+Dim bUpdateInfo As Boolean
+Dim bNotEmptyUrl As Boolean
+Dim bNotEmptyFtp As Boolean
+
+	&apos;bExtPyOnlyName = CBool(g_oDlgWizardModel.txtExtPyOnlyName.Text &lt;&gt; &quot;&quot;)
+
+	bStore = CBool(g_oDlgWizardModel.chkStore.state)
+	bNotEmptyUrl = bStore AND (g_oDlgWizardModel.txtStoreUrl.Text &lt;&gt; &quot;&quot;)
+	
+	bUpload = CBool(g_oDlgWizardModel.chkUpload.state)
+	bNotEmptyFtp = bUpload AND (g_oDlgWizardModel.txtUploadFtpUrl.Text &lt;&gt; &quot;&quot;)
+	
+	bUpdateInfo = bUpload AND CBool(g_oDlgWizardModel.chkUpdateInfo.state)
+	
+	&apos;xray g_oDlgWizardModel.txtExtPyOnlyName
+	&apos;xray g_oDlgWizardModel.txtStoreUrl
+	With g_oDlgWizardModel
+		&apos;.txtExtPyOnlyName.Enabled = True
+		&apos;.txtExtPyOnlyName.Readonly = False
+		&apos;.txtExtPyOnlyName.Text = &quot;TEST&quot;
+		 
+		
+		.txtStoreUrl.Enabled = bStore
+		.cmdStoreUrl.Enabled = bStore
+		
+		.lblUploadFtpUrl.Enabled = bUpload
+		.txtUploadFtpUrl.Enabled = bUpload
+		.cmdUploadConfig.Enabled = bUpload
+		
+		.chkUpdateInfo.Enabled = bUpload
+		.lblDownloadUrl.Enabled = bUpdateInfo
+		.txtDownloadUrl.Enabled = bUpdateInfo
+		
+		.cmdCreate.Enabled = (bNotEmptyUrl AND bNotEmptyFtp) OR _
+							 (bNotEmptyUrl AND NOT bUpload) OR _
+							 (bNotEmptyFtp AND NOT bStore)
+	End With	
+	&apos;xray g_oDlgWizardModel.txtStoreUrl
+	
+End Sub
+</script:module>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Main" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $ 
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;	
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;
+&apos;   UPDATE FOR LibreOffice ver 7.3 ONLY
+&apos;   Fix toolbar Addons.xcu creation
+&apos;   NOTE: adding images only at toolbar creation (step03).
+&apos;   TODO: 
+&apos;     - delete radiobuttons AO version
+&apos;     - add images on toolbar creation step (duplication problem)).
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module Main:
+&apos;	Contains routines to start the BasicAddonBuilder
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+
+&apos;______________________________________________________________________________
+Sub RunWizard
+&apos; BasicLibraries.LoadLibrary(&quot;XrayTool&quot;)
+&apos; Globalscope.BasicLibraries.LoadLibrary( &quot;MRILib&quot; )
+On Error GoTo ErrH
+
+	&apos; perform some initializations
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;Tools&quot;)
+	InitializeBasicProviders() &apos;initialize BasicScriptProviders
+	InitializeLocaleArrays() &apos;initialize arrays with available locales
+	
+	&apos;show the main dialog
+	ShowDialog		
+
+
+ExitHere:
+	
+	Exit Sub
+	
+ErrH:	
+	&apos;unexpected error
+	MsgBox &quot;Error &quot; &amp; err &amp; &quot;: &quot; &amp; error$ , 16
+			
+	Resume ExitHere
+	
+End Sub
+
+
+
+&apos;______________________________________________________________________________
+Sub RunAbout
+Dim oDlgAbout As Object
+Dim txtAbout As Object
+Dim imgAbout As Object
+Dim sMsg As String
+Dim mContributors()
+Dim mTranslators()
+
+On Error GoTo ErrH
+
+	BasicLibraries.LoadLibrary(&quot;Tools&quot;)
+	DialogLibraries.LoadLibrary(&quot;BasicAddonBuilder&quot;)
+	oDlgAbout = _
+		CreateUnoDialog(DialogLibraries.BasicAddonBuilder.DlgAbout)
+	
+	With oDlgAbout
+		txtAbout = .getControl(&quot;txtAbout&quot;)
+		imgAbout = .getControl(&quot;imgAbout&quot;)
+	End With
+	
+	oDlgAbout.Title = GetAppName() &amp; &quot; &quot; &amp; GetAppVersion
+	imgAbout.Model.ImageUrl = GetResourceUrl(&quot;AboutImage&quot;)
+	
+	sMsg = sMsg &amp; GetAppDescription &amp; Chr(10) &amp; Chr(10)
+	sMsg = sMsg &amp; GetCopyright &amp; Chr(10)
+	sMsg = sMsg &amp; &quot;Released under &quot; &amp; GetAppLicense &amp; Chr(10)
+	
+	&apos;--&gt;patch-----for more information, see module &quot;patch_information&quot;----
+	sMsg = sMsg &amp; CHR(10) &amp; GetPatchDescription &amp; CHR(10)
+	&apos;-------------------------------------------------------------patch&lt;--
+	
+	
+	mContributors() = GetContributors()
+	If UBound(mContributors()) &gt;= 0 Then
+		sMsg = sMsg &amp; Chr(10)
+		sMsg = sMsg &amp; &quot;Contributors:&quot; &amp; Chr(10)
+		sMsg = sMsg &amp; Join(mContributors(), Chr(10))
+	End if
+	
+	mTranslators() = GetTranslators()
+	If UBound(mTranslators()) &gt;= 0 Then
+		sMsg = sMsg &amp; Chr(10)
+		sMsg = sMsg &amp; &quot;Translators:&quot; &amp; Chr(10)
+		sMsg = sMsg &amp; Join(mTranslators(), Chr(10))
+	End if
+	txtAbout.Text = sMsg
+	
+	oDlgAbout.execute
+	
+ExitHere:
+	
+	Exit Sub
+	
+ErrH:	
+	&apos;unexpected error
+	MsgBox &quot;Error &quot; &amp; err &amp; &quot;: &quot; &amp; error$ , 16
+			
+	Resume ExitHere	
+End Sub
+
+
+</script:module>

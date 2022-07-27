@@ -1,0 +1,37 @@
+===================================================================
+BasicAddonBuilder for OpenOffice.org 
+$ Version: 0.6.2 $
+
+Copyright (C) 2006-2008 Paolo Mantovani
+
+Installation instructions
+===================================================================
+
+Getting BasicAddonBuilder
+----------------------
+
+BasicAddonBuilder for LibreOffice is distributed as a UNO package called 
+BasicAddonBuilder_LO_0.6.2.oxt.
+
+You can install the package either for a single user or as a part of a 
+shared OpenOffice.org installation.
+
+To install BasicAddonBuilder for a single user:
+--------------------------------------------
+
+***todo
+
+To install BasicAddonBuilder for all users:
+----------------------------------------
+
+***todo
+
+Uninstall procedures
+--------------------
+
+***todo
+
+Further information
+-------------------
+
+***todo

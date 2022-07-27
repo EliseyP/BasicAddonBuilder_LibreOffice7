@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgProjects" dlg:left="142" dlg:top="77" dlg:width="152" dlg:height="133" dlg:closeable="true" dlg:moveable="true">
+ <dlg:bulletinboard>
+  <dlg:button dlg:id="cmdCancel" dlg:tab-index="2" dlg:left="108" dlg:top="109" dlg:width="40" dlg:height="14" dlg:value="Cancel" dlg:button-type="cancel"/>
+  <dlg:button dlg:id="cmdDelete" dlg:tab-index="3" dlg:disabled="true" dlg:left="108" dlg:top="46" dlg:width="40" dlg:height="14" dlg:value="Delete">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgProjects.cmdDelete_onClick?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+  <dlg:text dlg:id="lblDesc" dlg:tab-index="1" dlg:left="7" dlg:top="4" dlg:width="142" dlg:height="10" dlg:value="Select a BasicAddonBuilder project to open" dlg:multiline="true"/>
+  <dlg:menulist dlg:id="lstProjects" dlg:tab-index="0" dlg:left="5" dlg:top="18" dlg:width="96" dlg:height="105">
+   <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgProjects.lstProjects_itemStateChanged?language=Basic&amp;location=application" script:language="Script"/>
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgProjects.lstProjects_onClick?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:menulist>
+  <dlg:button dlg:id="cmdOpen" dlg:tab-index="4" dlg:disabled="true" dlg:left="108" dlg:top="22" dlg:width="40" dlg:height="14" dlg:value="Open" dlg:button-type="ok"/>
+ </dlg:bulletinboard>
+</dlg:window>

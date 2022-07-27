@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="CtrlToolbarPreview" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $ 
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;	
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;	
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module CtrlToolbarPreview:
+&apos;	
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+&apos;private const
+Private Const SMALL_ICO_SIZE = 16
+Private Const BIG_ICO_SIZE = 26
+
+&apos; Color &quot;theme&quot;
+Private Const PREVIEW_BG_COLOR = &amp;H9C999C
+Private Const TOOLBAR_BG_COLOR = &amp;HEEEEEE
+Private Const TOOLBAR_BD_COLOR = &amp;HC8C8C8
+Private Const TOOLBARTITLE_BG_COLOR = &amp;HBBBBBB
+Private Const BUTTON_BG_COLOR = &amp;HEEEEEE
+Private Const BUTTON_BD_COLOR = &amp;HEEEEEE
+Private Const SEL_BUTTON_BG_COLOR = &amp;HC8C8C8
+Private Const SEL_BUTTON_BD_COLOR = &amp;H0000FF
+Private Const ACT_BUTTON_BG_COLOR = &amp;HC8C8C8
+Private Const ACT_BUTTON_BD_COLOR = &amp;H9C999C
+
+&apos;private vars
+Private iSelectedItemIndex As Integer
+Private iPreviewType As Integer
+Private iCurrentIconSize As Integer
+
+Private oScrollView As Object
+Private oScrollBar As Object
+Private oScrollableArea As Object
+Private oToolbarFrame As Object
+Private oToolbarCaption As Object
+Private oToolbar As Object
+
+Private mToolbarItems()
+
+&apos;private types
+Type ToolbarPreviewItem
+	UnoControl As Object
+	ShowAsTextButton As Boolean
+	PreferredIconURL As String
+	UIElementDescriptor As Object
+End Type
+
+
+&apos;______________________________________________________________________________
+Sub ToolbarPreview_Initialize(oBaseControl As Object, sToolbarTitle As String, iType As Integer)
+
+Dim oScrollViewFrame As Object
+Dim oCModel As Object
+Dim aPosSize As Object
+Dim oListener As Object
+Dim nWidth As Long 
+Dim nHeight As Long
+	
+	&apos;create a child window in the area of the oBaseControl
+	aPosSize = GetRect(0, 0, oBaseControl.Size.Width, oBaseControl.Size.Height)
+	oScrollViewFrame = CreateChildFrame(oBaseControl.Peer, aPosSize)
+	
+	&apos;create a control container service that will host the whole ToolbarPreview
+	oScrollView = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainer&quot;)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainerModel&quot;)
+	oCModel.Border = 1 &apos; 3D border
+	oCModel.BackgroundColor = PREVIEW_BG_COLOR
+	oScrollView.setModel(oCModel)
+	
+	&apos;attach the controlcontainter to the ScrollView Frame
+	oScrollView.createPeer(oScrollViewFrame.ContainerWindow.Toolkit, oScrollViewFrame.ContainerWindow)
+	oScrollViewFrame.setComponent(oScrollView, Null)
+	
+	&apos;store the size of the control container for later use
+	nWidth = oScrollView.Size.Width
+	nHeight = oScrollView.Size.Height
+
+	&apos;add a scrollbar in the bottom side of the scroll-view container
+	oScrollBar = CreateUnoService(&quot;com.sun.star.awt.UnoControlScrollBar&quot;)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlScrollBarModel&quot;)
+	oScrollBar.setModel(oCModel)
+	oScrollView.addControl(&quot;ScrollBar&quot;, oScrollBar)
+	&apos;position and setup of the control
+	oScrollBar.setPosSize(0, nHeight - 20, nWidth, 20, com.sun.star.awt.PosSize.POSSIZE) 
+	With oScrollBar.Model
+		.Border = -1 &apos;no border
+		.LiveScroll = True
+		.Orientation = com.sun.star.awt.ScrollBarOrientation.HORIZONTAL
+		.BlockIncrement = 100
+		.LineIncrement = 10
+	End With
+	&apos;listen for adjustment events
+	oListener = CreateUnoListener(&quot;ToolbarPreviewScrollbar_&quot;, &quot;com.sun.star.awt.XAdjustmentListener&quot;)
+	oScrollBar.AddAdjustmentListener(oListener)
+	
+	&apos;Add another container that will be the scrollable area
+	oScrollableArea = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainer&quot;)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainerModel&quot;)
+	oCModel.BackgroundColor = PREVIEW_BG_COLOR
+	oScrollableArea.setModel(oCModel)
+	oScrollView.addControl(&quot;ScrollableArea&quot;, oScrollableArea)
+	&apos;position and setup of the control
+	oScrollableArea.setPosSize(0, 0, nWidth, nHeight - 20, com.sun.star.awt.PosSize.POSSIZE)
+	
+	&apos;Add another container that will contain the whole toolbar
+	oToolbarFrame = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainer&quot;)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainerModel&quot;)
+	oCModel.BorderColor = TOOLBAR_BD_COLOR
+	oCModel.Border = 2 &apos;flat border
+	oToolbarFrame.setModel(oCModel)
+	oScrollableArea.addControl(&quot;ToolbarFrame&quot;, oToolbarFrame)
+	
+	&apos;Add another container that will host the toolbar-buttons
+	oToolbar = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainer&quot;)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainerModel&quot;)
+	oCModel.Border = 0
+	oCModel.BackgroundColor = TOOLBAR_BG_COLOR
+	oToolbar.setModel(oCModel)
+	oToolbarFrame.addControl(&quot;Toolbar&quot;, oToolbar)
+	
+	&apos;add a label with the toolbar title
+	oToolbarCaption = CreateUnoService(&quot;com.sun.star.awt.UnoControlFixedText&quot;)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlFixedTextModel&quot;)
+	oCModel.BackgroundColor = TOOLBARTITLE_BG_COLOR
+	oCModel.Label = sToolbarTitle
+	oCModel.HelpText = sToolbarTitle
+	oToolbarCaption.setModel(oCModel)
+	oToolbarFrame.addControl(&quot;Caption&quot;, oToolbarCaption)
+	
+	&apos;update toolbar properties 
+	ToolbarPreview_SelectItemPos(-1) &apos;no buttons - no selection
+	ToolbarPreview_SetPreviewType(iType)
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub ToolbarPreviewScrollbar_adjustmentValueChanged(oEvent As Object)
+Dim nX as Long, nY as Long
+	
+	nX = -(oEvent.Value)
+	nY = oScrollableArea.PosSize.Y &apos;remains the same
+	
+	oScrollableArea.setPosSize(nX, nY, 0, 0, com.sun.star.awt.PosSize.POS)
+	
+End Sub
+
+&apos;______________________________________________________________________________
+Sub ToolbarPreviewScrollbar_disposing(oEvent As Object)
+&apos;nothing to do
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub ToolbarPreview_AddItem(iPos As Integer, aDescriptor As Object)
+Dim oPreviewButton As Object
+Dim oBtnImage As Object
+Dim oBtnLabel As Object
+dim oBtnSeparator As Object
+Dim oCModel As Object
+Dim oMouseListener As Object
+
+	oPreviewButton = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainer&quot;)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlContainerModel&quot;)
+	oCModel.Border = 2
+	oCModel.BackgroundColor = BUTTON_BG_COLOR
+	oPreviewButton.setModel(oCModel)
+	
+	oMouseListener = CreateUnoListener(&quot;ToolbarPreviewButton_&quot;, &quot;com.sun.star.awt.XMouseListener&quot;)
+	
+	If Not aDescriptor.IsSeparator Then
+			
+		&apos;insert the image control for the button icon
+		oBtnImage = CreateUnoService(&quot;com.sun.star.awt.UnoControlImageControl&quot;)
+		oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlImageControlModel&quot;)
+		oCModel.Border = 0
+		
+		oBtnImage.setModel(oCModel)
+		oBtnImage.Visible = False
+		oPreviewButton.addControl(&quot;ButtonImage&quot;, oBtnImage)
+		&apos;listen for mouse clicks
+		oBtnImage.addMouseListener(oMouseListener)
+		
+		&apos;insert a label for the button text
+		oBtnLabel = CreateUnoService(&quot;com.sun.star.awt.UnoControlFixedText&quot;)
+		oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlFixedTextModel&quot;)
+		oBtnLabel.setModel(oCModel)
+		oPreviewButton.addControl(&quot;ButtonLabel&quot;, oBtnLabel)
+		&apos;listen for mouse clicks
+		oBtnLabel.addMouseListener(oMouseListener)
+	Else
+		oBtnSeparator = CreateUnoService(&quot;com.sun.star.awt.UnoControlFixedLine&quot;)
+		oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControlFixedLineModel&quot;)
+		oCModel.Orientation = 1 &apos;Vertical Fixed Line
+		oBtnSeparator.setModel(oCModel)
+		oPreviewButton.addControl(&quot;VertLine&quot;, oBtnSeparator)
+		&apos;listen for mouse clicks
+		oBtnSeparator.addMouseListener(oMouseListener)
+	End If
+	
+	oToolbar.addControl(&quot;PreviewButton&quot;, oPreviewButton)
+		
+	&apos;add the toolbar button description to the mToolbarItems() array
+	Dim aButton As New ToolbarPreviewItem
+	aButton.UnoControl = oPreviewButton
+	aButton.ShowAsTextButton = True &apos;this is the default until you set an icon
+	aButton.UIElementDescriptor = aDescriptor
+	
+	InsertByIndex(mToolbarItems(), iPos, aButton)
+	
+End Sub
+
+&apos;______________________________________________________________________________
+Sub ToolbarPreviewButton_mousePressed(oEvent As Object)
+End Sub
+
+&apos;______________________________________________________________________________
+Sub ToolbarPreviewButton_mouseReleased(oEvent As Object)
+Dim iPos As Integer
+Dim aItem As Object
+
+	&apos;get the new selected item index
+	iPos = GetToolbarItemIndex(oEvent.Source.Context)
+	
+	&apos;if double click edit item properties
+	If oEvent.ClickCount = 2 Then
+		aItem = mToolbarItems(iPos)
+		ShowItemPropertiesDialog(aItem.UIElementDescriptor)	
+	End If
+	
+	&apos;update selection
+	ToolbarPreview_SelectItemPos(iPos)
+	
+End Sub
+
+&apos;______________________________________________________________________________
+Sub ToolbarPreviewButton_mouseEntered(oEvent As Object)
+
+	If oEvent.Source.Context.Model.BorderColor = BUTTON_BD_COLOR Then
+		oEvent.Source.Context.Model.BackgroundColor = ACT_BUTTON_BG_COLOR
+		oEvent.Source.Context.Model.BorderColor = ACT_BUTTON_BD_COLOR
+	End If
+End Sub
+
+&apos;______________________________________________________________________________
+Sub ToolbarPreviewButton_mouseExited(oEvent As Object)
+
+	If oEvent.Source.Context.Model.BorderColor = ACT_BUTTON_BD_COLOR Then
+		oEvent.Source.Context.Model.BackgroundColor = BUTTON_BG_COLOR
+		oEvent.Source.Context.Model.BorderColor = BUTTON_BD_COLOR
+	End If
+End Sub
+
+&apos;______________________________________________________________________________
+Sub ToolbarPreviewButton_disposing(oEvent As Object)
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub ToolbarPreview_Remove(iPos As Integer)
+Dim oControl As Object
+	
+	oControl = mToolbarItems(iPos).UnoControl
+	oControl.Visible = False &apos;force redraw the container 
+	oToolbar.removeControl(oControl)
+	RemoveByIndex(mToolbarItems(), iPos)
+	
+	&apos;Avoid unconsistent situations
+	If iSelectedItemIndex &gt; UBound(mToolbarItems()) Then 
+		iSelectedItemIndex = UBound(mToolbarItems())
+	End If
+
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub ToolbarPreview_MoveLeft(iPos As Integer)
+	SwapElements(mToolbarItems(), iPos-1, iPos)
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub ToolbarPreview_MoveRight(iPos As Integer)
+	SwapElements(mToolbarItems(), iPos, iPos+1)
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub ToolbarPreview_SelectItemPos(iPos As Integer)
+	iSelectedItemIndex = iPos
+	ToolbarPreview_UpdateControls()
+	
+	&apos;callback event handlers
+	ToolbarPreview_SelectionChanged(iPos)
+End Sub
+
+&apos;______________________________________________________________________________
+Function ToolbarPreview_IsSeparator(iPos As Integer) As Boolean
+Dim aItem As Object
+	On Error Resume Next
+	aItem = mToolbarItems(iPos)
+	ToolbarPreview_IsSeparator = aItem.UIElementDescriptor.IsSeparator
+End Function
+
+
+&apos;______________________________________________________________________________
+Function ToolbarPreview_GetSelectedItem() As Object
+Dim aItem As Object
+	aItem = mToolbarItems(iSelectedItemIndex)
+	ToolbarPreview_GetSelectedItem = aItem.UIElementDescriptor
+End Function
+
+
+&apos;______________________________________________________________________________
+Function ToolbarPreview_GetSelectedItemPos() As Integer
+	ToolbarPreview_GetSelectedItemPos = iSelectedItemIndex
+End Function
+
+
+&apos;______________________________________________________________________________
+Function ToolbarPreview_GetItemCount() As Integer
+	ToolbarPreview_GetItemCount = UBound(mToolbarItems()) + 1
+End Function
+
+
+&apos;______________________________________________________________________________
+Function ToolbarPreview_HasElements() As Boolean
+	ToolbarPreview_HasElements = CBool(ToolbarPreview_GetItemCount)
+End Function
+
+
+&apos;______________________________________________________________________________
+Sub ToolbarPreview_SetPreviewType(iType)
+	iPreviewType = iType
+	
+	Select case iPreviewType
+		Case LC_SMALL_ICO : iCurrentIconSize = SMALL_ICO_SIZE			
+		Case HC_SMALL_ICO : iCurrentIconSize = SMALL_ICO_SIZE			
+		Case LC_BIG_ICO : iCurrentIconSize = BIG_ICO_SIZE			
+		Case HC_BIG_ICO : iCurrentIconSize = BIG_ICO_SIZE
+	End Select
+			
+	ToolbarPreview_UpdateControls()	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub ToolbarPreview_SetToolbarTitle(sText As String)
+	oToolbarCaption.Text = sText
+	oToolbarCaption.Model.HelpText = sText
+End Sub
+
+
+&apos;______________________________________________________________________________
+Function ToolbarPreview_getToolbarTitle() As String
+	ToolbarPreview_getToolbarTitle = oToolbarCaption.Text
+End Function
+
+
+&apos;______________________________________________________________________________
+Sub ToolbarPreview_UpdateControls()
+
+Dim aItem As Object
+Dim sImgUrl As String
+Dim iBtnWidth As Integer
+Dim iBtnHeight As Integer
+
+Dim iBtnCount As Integer
+Dim oBtnImage As Object
+Dim oBtnLabel As Object
+Dim aRect As Object
+Dim I As Integer
+
+
+
+CONST ICO_MARGIN = 4
+CONST BD_SIZE = 1
+
+	iBtnHeight = iCurrentIconSize + 2*ICO_MARGIN + 2*BD_SIZE &apos;icon size is declared at module level
+	iBtnCount = ToolbarPreview_GetItemCount
+
+	Dim nTbXCursor As Long
+	nTbXCursor = ICO_MARGIN &apos;adds a left margin
+	For I = LBound(mToolbarItems()) To UBound(mToolbarItems())
+		aItem = mToolbarItems(I)
+		aItem.UnoControl.Visible = False &apos;force redraw
+			
+		If Not aItem.UIElementDescriptor.IsSeparator Then &apos;item is a toolbar button
+		
+			Select case iPreviewType
+				Case LC_SMALL_ICO : sImgUrl = aItem.UIElementDescriptor.LC16IconUrl
+				Case HC_SMALL_ICO : sImgUrl = aItem.UIElementDescriptor.HC16IconUrl
+				Case LC_BIG_ICO : sImgUrl = aItem.UIElementDescriptor.LC26IconUrl
+				Case HC_BIG_ICO : sImgUrl = aItem.UIElementDescriptor.HC26IconUrl
+			End Select
+			
+			aItem.ShowAsTextButton = (sImgUrl = &quot;&quot;)
+			
+			oBtnImage = aItem.UnoControl.getControl(&quot;ButtonImage&quot;)
+			oBtnImage.Model.ImageUrl = sImgUrl
+			oBtnImage.Model.HelpText = aItem.UIElementDescriptor.DefaultText
+			
+			oBtnLabel = aItem.UnoControl.getControl(&quot;ButtonLabel&quot;)
+			oBtnLabel.Model.Label = aItem.UIElementDescriptor.DefaultText
+			oBtnLabel.Model.HelpText = aItem.UIElementDescriptor.DefaultText
+			
+			If aItem.ShowAsTextButton Then
+				oBtnImage.Visible = False
+				oBtnLabel.Visible = True
+				oBtnLabel.setPosSize(ICO_MARGIN, (iBtnHeight - oBtnLabel.PreferredSize.Height)/2, _
+					oBtnLabel.PreferredSize.Width, oBtnLabel.PreferredSize.Height, com.sun.star.awt.PosSize.POSSIZE)
+				iBtnWidth = oBtnLabel.PosSize.Width + 2*ICO_MARGIN + 2*BD_SIZE
+			Else
+				oBtnImage.Visible = True
+				oBtnLabel.Visible = False				
+				oBtnImage.setPosSize(ICO_MARGIN, ICO_MARGIN, iCurrentIconSize, iCurrentIconSize, com.sun.star.awt.PosSize.POSSIZE)
+				iBtnWidth = iBtnHeight
+			End If
+			
+			aItem.UnoControl.setPosSize(nTbXCursor, 2, iBtnWidth, iBtnHeight, com.sun.star.awt.PosSize.POSSIZE)
+		Else
+
+			oBtnImage = aItem.UnoControl.getControl(&quot;VertLine&quot;)
+			oBtnImage.setPosSize(0, ICO_MARGIN, iCurrentIconSize/2, iCurrentIconSize, com.sun.star.awt.PosSize.POSSIZE)
+			iBtnWidth = iCurrentIconSize/2 + 2
+			aItem.UnoControl.setPosSize(nTbXCursor, 2, iBtnWidth, iBtnHeight, com.sun.star.awt.PosSize.POSSIZE)
+		End If
+		
+		nTbXCursor = nTbXCursor + aItem.UnoControl.PosSize.Width
+		
+		If I = iSelectedItemIndex Then
+			With aItem.UnoControl.Model
+				.BackgroundColor = SEL_BUTTON_BG_COLOR
+				.BorderColor = SEL_BUTTON_BD_COLOR
+			End With
+		Else
+			With aItem.UnoControl.Model
+				.BackgroundColor = BUTTON_BG_COLOR
+				.BorderColor = BUTTON_BD_COLOR
+			End With
+		End If
+		
+		aItem.UnoControl.Visible = True &apos;force redraw				
+	Next I
+	
+	If nTbXCursor &lt; 20 Then 
+		nTbXCursor = 20
+	End If
+	
+	&apos;dimension the toolbar
+	aRect = CreateUnoStruct(&quot;com.sun.star.awt.Rectangle&quot;)
+	With aRect
+		.X = 2
+		.Y = 2 + oToolbarCaption.MinimumSize.Height
+		.Width = nTbXCursor + 4 &apos;adds a right margin
+		.Height = 2 + iBtnHeight + 2
+	End With
+	oToolbar.setPosSize(aRect.X, aRect.Y, aRect.Width, aRect.Height, com.sun.star.awt.PosSize.POSSIZE)
+
+	&apos;dimension the toolbar caption
+	aRect = CreateUnoStruct(&quot;com.sun.star.awt.Rectangle&quot;)
+	With aRect
+		.X = 2
+		.Y = 2
+		.Width = oToolbar.Size.Width
+		.Height = oToolbarCaption.MinimumSize.Height
+	End With
+	oToolbarCaption.setPosSize(aRect.X, aRect.Y, aRect.Width, aRect.Height, com.sun.star.awt.PosSize.POSSIZE)
+
+	&apos;dimension the toolbar frame
+	aRect = CreateUnoStruct(&quot;com.sun.star.awt.Rectangle&quot;)
+	With aRect
+		.X = 16
+		.Y = oScrollableArea.Size.Height/2 - (4 + oToolbarCaption.Size.Height + oToolbar.Size.Height + 4)/2
+		.Width = 3 + oToolbar.Size.Width + 3
+		.Height = 3 + oToolbarCaption.Size.Height + oToolbar.Size.Height + 3
+	End With
+	oToolbarFrame.setPosSize(aRect.X, aRect.Y, aRect.Width, aRect.Height, com.sun.star.awt.PosSize.POSSIZE)
+
+	&apos;dimension the scrollable-area
+	With aRect
+		.Width = 16 + oToolbarFrame.Size.Width + 16
+		.Height = oScrollableArea.Size.Height
+	End With
+	oScrollableArea.setPosSize(0, 0, aRect.Width, aRect.Height, com.sun.star.awt.PosSize.SIZE)
+	
+	&apos;reposition the scrollable-area if necessary
+	Dim X1, X2
+	X1 = oScrollableArea.PosSize.X + oScrollableArea.Size.Width
+	X2 = oScrollView.Size.Width
+	if X1 &lt; X2 Then &apos;must reposition
+		aRect.Y = oScrollableArea.PosSize.Y &apos; Y does not change
+		aRect.X = oScrollView.Size.Width - oScrollableArea.Size.Width
+		If aRect.X &gt; 0 Then aRect.X = 0
+		oScrollableArea.setPosSize(aRect.X, aRect.Y, 0, 0, com.sun.star.awt.PosSize.POS)
+		oScrollbar.Value = -(aRect.X)
+	End If
+
+	&apos;update the scrollbar control
+	oScrollbar.Maximum = oScrollableArea.Size.Width
+	oScrollbar.VisibleSize = oScrollView.Size.Width
+
+End Sub
+
+
+&apos;______________________________________________________________________________
+Function GetToolbarItemIndex(oControl As Object) As Integer
+Dim nIndex As Integer
+Dim aItem As Variant
+Dim I As Integer
+
+	nIndex = -1
+	
+	For I = LBound(mToolbarItems()) To UBound(mToolbarItems())
+		aItem = mToolbarItems(I)
+		If EqualUnoObjects(aItem.UnoControl, oControl) Then
+			nIndex = I
+			Exit For
+		End If
+	Next I
+	
+	GetToolbarItemIndex = nIndex
+End Function
+
+
+</script:module>

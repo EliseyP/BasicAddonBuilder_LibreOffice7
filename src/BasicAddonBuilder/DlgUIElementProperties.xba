@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgUIElementProperties" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $ 
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;	
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;	
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module ItemProperties:
+&apos;	
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+&apos; private vars
+Private oItemPropertiesDialog As Object
+Private aUIElementDescriptor As Object
+
+
+
+&apos;______________________________________________________________________________
+Function ShowItemPropertiesDialog(aDescriptor As UIElementDescriptor, Optional sDialogTitle As String) As Integer
+Dim oLib As Object
+Dim oLibDialog As Object
+Dim oDlg As Object
+Dim oDlgModel As Object
+Dim iDialogResult As Integer
+
+	DialogLibraries.LoadLibrary(&quot;BasicAddonBuilder&quot;)
+	oLib = DialogLibraries.GetByName(&quot;BasicAddonBuilder&quot;)
+	oLibDialog = oLib.GetByName(&quot;DlgUIElementProperties&quot;)
+	
+	oDlg = CreateUnoDialog(oLibDialog)
+	oDlgModel = oDlg.Model
+	
+	&apos;put the dialog in the scope of the whole module
+	oItemPropertiesDialog = oDlg
+	
+	&apos;load icons and images
+	With oDlgModel
+		.cmdSelectMacro.ImageUrl = GetResourceUrl(&quot;SelectMacroImage&quot;)
+		.cmdTranslate.ImageUrl = GetResourceUrl(&quot;TranslateImageBig&quot;)
+		.chkContextWriter.ImageUrl = GetResourceUrl(&quot;WriterImage&quot;)
+		.chkContextCalc.ImageUrl = GetResourceUrl(&quot;CalcImage&quot;)
+		.chkContextImpress.ImageUrl = GetResourceUrl(&quot;ImpressImage&quot;)
+		.chkContextDraw.ImageUrl = GetResourceUrl(&quot;DrawImage&quot;)
+		.chkContextBase.ImageUrl = GetResourceUrl(&quot;BaseImage&quot;)
+		.chkContextMath.ImageUrl = GetResourceUrl(&quot;MathImage&quot;)
+		.chkContextBasicIDE.ImageUrl = GetResourceUrl(&quot;BasicIDEImage&quot;)
+	End With
+	
+	&apos;translate dialog UI
+	LocalizeDialog(oDlg)
+	
+	&apos;set the dialog title
+	If Not IsMissing(sDialogTitle) Then
+		oDlg.Title = sDialogTitle
+	End If
+	
+	&apos;Load values from descriptor to the dialog controls
+	With oDlgModel
+		.txtDefaultText.Text = aDescriptor.DefaultText
+		.txtCommand.Text = MacroDescriptorToUiRepresentation(aDescriptor.MacroDescriptor)
+		.imgLC26.ImageUrl = aDescriptor.LC26IconUrl
+		.imgLC16.ImageUrl = aDescriptor.LC16IconUrl
+		.imgHC26.ImageUrl = aDescriptor.HC26IconUrl
+		.imgHC16.ImageUrl = aDescriptor.HC16IconUrl
+	End With
+	SetContextFromString(aDescriptor.OfficeContext)
+	
+	&apos;prepare the dialog controls for the specific item type
+	Dim sType As String
+	
+	sType = &quot;item&quot; &apos;default: a simple menu item or toolbar button
+	If aDescriptor.IsGroup Then sType = &quot;group&quot;
+	If aDescriptor.IsSeparator Then sType = &quot;separator&quot;
+	EnableControls(sType)
+	
+	oDlgModel.cmdOk.Enabled = _
+		(oDlgModel.txtDefaultText.Text &lt;&gt; &quot;&quot; And _
+		(oDlgModel.txtCommand.Text &lt;&gt; &quot;&quot; Or Not oDlgModel.txtCommand.Enabled))
+	
+	&apos;put the descriptor in the scope of the whole module, 
+	&apos;so it can be modified also from other procedures of this dialog
+	aUIElementDescriptor = aDescriptor
+	
+	&apos;execute the dialog
+	iDialogResult = oDlg.Execute()
+	
+	&apos;get values from dialog
+	If iDialogResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+		&apos;fill the descriptor structure (basic UDT)
+		With aDescriptor
+			.DefaultText = oDlgModel.txtDefaultText.Text
+			.MacroDescriptor = MacroDescriptorFromUiRepresentation(oDlgModel.txtCommand.Text)
+			.LC26IconUrl = oDlgModel.imgLC26.ImageUrl
+			.LC16IconUrl = oDlgModel.imgLC16.ImageUrl
+			.HC26IconUrl = oDlgModel.imgHC26.ImageUrl
+			.HC16IconUrl = oDlgModel.imgHC16.ImageUrl
+			.OfficeContext = PrepareContextString(oDlgModel)
+		End With
+	End if
+	
+	&apos;exit with the dialog result
+	ShowItemPropertiesDialog = iDialogResult
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+&apos;EVENT HANDLERS SECTION
+&apos;______________________________________________________________________________
+
+Sub txtDefaultText_textModified(oEvent As Object)
+Dim oDlgModel As Object
+
+	&apos;update the descriptor
+	aUIElementDescriptor.DefaultText = oEvent.source.Text
+	
+	oDlgModel = oItemPropertiesDialog.Model
+	
+	oDlgModel.cmdTranslate.Enabled = (oEvent.source.Text &lt;&gt; &quot;&quot;)
+	oDlgModel.cmdOk.Enabled = _
+		(oDlgModel.txtDefaultText.Text &lt;&gt; &quot;&quot; And _
+		(oDlgModel.txtCommand.Text &lt;&gt; &quot;&quot; Or Not oDlgModel.txtCommand.Enabled))
+		
+End Sub
+
+&apos;______________________________________________________________________________
+Sub txtCommand_textModified(oEvent As Object)
+Dim oDlgModel As Object
+
+	oDlgModel = oItemPropertiesDialog.Model
+	oDlgModel.cmdOk.Enabled = _
+		(oDlgModel.txtDefaultText.Text &lt;&gt; &quot;&quot; And _
+		(oDlgModel.txtCommand.Text &lt;&gt; &quot;&quot; Or Not oDlgModel.txtCommand.Enabled))
+
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub imgIcon_onClick(oEvent As Object)
+
+Dim sDlgTitle As String
+Dim iDlgResult As Integer
+Dim sImgUrl As String
+
+	sDlgTitle = GetResString(&quot;Select &quot; &amp; oEvent.source.Model.Tag)
+	iDlgResult = ShowImagePicker(sImgUrl, sDlgTitle)
+	If iDlgResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+		oEvent.source.Model.ImageUrl = sImgUrl
+	End if
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub cmdSelectMacro_onClick(oEvent As Object)
+Dim oDlg As Object
+Dim oDlgModel As Object
+Dim aDesc As Object
+	
+	
+	oDlg = oItemPropertiesDialog
+	oDlgModel = oDlg.Model
+	aDesc = MacroDescriptorFromUiRepresentation(oDlgModel.txtCommand.Text)
+	
+	If ShowMacroPicker(aDesc) = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+		&apos;modify the text in the control view so the textModified event is raised
+		oDlg.getControl(&quot;txtCommand&quot;).Text = MacroDescriptorToUiRepresentation(aDesc)
+	End If
+	
+	oDlgModel.cmdOk.Enabled = _
+		(oDlgModel.txtDefaultText.Text &lt;&gt; &quot;&quot; And _
+		(oDlgModel.txtCommand.Text &lt;&gt; &quot;&quot; Or Not oDlgModel.txtCommand.Enabled))
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub cmdTranslate_onClick(oEvent As Object)
+Dim oDlg As Object
+Dim sDefaultText As String
+Dim mTxtTranslations()
+Dim iDialogResult As Integer
+
+	oDlg = oItemPropertiesDialog
+	sDefaultText = aUIElementDescriptor.DefaultText
+	mTxtTranslations() = aUIElementDescriptor.TextTranslations()
+	
+	iDialogResult = ShowTranslateDialog(sDefaultText, mTxtTranslations(), False, Array())
+	
+	If iDialogResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+		aUIElementDescriptor.DefaultText = sDefaultText
+		aUIElementDescriptor.TextTranslations() = mTxtTranslations()
+		
+		&apos;modify the text in the control view so the textModified event is raised
+		oDlg.getControl(&quot;txtDefaultText&quot;).Text = sDefaultText
+	End If
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+&apos;HELPER FUNCTIONS
+&apos;______________________________________________________________________________
+Function PrepareContextString() As String
+Dim mContext()
+Dim oDlgModel As Object
+
+	oDlgModel = oItemPropertiesDialog.Model
+
+	&apos;prepare the context string
+	If oDlgModel.chkContextWriter.State = 1 Then AppendItem(mContext(), CTX_WRITER)
+	If oDlgModel.chkContextCalc.State = 1 Then AppendItem(mContext(), CTX_CALC)
+	If oDlgModel.chkContextDraw.State = 1 Then AppendItem(mContext(), CTX_DRAW)
+	If oDlgModel.chkContextImpress.State = 1 Then AppendItem(mContext(), CTX_IMPRESS)
+	If oDlgModel.chkContextMath.State = 1 Then AppendItem(mContext(), CTX_MATH)
+	If oDlgModel.chkContextBase.State = 1 Then AppendItem(mContext(), CTX_BASE)
+	If oDlgModel.chkContextBasicIDE.State = 1 Then AppendItem(mContext(), CTX_BASICIDE)
+
+
+	PrepareContextString = Join(mContext(), &quot;,&quot;)
+End Function
+
+&apos;______________________________________________________________________________
+Sub SetContextFromString(sContextString As String)
+Dim oDlgModel As Object
+Dim mContext()
+Dim sCtxItem As String
+
+	oDlgModel = oItemPropertiesDialog.Model
+		
+	&apos;reset all checkboxes
+	With oDlgModel
+		.chkContextWriter.State = 0
+		.chkContextCalc.State = 0
+		.chkContextDraw.State = 0
+		.chkContextImpress.State = 0
+		.chkContextMath.State = 0
+		.chkContextBase.State = 0
+		.chkContextBasicIDE.State = 0
+	End With
+	
+	If sContextString = &quot;&quot; Then Exit Sub
+	
+	&apos;setup the new context representation
+	mContext() = Split(sContextString, &quot;,&quot;)
+	For Each sCtxItem In mContext()
+		Select Case sCtxItem
+			Case CTX_WRITER : oDlgModel.chkContextWriter.State = 1
+			Case CTX_CALC : oDlgModel.chkContextCalc.State = 1
+			Case CTX_DRAW : oDlgModel.chkContextDraw.State = 1
+			Case CTX_IMPRESS : oDlgModel.chkContextImpress.State = 1
+			Case CTX_MATH : oDlgModel.chkContextMath.State = 1
+			Case CTX_BASE : oDlgModel.chkContextBase.State = 1
+			Case CTX_BASICIDE : oDlgModel.chkContextBasicIDE.State = 1
+		End Select
+	Next sCtxItem
+	
+End Sub
+
+&apos;______________________________________________________________________________
+Sub EnableControls(sType As String)
+Dim oDlgModel As Object
+
+	oDlgModel = oItemPropertiesDialog.Model
+	
+	Select Case sType
+		Case &quot;item&quot;
+			&apos;nothing to do
+
+		Case &quot;group&quot;
+			With oDlgModel
+				.lblCommand.Enabled = False
+				.txtCommand.Enabled = False
+				.cmdSelectMacro.Enabled = False
+			End With
+		
+		Case &quot;separator&quot;
+			With oDlgModel
+				.lblDefaultText.Enabled = False
+				.lblCommand.Enabled = False
+				.lblLC.Enabled = False
+				.lblHC.Enabled = False
+				.lblLC26.Enabled = False
+				.lblLC16.Enabled = False
+				.lblHC26.Enabled = False
+				.lblHC16.Enabled = False
+				.cmdTranslate.Enabled = False
+				.cmdSelectMacro.Enabled = False
+				.txtDefaultText.Enabled = False
+				.txtCommand.Enabled = False
+				.imgLC26.Enabled = False
+				.imgLC16.Enabled = False
+				.imgHC26.Enabled = False
+				.imgHC16.Enabled = False
+			End With
+		
+	End Select
+End Sub
+
+
+
+</script:module>

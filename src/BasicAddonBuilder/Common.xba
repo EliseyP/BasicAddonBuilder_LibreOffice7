@@ -1,0 +1,905 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Common" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module Common:
+&apos;	Contains functions used from other modules
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+Private mLocaleDescriptions()
+Private mLocaleIDs()
+
+Declare Function GetLongPathName Lib &quot;kernel32.dll&quot; Alias &quot;GetLongPathNameA&quot; ( _
+ByVal lpszShortPath As String, lpszLongPath As String, ByVal cchBuffer As Long) As Long
+
+sub test
+print PadLeft(1, 0, 3)
+end sub
+
+&apos;______________________________________________________________________________
+&apos;  from ooo 3.2 this function causes a crash - DON&apos;T USE
+Function FixDOSFilePath(ByVal sDOSFilePath As String) As String
+Dim lLen As Long
+Dim sBuffer As String
+	sBuffer = String(260, Chr(0))
+	lLen = GetLongPathName(sDOSFilePath, sBuffer, Len(sBuffer))
+	FixDOSFilePath = Left(sBuffer, lLen)
+End Function
+
+
+&apos;______________________________________________________________________________
+Function CreateChildFrame(oParentWin As Object, aPosSize As Object) As Object
+Dim oChildWin As Object
+Dim oToolkit As Object
+Dim oChildFrame As Object
+
+	oToolkit = oParentWin.getToolkit
+	
+	Dim aDescriptor as new com.sun.star.awt.WindowDescriptor
+	With aDescriptor
+		.Type = com.sun.star.awt.WindowClass.SIMPLE
+		.WindowServiceName = &quot;&quot;
+		&apos;.ParentIndex = 0
+		.Parent = oParentWin
+		.Bounds = aPosSize
+		.WindowAttributes = com.sun.star.awt.WindowAttribute.SHOW &apos;+ com.sun.star.awt.WindowAttribute.BORDER
+	End With
+	
+	oChildWin = oToolkit.createWindow(aDescriptor)
+	
+	oChildFrame = createUnoService(&quot;com.sun.star.frame.Frame&quot;)
+	oChildFrame.initialize(oChildWin) 
+	
+	CreateChildFrame = oChildFrame
+  
+End Function
+
+&apos;______________________________________________________________________________
+Function GetRect(nX, nY, nWidth, nHeight) As Object
+Dim aRect as new com.sun.star.awt.Rectangle
+	
+	With aRect
+		.X = nX
+		.Y = nY
+		.Width = nWidth
+		.Height = nHeight
+	End With
+	
+	GetRect = aRect
+End Function
+
+
+&apos;______________________________________________________________________________
+Function PadRight(sText As String, sChar As String, iLen As Integer) As String
+	If iLen &lt; Len(sText) Then iLen = Len(sText)
+	sText = sText &amp; String(iLen, sChar)
+	sText = Left(sText, iLen)
+	PadRight = sText
+End Function
+
+
+&apos;______________________________________________________________________________
+Function PadLeft(sText As String, sChar As String, iLen As Integer) As String
+	If iLen &lt; Len(sText) Then iLen = Len(sText)
+	sText = String(iLen, sChar) &amp; sText
+	sText = Right(sText, iLen)
+	PadLeft = sText
+End Function
+
+
+&apos;______________________________________________________________________________
+&apos;quick and dirty...
+Function StringReplace(ByVal sText As String, sOld As String, sNew As String) As String
+	StringReplace = Join(Split(sText,sOld),sNew)	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function FlattenString(sText As String) as String
+&apos;replaces any non alphanumeric char with an underscore charachter
+Dim oTextSearch As Object
+Dim iPos As Integer
+Dim aSearchResult As Object
+Dim iStart As Integer
+Dim iLen As Integer
+
+	sText = Trim(sText)
+
+	oTextSearch = CreateUnoService(&quot;com.sun.star.util.TextSearch&quot;)
+	Dim aSrcOpt As New com.sun.star.util.SearchOptions
+	With aSrcOpt
+		.algorithmType = com.sun.star.util.SearchAlgorithms.REGEXP
+		.searchFlag = com.sun.star.util.SearchFlags.REG_EXTENDED
+	End With
+	aSrcOpt.searchString = &quot;[^A-Za-z0-9]*&quot;
+	oTextSearch.setOptions(aSrcOpt)
+	
+	Do 
+		aSearchResult = oTextSearch.searchForward(sText, iPos, Len(sText)-1 )
+		If aSearchResult.subRegExpressions &gt; 0 Then
+			iStart = aSearchResult.startOffset(0)+1
+			iLen = aSearchResult.endOffset(0) - aSearchResult.StartOffset(0)
+			&apos;repace the found sub-string
+			Mid(sText, iStart, iLen, String(iLen, &quot;_&quot;))		
+			iPos = iStart + 1
+		End If
+	Loop While aSearchResult.subRegExpressions &gt; 0
+	
+	FlattenString = sText
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Sub AppendItem(mList(), vItem)
+Dim iMax As Long
+	
+	iMax = UBound(mList())
+	iMax = iMax + 1
+	Redim Preserve mList(iMax)
+	mList(iMax) = vItem
+
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub InsertByIndex(mList(), nIndex, vItem)
+Dim iMin As Long
+Dim iMax As Long
+Dim I As Long
+
+	iMin = LBound(mList())
+	iMax = UBound(mList()) + 1
+	
+	If nIndex &gt;= iMax Then
+		AppendItem(mList(), vItem)
+	Else	
+		Dim mLocalList(iMin To iMax)
+		For I = iMin To iMax
+			If I &lt; nIndex Then 
+				mLocalList(I) = mList(I)
+			ElseIf I &gt; nIndex Then 
+				mLocalList(I) = mList(I-1)
+			Else
+				mLocalList(I) = vItem
+			End If
+		Next I
+		mList() = mLocalList()
+	End If
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Sub RemoveByIndex(mList(), nIndex)
+Dim iMin As Long
+Dim iMax As Long
+Dim I As Long
+
+ 	iMin = LBound(mList())
+ 	iMax = UBound(mList())
+	If nIndex &gt;= iMin And nIndex &lt;= iMax Then
+		If iMax-iMin &gt; 0 Then
+			For I = nIndex To iMax-1
+				SwapElements(mList(), I, I+1)
+			Next I
+			Redim Preserve mList(iMin To iMax - 1)
+			
+		Else &apos;the list contains only 1 element or is empty
+			Redim mList()
+		End If
+	End if
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+&apos;quick and dirty 2...
+Sub RemoveItemFromStringList(mList(), sItem As String)
+Dim sSep As String
+Dim sBigString
+Dim mLocList()
+	
+	&apos;sanity check
+	If sItem = &quot;&quot; Then Exit Sub
+	
+	&apos;ok, very dirty :)
+	sSep = &quot;%!&quot;
+	sBigString = Join(mList(), sSep)
+	mLocList() = Split(sBigString, sItem &amp; sSep)
+	sBigString = Join(mLocList(), &quot;&quot;)
+	mLocList() = Split(sBigString, sSep)
+		
+	mList() = mLocList()
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Function GetItemIndex(mList(), vItem) As Long
+Dim I As Long
+Dim bFound As Boolean
+
+	For I = LBound(mList()) To UBound(mList())
+		If mList(I) = vItem Then
+			bFound = True
+			Exit For
+		End If
+	Next I
+	
+	If bFound Then 
+		GetItemIndex = I
+	Else
+		GetItemIndex = -1
+	End If
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function HasItem(mList(), vItem) As Boolean
+Dim I As Long
+
+	For I = LBound(mList()) To UBound(mList())
+		If mList(I) = vItem Then
+			HasItem = True
+			Exit For
+		End If
+	Next I
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Sub SwapElements(mList(), I As Long, J As Long)
+Dim vTemp As Variant
+
+	vTemp = mList(I)
+	mList(I) = mList(J)
+	mList(J) = vTemp
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Function ReverseArray(mList()) As Variant
+Dim I As Long, J As Long
+
+	If UBound(mList()) &gt;= 0 Then 
+		Dim mReversedList(UBound(mList()))
+		For I = UBound(mList()) To LBound(mList()) Step -1
+			mReversedList(J) = mList(I)
+			J = J + 1
+		Next I
+		ReverseArray = mReversedList()
+	Else
+		ReverseArray = Array()
+	End If
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function MacroDescriptorToUiRepresentation(aMacroDescriptor As Object) As String
+Dim sUIRepr As String
+Dim sSepar As String
+	
+	sSepar = &quot;.&quot;
+	
+	If aMacroDescriptor.Provider &lt;&gt; &quot;&quot; Then
+		If aMacroDescriptor.Provider = &quot;Python&quot; Then sSepar = &quot;|&quot;
+		sUIRepr = &quot;[&quot; &amp; aMacroDescriptor.Provider &amp; &quot;]&quot;
+		If aMacroDescriptor.Library &lt;&gt; &quot;&quot; Then
+			sUIRepr = sUIRepr &amp; sSepar &amp; aMacroDescriptor.Library
+			If aMacroDescriptor.Module &lt;&gt; &quot;&quot; Then
+				sUIRepr = sUIRepr &amp; sSepar &amp; aMacroDescriptor.Module
+				If aMacroDescriptor.Macro &lt;&gt; &quot;&quot; Then
+					sUIRepr = sUIRepr &amp; sSepar &amp; aMacroDescriptor.Macro
+				End If
+			End If
+		End If
+	End If
+
+	MacroDescriptorToUiRepresentation = sUIRepr
+End Function
+
+
+&apos;______________________________________________________________________________
+Function MacroDescriptorFromUiRepresentation(sUIRepresentation As String) As Object
+
+Dim aMacroDescriptor As Object
+Dim sProvider As String
+Dim mParts()
+Dim iStartPos As Integer, iEndPos As Integer
+
+	&apos;prepare the struct
+	aMacroDescriptor = CreateMacroDescriptor()
+	
+	If sUIRepresentation &lt;&gt; &quot;&quot; Then
+		
+		&apos;TODO: Analyse Provider = &quot;Python&quot;
+	
+		&apos;extract the provider
+		iStartPos = instr(sUIRepresentation, &quot;[&quot;)
+		iEndPos = instr(sUIRepresentation, &quot;]&quot;)
+		
+		&apos;strip the leading and ending square parenthesis
+		sProvider = Mid(sUIRepresentation, iStartPos+1, iEndPos-2)
+		&apos;extract the remaining part of the string
+		sUIRepresentation = Right(sUIRepresentation, Len(sUIRepresentation)-iEndPos-1)
+
+		If sProvider = &quot;Python&quot; Then
+			mParts() = Split(sUIRepresentation, &quot;|&quot;)
+		Else
+			mParts() = Split(sUIRepresentation, &quot;.&quot;)
+		End If		
+
+		&apos;if we are here the provider was correctly formed
+		&apos;now fill the structure with values if they exist
+		On Error Resume Next
+
+		With aMacroDescriptor
+			.Provider = sProvider
+			.Library = mParts(0)
+			.Module = mParts(1)
+			.Macro = mParts(2)
+		End With
+
+	End If
+	
+	MacroDescriptorFromUiRepresentation = aMacroDescriptor
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetProviderUINames() As Variant
+Dim mNames()
+Dim aDescriptor As Object
+Dim sUIName As String
+	
+	For Each aDescriptor In g_mBasicProviders()
+		AppendItem(mNames(), aDescriptor.UIName)
+	Next aDescriptor
+	
+	GetProviderUINames = mNames()
+End Function
+
+
+&apos;______________________________________________________________________________
+&apos; Thanks to Bernard Marcelly for this function
+Function GetDocumentUITitle(oDocumentModel As Object) As String
+Dim mArgs()
+Dim mUrlParts()
+Dim iMax As Integer
+Dim aArg As Object
+
+	mArgs = oDocumentModel.getArgs()
+	If oDocumentModel.hasLocation  then
+		mUrlParts = Split(oDocumentModel.Location, &quot;/&quot;)
+		iMax = UBound(mUrlParts())
+		
+		GetDocumentUITitle = ConvertFromUrl(mUrlParts(iMax)) &apos; file name
+	Else
+		For Each aArg In mArgs()
+			If aArg.Name = &quot;Title&quot;  Then
+				GetDocumentUITitle = aArg.Value
+		     	Exit For
+			End If
+		Next
+	End If
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function ShowFileDialog(sFileUrl As String, mFilterNames(), Optional iTemplate As Integer) As Integer
+Dim oFileDialog as Object
+Dim oURLTransformer As Object
+Dim oUcb As Object
+Dim sDefaultFilter As String
+Dim I as Integer
+Dim iDlgResult as Integer
+	
+	If sFileUrl = &quot;&quot; Then
+		sFileUrl = PmxGetPathSettings(&quot;Work&quot;)
+	End If
+
+	oUcb = CreateUnoService(&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
+	If oUcb.exists(sFileUrl) And oUcb.isFolder(sFileUrl) Then
+		sFileUrl = FixDirPath(sFileUrl)
+	End If
+	
+	Dim aUrl As New com.sun.star.util.URL
+	aUrl.complete = sFileUrl
+	oURLTransformer = CreateUnoService(&quot;com.sun.star.util.URLTransformer&quot;)
+	oURLTransformer.parseStrict(aUrl)
+
+	oFileDialog = CreateUnoService(&quot;com.sun.star.ui.dialogs.FilePicker&quot;)
+	If Not IsMissing(iTemplate) Then
+		oFileDialog.initialize(Array(iTemplate))
+	End If
+	
+	&apos;add filters
+	For I = LBound(mFilterNames(), 1) To Ubound(mFilterNames(), 1)
+		mFilterNames(i,0) = StringReplace(mFilterNames(i,0), &quot;%productname%&quot;, PmxGetProductName)
+		oFileDialog.AppendFilter(mFilterNames(I,0), mFilterNames(I,1))
+		&apos;store the first filter name
+		If I = 0 Then 
+			sDefaultFilter = mFilterNames(I,0)
+		End If
+	Next I
+
+	If sDefaultFilter &lt;&gt; &quot;&quot; Then
+		oFileDialog.setCurrentFilter(sDefaultFilter)
+	End If
+	oFileDialog.setDefaultName(aUrl.Name)
+	oFileDialog.setDisplayDirectory(aUrl.Protocol &amp; aUrl.Path)
+	
+	&apos;show the FileDialog
+	iDlgResult = oFileDialog.Execute()
+	If iDlgResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+		&apos;propagate the the seleted file to the caller routine
+		sFileUrl = oFileDialog.Files(0)
+	End If
+	
+	oFileDialog.Dispose()
+	
+	ShowFileDialog = iDlgResult
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetTempFile() As String
+Dim oFileAccess As Object
+Dim sTempDirUrl As String
+Dim sTmpPath As String
+Dim sFileUrl As String
+
+	oFileAccess = CreateUnoService(&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
+	sTempDirUrl = pmxGetPathSettings(&quot;Temp&quot;)
+	
+	&apos;generate an unique temp file name
+	Do 
+		sFileUrl = sTempDirUrl &amp; &quot;~tmp-&quot; &amp; LCase(CStr(Hex(GetSystemTicks())))
+	Loop While oFileAccess.exists(sFileUrl)
+	
+	GetTempFile = sFileUrl
+
+End Function
+
+
+&apos;__________________________________________________________________________________________________________
+Function FixDirPath(sPathUrl As String) As String
+
+	If Right(sPathUrl, 1) &lt;&gt; &quot;/&quot; Then
+		sPathUrl = sPathUrl &amp; &quot;/&quot;
+	End If
+
+	FixDirPath = sPathUrl
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+&apos; note by Paolo Mantovani:
+&apos; this function is a modified copy of GetPathSettings() contained in the Tools library (module Misc)
+&apos; the original function uses a deprecated API to retrieve paths (css.frame.Settings)
+&apos;
+&apos; Gets a special configured PathSetting
+Function pmxGetPathSettings( sPathType as String, Optional bUserLevel As Boolean) as String
+Dim oPathSettings As Object
+Dim sPath As String
+Dim sDirPath As String
+Dim sDirUrl As String
+Dim iMaxIndex As Integer
+Dim bLocUserLevel As Boolean
+Dim mPaths()
+
+	oPathSettings = createUnoService(&quot;com.sun.star.util.PathSettings&quot;)
+ 	sPath = oPathSettings.GetPropertyValue(sPathType)
+ 	
+	If Not IsMissing(bUserLevel) Then
+		bLocUserLevel = bUserLevel
+	End If
+	
+	&apos;Share and User-Directory
+	mPaths() = Split(sPath, &quot;;&quot;)
+	iMaxIndex = UBound(mPaths())
+	
+	If bLocUserLevel Then
+		sDirUrl = mPaths(iMaxIndex)
+	Else
+		sDirUrl = mPaths(0)
+	End If
+	
+
+&apos; the following code is not used anymore because the call to FixDOSFilePath causes a cracsh
+
+&apos;	If GetGUIType() = 1 Then &apos; Windows
+&apos;		&apos;in Windows it may happen that some dir is stored in the 
+&apos;		&apos;ooo configuration with the old DOS format (8.3)
+&apos;		&apos;example: &quot;c:\DOKUMEN~1\Guest\LOKALE~1\Temp&quot;
+&apos;		&apos;so we need to fix it
+&apos;		sDirPath = ConvertFromUrl(sDirUrl)
+&apos;		sDirPath = FixDOSFilePath(sDirPath)
+&apos;		sDirUrl = ConvertToUrl(sDirPath)
+&apos;	End If
+	
+	&apos;last check to ensure an ending slash is present
+	sDirUrl = FixDirPath(sDirUrl)
+	
+	pmxGetPathSettings = sDirUrl
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function PmxGetProductName(Optional bWithVersion As Boolean) as String
+Dim oProdNameAccess as Object
+Dim sVersion as String
+Dim sProdName as String
+Dim bLocWithVersion As Boolean
+
+	If Not IsMissing(bWithVersion) Then
+		bLocWithVersion = bWithVersion
+	End If
+
+	oProdNameAccess = Tools.Misc.GetRegistryKeyContent(&quot;org.openoffice.Setup/Product&quot;)
+	sProdName = oProdNameAccess.getByName(&quot;ooName&quot;)
+	If bLocWithVersion Then
+		sVersion = oProdNameAccess.getByName(&quot;ooSetupVersion&quot;)
+	End if
+	PmxGetProductName = sProdName &amp; sVersion
+
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetUserName() As String
+Dim oUserDataAccess As Object
+Dim sTemp As String
+
+	&apos;the &quot;Tools&quot; library MUST be loaded at this point
+	oUserDataAccess = Tools.Misc.GetRegistryKeyContent(&quot;org.openoffice.UserProfile/Data&quot;, True)
+
+	With oUserDataAccess
+		sTemp =  .givenname &amp; &quot; &quot; &amp; .sn
+	End With
+	
+	GetUserName = sTemp
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetUserEmail() As String
+Dim oUserDataAccess As Object
+
+	&apos;the &quot;Tools&quot; library MUST be loaded at this point
+	oUserDataAccess = Tools.Misc.GetRegistryKeyContent(&quot;org.openoffice.UserProfile/Data&quot;, True)
+
+	GetUserEmail = oUserDataAccess.mail
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetUserDetail(sDetail As String) As String
+&apos;possible values for the parameter sDetail are:
+&apos;	UserGroup
+&apos;	apartment
+&apos;	c
+&apos;	facsimiletelephonenumber
+&apos;	fathersname
+&apos;	givenname
+&apos;	homephone
+&apos;	initials
+&apos;	l
+&apos;	mail
+&apos;	o
+&apos;	position
+&apos;	postalcode
+&apos;	sn
+&apos;	st
+&apos;	street
+&apos;	telephonenumber
+&apos;	title
+
+Dim oUserDataAccess As Object
+
+	&apos;the &quot;Tools&quot; library MUST be loaded at this point
+	oUserDataAccess = Tools.Misc.GetRegistryKeyContent(&quot;org.openoffice.UserProfile/Data&quot;, True)
+
+	GetUserDetail = oUserDataAccess.getByName(sDetail)
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetMenuPath(aDesc) As String
+Dim mPathSegments()
+Dim aLocDescriptor
+Dim I As Integer
+
+	aLocDescriptor = aDesc
+	
+	Do While Not IsNull(aLocDescriptor)
+		AppendItem(mPathSegments(), aLocDescriptor.DefaultText)
+		aLocDescriptor = aLocDescriptor.ParentMenu
+	Loop
+
+	&apos;join the path segments in the correct order
+	GetMenuPath = Join(ReverseArray(mPathSegments()), MNU_PATH_SEP)
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetMenuItem(aRootMenu As Object, sMenuPath As String) As Object
+
+Dim aSubItem As Object
+Dim aResult As Object
+
+	If sMenuPath &lt;&gt; &quot;&quot; Then
+		If sMenuPath = GetMenuPath(aRootMenu)  Then
+			aResult = aRootMenu
+		Else
+			&apos;search the children
+			For Each aSubItem In aRootMenu.SubItems()
+				aResult = GetMenuItem(aSubItem, sMenuPath)
+				If Not IsNull(aResult) Then Exit For
+			Next
+		End If
+	End If
+	
+	GetMenuItem = aResult
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Sub GetMenuList(aRootMenu As Object, mMenuList())
+Dim aSubItem As Object
+
+	AppendItem(mMenuList(), GetMenuPath(aRootMenu))
+
+	&apos;search the children
+	For Each aSubItem In aRootMenu.SubItems()
+		If aSubItem.IsGroup Then
+			GetMenuList(aSubItem, mMenuList())
+		End If
+	Next
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Function CreateUnoControl(sControlType As String) As Object
+Dim oCtrl As Object
+Dim oCModel As Object
+	oCtrl = CreateUnoService(&quot;com.sun.star.awt.UnoControl&quot; &amp; sControlType)
+	oCModel = CreateUnoService(&quot;com.sun.star.awt.UnoControl&quot; &amp; sControlType &amp; &quot;Model&quot;)
+	oCtrl.setModel(oCModel)
+	CreateUnoControl = oCtrl
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function AddNewControl(oContainer As Object, sControlType As String, sName As String) As Object
+Dim oCtrl As Object
+	
+	oCtrl = CreateUnoControl(sControlType)
+	oContainer.addControl(sName, oCtrl)
+	
+	AddNewControl = oCtrl
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Sub InitializeLocaleArrays()
+Dim oLocaledata As Object
+Dim aLocale As Object
+Dim aInfo As Object
+Dim sLocID As String
+Dim sLocDesc As String
+Dim I As Integer
+
+	oLocaleData = createUnoService(&quot;com.sun.star.i18n.LocaleData&quot;)
+	
+	For Each aLocale In oLocaleData.AllInstalledLocaleNames()
+		aInfo = oLocaleData.getLanguageCountryInfo(aLocale)    
+		
+		sLocID = aInfo.Language
+		If aInfo.Country &lt;&gt; &quot;&quot; Then
+			sLocID = sLocID &amp; &quot;-&quot; &amp; aInfo.Country
+		End If
+		If aInfo.Variant &lt;&gt; &quot;&quot; Then
+			sLocID = sLocID &amp; &quot;-&quot; &amp; aInfo.Variant
+		End If
+		
+		Redim Preserve mLocaleIDs(I)
+		mLocaleIDs(I) = sLocID
+		
+		sLocDesc = aInfo.LanguageDefaultName
+		If aInfo.CountryDefaultName &lt;&gt; &quot;&quot; Then
+			sLocDesc = sLocDesc &amp; &quot; (&quot; &amp; aInfo.CountryDefaultName &amp; &quot;)&quot;
+		End If
+		
+		Redim Preserve mLocaleDescriptions(I)
+		mLocaleDescriptions(I) = sLocDesc
+		I = I + 1
+	Next
+	
+End Sub
+
+
+&apos;______________________________________________________________________________
+Function GetAllLocaleDescriptions() As Variant
+Dim I As Integer, iMax As Integer
+
+	&apos;the copy of the array in this module must remain consistent
+	&apos;so we must pass a copy to the consumer
+	
+	iMax = UBound(mLocaleDescriptions())
+	Dim mList(iMax)
+	For I = 0 To iMax
+		mList(I) = mLocaleDescriptions(I)
+	Next I
+		
+	GetAllLocaleDescriptions = mList()
+	
+End Function
+
+&apos;______________________________________________________________________________
+Function GetLocaleIDFromDescription(sDesc As String) As String
+Dim iIndex As Integer
+	iIndex = GetItemIndex(mLocaleDescriptions(), sDesc)
+	If iIndex &gt; -1 Then 
+		GetLocaleIDFromDescription = mLocaleIDs(iIndex)
+	Else
+		GetLocaleIDFromDescription = sDesc
+	End If
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetDescriptionFromLocaleID(sID As String) As String
+Dim iIndex As Integer
+	iIndex = GetItemIndex(mLocaleIDs(), sID)
+	
+	If iIndex &gt; -1 Then 
+		GetDescriptionFromLocaleID = mLocaleDescriptions(iIndex)
+	Else
+		GetDescriptionFromLocaleID = sID
+	End If
+End Function
+
+
+&apos;__________________________________________________________________________________________________________
+Function GetDefaultPackageName() As String
+Dim sPkgName As String
+Dim sPkgVer As String
+		
+		If g_bOnlyPython = True Then 
+			sPkgName = g_sExtensionWithOnlyPythonName
+		Else
+			sPkgName = g_sDefaultLibrary
+		End If
+		sPkgVer = GetPackageVersion()
+		If sPkgVer &lt;&gt; &quot;&quot; Then
+			sPkgName = sPkgName &amp; &quot;-&quot; &amp; sPkgVer
+		End If
+		sPkgName = sPkgName &amp; &quot;.oxt&quot;
+	
+	GetDefaultPackageName = sPkgName
+	
+End Function
+
+
+&apos;__________________________________________________________________________________________________________
+Function GetDefaultPackageId() As String
+Dim sCompany As String
+Dim sUserId As String
+Dim sPackageID As String
+	
+	&apos; tries to build a default identifier for the extension to create.
+	&apos; the identifier contains the selected Library name and 
+	&apos; if available, some user details.
+	sCompany = FlattenString(GetUserDetail(&quot;o&quot;))
+	sUserId = FlattenString(GetUserDetail(&quot;givenname&quot;))
+	sUserId = sUserId &amp; FlattenString(GetUserDetail(&quot;sn&quot;))
+	
+	If sCompany &gt; 2 Then
+		sPackageID = &quot;vnd.&quot; &amp; sCompany &amp; &quot;.&quot; &amp; g_sDefaultLibrary
+	ElseIf sUserId &gt; 2 Then
+		sPackageID = &quot;vnd.&quot; &amp; sUserId &amp; &quot;.&quot; &amp; g_sDefaultLibrary
+	Else
+		sPackageID = &quot;vnd.basicaddonbuilder.&quot; &amp; g_sDefaultLibrary
+	End If
+	
+	GetDefaultPackageId = LCase(sPackageID)
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetPackageVersion() As String
+Dim oDlgModel As Object
+Dim iMajor As Integer, iMinor As Integer, iMicro As Integer
+Dim sVersion As String
+
+
+	&apos;obtain values from the wizard dialog
+	oDlgModel = g_oDlgWizard.getModel()
+	
+	&apos; build up the version
+	iMajor = oDlgModel.numInfoVersionMajor.Value
+	iMinor = oDlgModel.numInfoVersionMinor.Value
+	iMicro = oDlgModel.numInfoVersionMicro.Value
+	If (iMajor + iMinor + iMicro) = 0 Then
+		&apos;no version provided
+		sVersion = &quot;&quot;
+	Else
+		sVersion = CStr(iMajor) &amp; &quot;.&quot; &amp; CStr(iMinor) &amp; &quot;.&quot; &amp; CStr(iMicro)
+	End If
+	
+	GetPackageVersion = sVersion
+	
+End Function
+
+
+Function ChooseADirectory(Optional sInPath$) As String
+  Dim oDialog As Object
+  Dim oSFA As Object
+  Dim s As String
+  Dim oPathSettings
+  Dim oContext
+
+  oDialog = CreateUnoService(&quot;com.sun.star.ui.dialogs.FolderPicker&quot;)
+  &apos;oDialog = CreateUnoService(&quot;com.sun.star.ui.dialogs.OfficeFolderPicker&quot;)
+  oSFA = createUnoService(&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
+ 
+  If IsMissing(sInPath) Then
+    &apos;oPathSettings = CreateUnoService(&quot;com.sun.star.util.PathSettings&quot;)
+    oContext = getProcessServiceManager().DefaultContext
+    oPathSettings = oContext.getValueByName(&quot;/singletons/com.sun.star.util.thePathSettings&quot;)
+    oDialog.setDisplayDirectory(oPathSettings.Work)
+  ElseIf oSFA.Exists(sInPath) Then
+    oDialog.setDisplayDirectory(sInPath)
+  Else
+    s = &quot;Directory &apos;&quot; &amp; sInPath &amp; &quot;&apos; Does not exist&quot;
+    If MsgBox(s, 33, &quot;Error&quot;) = 2 Then Exit Function
+  End If
+ 
+  If oDialog.Execute() = 1 Then
+    ChooseADirectory() = oDialog.getDirectory()
+  End If
+End Function
+</script:module>

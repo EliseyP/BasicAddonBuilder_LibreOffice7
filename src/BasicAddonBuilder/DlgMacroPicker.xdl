@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgMacroPicker" dlg:left="143" dlg:top="75" dlg:width="185" dlg:height="173" dlg:closeable="true" dlg:moveable="true">
+ <dlg:bulletinboard>
+  <dlg:fixedline dlg:id="FixedLine1" dlg:tab-index="3" dlg:left="0" dlg:top="143" dlg:width="184" dlg:height="6"/>
+  <dlg:text dlg:id="lblLibrary" dlg:tab-index="4" dlg:left="9" dlg:top="3" dlg:width="75" dlg:height="9" dlg:value="Select library"/>
+  <dlg:menulist dlg:id="lstLibraries" dlg:tab-index="0" dlg:left="9" dlg:top="12" dlg:width="77" dlg:height="11" dlg:spin="true" dlg:linecount="10">
+   <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgMacroPicker.lstLibraries_itemStateChanged?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:menulist>
+  <dlg:text dlg:id="lblModules" dlg:tab-index="5" dlg:left="9" dlg:top="29" dlg:width="79" dlg:height="9" dlg:value="Modules"/>
+  <dlg:text dlg:id="lblMacros" dlg:tab-index="6" dlg:left="98" dlg:top="29" dlg:width="79" dlg:height="9" dlg:value="Macros"/>
+  <dlg:menulist dlg:id="lstMacros" dlg:tab-index="2" dlg:left="98" dlg:top="38" dlg:width="81" dlg:height="99">
+   <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgMacroPicker.lstMacros_itemStateChanged?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:menulist>
+  <dlg:menulist dlg:id="lstModules" dlg:tab-index="1" dlg:left="9" dlg:top="38" dlg:width="81" dlg:height="99">
+   <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgMacroPicker.lstModules_itemStateChanged?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:menulist>
+  <dlg:button dlg:id="cmdOk" dlg:tab-index="7" dlg:disabled="true" dlg:left="137" dlg:top="153" dlg:width="40" dlg:height="14" dlg:value="OK" dlg:button-type="ok"/>
+  <dlg:button dlg:id="cmdCancel" dlg:tab-index="8" dlg:left="91" dlg:top="153" dlg:width="40" dlg:height="14" dlg:value="Cancel" dlg:button-type="cancel"/>
+ </dlg:bulletinboard>
+</dlg:window>

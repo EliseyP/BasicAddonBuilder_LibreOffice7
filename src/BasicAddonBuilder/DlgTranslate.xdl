@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgTranslate" dlg:left="155" dlg:top="68" dlg:width="195" dlg:height="181" dlg:closeable="true" dlg:moveable="true" dlg:title="Translate text strings">
+ <dlg:bulletinboard>
+  <dlg:text dlg:id="lblTranslateControlWindow" dlg:tab-index="0" dlg:left="3" dlg:top="5" dlg:width="154" dlg:height="146" dlg:value="TranslateControlWindow"/>
+  <dlg:fixedline dlg:id="FixedLine2" dlg:tab-index="1" dlg:left="0" dlg:top="152" dlg:width="192" dlg:height="4"/>
+  <dlg:button dlg:id="cmdCancel" dlg:tab-index="3" dlg:left="97" dlg:top="161" dlg:width="40" dlg:height="14" dlg:value="Cancel" dlg:button-type="cancel"/>
+  <dlg:button dlg:id="cmdOK" dlg:tab-index="2" dlg:left="143" dlg:top="161" dlg:width="40" dlg:height="14" dlg:value="OK" dlg:button-type="ok"/>
+  <dlg:button dlg:id="cmdAddTranslation" dlg:tab-index="4" dlg:left="160" dlg:top="5" dlg:width="30" dlg:height="24" dlg:help-text="Add item" dlg:value="Add" dlg:image-src="file:///home/paolo/Documenti/OOoMacros/MyProjects/BasicAddonBuilder/src/images/plus.png" dlg:image-position="top-center">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgTranslate.cmdAddTranslation_onClick?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+  <dlg:button dlg:id="cmdRemoveTranslation" dlg:tab-index="5" dlg:disabled="true" dlg:left="160" dlg:top="33" dlg:width="30" dlg:height="24" dlg:help-text="Remove item" dlg:value="Del" dlg:image-src="file:///home/paolo/Documenti/OOoMacros/MyProjects/BasicAddonBuilder/src/images/delete.png" dlg:image-position="top-center">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgTranslate.cmdRemoveTranslation_onClick?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+ </dlg:bulletinboard>
+</dlg:window>

@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Registry" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	BasicAddonBuilder - $ Version: 0.6.1 $ 
+&apos;	Copyright (C) 2006-2008 Paolo Mantovani
+&apos;	
+&apos;	A wizard to export basic libraries as Add on&apos;s
+&apos;	
+&apos;	This library is free software; you can redistribute it and/or
+&apos;	modify it under the terms of the GNU Lesser General Public
+&apos;	License as published by the Free Software Foundation.
+&apos;	
+&apos;	This library is distributed in the hope that it will be useful,
+&apos;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+&apos;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+&apos;	Lesser General Public License for more details.
+&apos;	
+&apos;	Please email me with any bug reports, questions or comments:
+&apos;	paolomantovani@openoffice.org
+&apos;______________________________________________________________________________
+&apos;	
+&apos;	Module Registry:
+&apos;	Utilities used from other modules to access to BasicAddonBuilder private configuration
+&apos;______________________________________________________________________________
+&apos;
+&apos;
+&apos; Declarations:
+Option Explicit
+
+Const BASE_KEY As String = &quot;/ooo.ext.BasicAddonBuilder.Configuration/&quot;
+
+
+&apos;______________________________________________________________________________
+Function GetAppName() As String
+Dim oRegKey As Object
+	oRegKey = Tools.Misc.GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo&quot; )
+	
+	GetAppName = oRegKey.ProductName
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetAppVersion() As String
+Dim oRegKey As Object
+	oRegKey = Tools.Misc.GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo&quot; )
+	
+	GetAppVersion = oRegKey.Version
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetAppDescription() As String
+Dim oRegKey As Object
+	oRegKey = Tools.Misc.GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo&quot; )
+	
+	GetAppDescription = oRegKey.Description
+End Function
+
+&apos;--&gt;patch-----for more information, see module &quot;patch_information&quot;----
+Function GetPatchDescription() As String
+Dim oRegKey As Object
+	oRegKey = Tools.Misc.GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo&quot; )
+	
+	GetPatchDescription = oRegKey.PatchDescription
+End Function	
+&apos;-------------------------------------------------------------patch&lt;--
+
+
+&apos;______________________________________________________________________________
+Function GetAppLicense() As String
+Dim oRegKey As Object
+	oRegKey = Tools.Misc.GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo&quot; )
+	
+	GetAppLicense = oRegKey.License
+End Function
+
+&apos;______________________________________________________________________________
+Function GetAuthorName() As String
+Dim oRegKey As Object
+	oRegKey = Tools.Misc.GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo&quot; )
+
+	GetAuthorName = oRegKey.AuthorName
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetAuthorEmail() As String
+Dim oRegKey As Object
+	oRegKey = Tools.Misc.GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo&quot; )
+
+	GetAuthorEmail = oRegKey.AuthorEmail
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetCopyright() As String
+Dim oRegKey As Object
+	oRegKey = Tools.Misc.GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo&quot; )
+
+	GetCopyright = oRegKey.Copyright
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetContributors() As Variant
+Dim oRegKey As Object
+Dim oCoKey As Object
+Dim mKeys()
+Dim sKey As String
+Dim sCoName As String
+Dim sCoEmail As String
+Dim sCoCopyright As String
+Dim I As Integer
+Dim mContributors()
+
+
+	oRegKey = Tools.Misc.GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo/Contributors&quot; )
+	mKeys() = oRegKey.ElementNames
+	
+	For I = LBound(mKeys()) To UBound(mKeys())
+		sKey = mKeys(I)
+		oCoKey = oRegKey.getByname(sKey)
+		With oCoKey 
+			sCoName = .ContributorName 
+			sCoEmail = .Email
+			sCoCopyright = .Copyright
+		End With 
+		Redim Preserve mContributors(I)
+		mContributors(I) = sCoName &amp; &quot; (&quot;&amp; sCoEmail &amp; &quot;)&quot;
+		If sCoCopyright &lt;&gt; &quot;&quot; Then
+			mContributors(I) = mContributors(I) &amp; &quot; - &quot; &amp; sCoCopyright
+		End If
+	Next I
+	
+	GetContributors = mContributors()
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetTranslators() As Variant
+Dim oRegKey As Object
+Dim oTrKey As Object
+Dim mKeys()
+Dim sKey As String
+Dim sTrName As String
+Dim sTrEmail As String
+Dim sTrLang As String
+Dim I As Integer
+Dim mTranslators()
+
+
+	oRegKey = Tools.Misc.GetRegistryKeyContent( BASE_KEY &amp; &quot;ProductInfo/Translators&quot; )
+	mKeys() = oRegKey.ElementNames
+	
+	For I = LBound(mKeys()) To UBound(mKeys())
+		sKey = mKeys(I)
+		oTrKey = oRegKey.getByname(sKey)
+		With oTrKey 
+			sTrName = .TranslatorName 
+			sTrEmail = .Email
+			sTrLang = .Language
+		End With 
+		Redim Preserve mTranslators(I)
+		mTranslators(I) = sTrLang &amp; &quot; - &quot; &amp; sTrName &amp; &quot; (&quot;&amp; sTrEmail &amp; &quot;)&quot;
+	Next I
+	
+	GetTranslators = mTranslators()
+End Function
+
+
+&apos;______________________________________________________________________________
+&apos;Valid resource ID&apos;s are
+&apos;	UpArrowImage
+&apos;	DownArrowImage
+&apos;	LeftArrowImage
+&apos;	RightArrowImage
+&apos;	MenuArrowImage
+&apos;	EditPropsImageSmall
+&apos;	EditPropsImageBig
+&apos;	TranslateImageSmall
+&apos;	TranslateImageBig
+&apos;	DeleteImage
+&apos;	SelectMacroImage
+&apos;	WriterImage
+&apos;	CalcImage
+&apos;	ImpressImage
+&apos;	DrawImage
+&apos;	BaseImage
+&apos;	MathImage
+&apos;	BasicIDEImage
+&apos; see the file AddonConfiguation.xcu for futher info
+Function GetResourceUrl(sResourceID As String) As String
+Dim oRegKey As Object
+
+	oRegKey = Tools.Misc.GetRegistryKeyContent( BASE_KEY &amp; &quot;FileResources/&quot; &amp; sResourceID )
+
+	GetResourceUrl = ExpandMacroFieldExpression( oRegKey.Url )
+End Function
+
+
+&apos;______________________________________________________________________________
+Function GetResString(sID As String) As String
+Dim oRegKey As Object
+Dim sText As String
+
+	On error goto ErrH:
+	oRegKey = Tools.Misc.GetRegistryKeyContent( BASE_KEY &amp; &quot;Messages/&quot;)
+	
+	sText = oRegKey.getByName(sID).Text
+	sText = StringReplace(sText, &quot;%productname%&quot;, PmxGetProductName(False))
+	
+	GetResString = sText
+	Exit Function
+	
+ErrH:
+	GetResString = sID
+	
+End Function
+
+
+&apos;______________________________________________________________________________
+&apos; Loads the text resources in a dialog and controls
+&apos; The text to replace must correspond to the registry key name 
+&apos; and will be replaced with the key content
+&apos; (see the file AddonsConfiguration.xcu in this package, section &quot;Messages&quot;.
+&apos;
+&apos; Notice that only dialog title, control labels and
+&apos; control help-texts  will be replaced
+
+Sub LocalizeDialog(oDialog As Object)
+
+Dim aControls()
+Dim oControlModel As Object
+Dim sLabel As String
+Dim sHelpText As String
+Dim I As Integer
+
+On Error Resume Next
+	
+	aControls() = oDialog.getControls()
+	
+	sLabel = oDialog.Title
+	oDialog.Title = GetResString(sLabel)
+	
+	For I = LBound(aControls) To UBound(aControls)
+		oControlModel = aControls(I).Model
+		sLabel = oControlModel.Label
+		oControlModel.Label = GetResString(sLabel)
+		sHelpText = oControlModel.HelpText
+		oControlModel.HelpText = GetResString(sHelpText)
+	Next I
+	
+End Sub
+
+
+&apos;_________________________________________________________________________________________
+Function ExpandMacroFieldExpression(sURL As String) As String
+Dim sTemp As String
+Dim oSM As Object
+Dim oMacroExpander As Object
+	
+	&apos;get the service manager
+	oSM = getProcessServiceManager
+	&apos;get the macro expander
+	oMacroExpander = oSM.DefaultContext.getValueByName(&quot;/singletons/com.sun.star.util.theMacroExpander&quot;)
+	
+	&apos;cut the vnd.sun.star.expand: part
+	sTemp = StringReplace(sURL, &quot;vnd.sun.star.expand:&quot;, &quot;&quot;)
+	
+	&apos;Expand the macrofield expression
+	sTemp = oMacroExpander.ExpandMacros(sTemp)
+	sTemp = Trim(sTemp)
+	ExpandMacroFieldExpression = sTemp
+        
+End Function
+
+
+</script:module>
