@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <manifest:manifest>
 	<manifest:file-entry manifest:full-path="BasicAddonBuilder/" manifest:media-type="application/vnd.sun.star.basic-library"/>
+	<manifest:file-entry manifest:full-path="py/" manifest:media-type="application/vnd.sun.star.framework-script"/>
 	<manifest:file-entry manifest:full-path="pkg-desc/pkg-description.default" manifest:media-type="application/vnd.sun.star.package-bundle-description"/>
 	<manifest:file-entry manifest:full-path="pkg-desc/pkg-description.en" manifest:media-type="application/vnd.sun.star.package-bundle-description;locale=en"/>
 	<manifest:file-entry manifest:full-path="pkg-desc/pkg-description.it" manifest:media-type="application/vnd.sun.star.package-bundle-description;locale=it"/>

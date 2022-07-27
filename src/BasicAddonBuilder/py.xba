@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="py" script:language="StarBasic" script:moduleType="normal">REM  *****  BASIC  *****
+Global g_MasterScriptProvider
+Const URL_Main = &quot;vnd.sun.star.script:&quot;
+Const URL_Args = &quot;?language=Python&amp;location=user:uno_packages&quot;
+
+Function getMasterScriptProvider()
+    if not isObject(g_MasterScriptProvider) then
+       s = &quot;com.sun.star.script.provider.MasterScriptProviderFactory&quot;
+       g_MasterScriptProvider = createUnoService(s).createScriptProvider(&quot;&quot;)
+   end if
+   getMasterScriptProvider = g_MasterScriptProvider
+End Function
+
+Function py_get_exported_functions(sParsedScriptURL$)
+Dim parser_script_url$: 
+Dim m, s
+Dim fullURI
+Dim result
+Dim sExtName$
+	
+	sExtName = &quot;BasicAddonBuilder_LO_0.6.3.oxt|py|&quot;	
+	parser_script_url = &quot;get_lo_exported_functions.py&quot;
+    fullURI = URL_Main &amp; sExtName &amp; parser_script_url &amp; &quot;$&quot; &amp; &quot;main&quot; &amp; URL_Args
+    m = getMasterScriptProvider()
+    s = m.GetScript(fullURI)
+    result = s.invoke(Array(sParsedScriptURL), Array(), Array())
+    py_get_exported_functions = result
+End Function
+
+
+Sub testpy
+	Dim sParsedScriptURL$
+	sParsedScriptURL = &quot;/home/user/lib/py/My.py&quot;
+	Print(py_get_exported_functions(sParsedScriptURL))
+End Sub
+</script:module>

@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgMacroPicker" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.1 $
+&apos;	BasicAddonBuilder - $ Version: 0.6.3 $
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -227,21 +227,31 @@ Dim oBasicModule As Object
 Dim I As Integer
 Dim mModuleList()
 Dim sFileName As String
-Dim sPath$
-	
+Dim sPath As String
+Dim sFunctionsList As String	
+Dim sModuleUrl As String
+
 	If sProviderName = &quot;Python&quot; Then
 		&apos; Get .py modules in dir
-		I = 0
 		&apos;Start counting over for files
 		sPath = sLibraryName &amp; GetPathSeparator() &amp; &quot;*.py&quot;
 		sFileName = Dir(sPath)
-		InsertByIndex(mModuleList(), I, sFileName)
+		&apos; Check - does have py-module functions for export.
+		sModuleUrl = sLibraryName &amp; GetPathSeparator() &amp; sFileName
+		sFunctionsList = py_get_exported_functions(sModuleUrl)	
+		If sFunctionsList &lt;&gt; &quot;&quot; Then
+			AppendItem(mModuleList(), sFileName)
+		End If
 		&apos;Get files this time!
 		Do While (sFileName &lt;&gt; &quot;&quot;)
-			I = I + 1
+			&apos;I = I + 1
 			sFileName = Dir()
 			If sFileName &lt;&gt; &quot;&quot; Then
-				InsertByIndex(mModuleList(), I, sFileName)
+				sModuleUrl = sLibraryName &amp; GetPathSeparator() &amp; sFileName
+				sFunctionsList = py_get_exported_functions(sModuleUrl)	
+				If sFunctionsList &lt;&gt; &quot;&quot; Then
+					AppendItem(mModuleList(), sFileName)
+				End If
 			End If
 		Loop
 		PrepareModuleList = mModuleList()
@@ -263,7 +273,7 @@ Dim sPath$
 	
 End Function
 
-Function getExportedFunctionsFromPyScript(sPath$) As Variant
+Function getExportedFunctionsFromPyScriptOLD(sPath$) As Variant
 	Dim mFunctionsList()
 	Dim I%
 	Dim sString$, tmpStr$
@@ -289,7 +299,30 @@ Function getExportedFunctionsFromPyScript(sPath$) As Variant
 	Next sMacro
 	
 	getExportedFunctionsFromPyScript = mFunctionsList()
+
+	&apos;sModuleUrl = sLibraryName &amp; GetPathSeparator() &amp; sFileName
+	&apos;sFunctionsList = py_get_exported_functions(sModuleUrl)	
+
 End Function
+
+
+Function getExportedFunctionsFromPyScript(sPath$) As Variant
+	Dim sFunctionsList As String
+	Dim mFunctionsList()
+	Dim I%
+	Dim sString$, tmpStr$
+	Dim aSplit()
+	Dim sMacro$
+	
+	sFunctionsList = py_get_exported_functions(sPath)
+	If sFunctionsList &lt;&gt; &quot;&quot; Then
+		mFunctionsList() = Split(sFunctionsList, &quot;|&quot;)	
+	End If 
+	
+	getExportedFunctionsFromPyScript = mFunctionsList()
+	
+End Function
+
 
 Function read_data_from_file(_file_path$) as String
 	Dim out_string$
@@ -324,7 +357,8 @@ Dim sPath$
 	
 	If sProviderName = &quot;Python&quot; Then
 		sPath = sLibraryName &amp; GetPathSeparator() &amp; sModuleName
-		mFunctionsList = getExportedFunctionsFromPyScript(convertToURL(sPath))
+		mFunctionsList = getExportedFunctionsFromPyScript(sPath)
+		&apos;mFunctionsList = getExportedFunctionsFromPyScript(convertToURL(sPath))
 		
 		PrepareMacroList = mFunctionsList()
 	Else

@@ -1,6 +1,6 @@
 # BasicAddonBuilder_LibreOffice7 
 
-## 0.6.2
+## 0.6.3
 
 `LibreOffice` extension for extension compiling  
 

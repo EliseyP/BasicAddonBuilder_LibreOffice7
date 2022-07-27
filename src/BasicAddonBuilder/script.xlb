@@ -30,4 +30,5 @@
  <library:element library:name="BABProject"/>
  <library:element library:name="DlgProjects"/>
  <library:element library:name="patch_information"/>
+ <library:element library:name="py"/>
 </library:library>
