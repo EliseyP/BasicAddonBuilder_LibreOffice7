@@ -5,6 +5,21 @@ Global g_MasterScriptProvider
 Const URL_Main = &quot;vnd.sun.star.script:&quot;
 Const URL_Args = &quot;?language=Python&amp;location=user:uno_packages&quot;
 
+Function getExtensionLocation(sExtensionName As String) As String
+	&apos; return URI (file:///path) of extension
+	Dim pip As Object, extensionLocation As String
+	&apos;Dim extensionLocation
+
+	If sExtensionName = &quot;&quot; Then Exit Function
+		 
+	pip = GetDefaultContext.getByName(&quot;/singletons/com.sun.star.deployment.PackageInformationProvider&quot;)
+	extensionLocation = pip.getPackageLocation(sExtensionName)
+
+	getExtensionLocation = extensionLocation
+
+End Function
+
+
 Function getMasterScriptProvider()
     if not isObject(g_MasterScriptProvider) then
        s = &quot;com.sun.star.script.provider.MasterScriptProviderFactory&quot;
@@ -20,7 +35,15 @@ Dim fullURI
 Dim result
 Dim sExtName$
 	
-	sExtName = &quot;BasicAddonBuilder_LO_0.6.3.oxt|py|&quot;	
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;ScriptForge&quot;)
+	
+	sExtName = ScriptForge.SF_FileSystem.GetBaseName(getExtensionLocation(EXTENSION_IDENTIFIER)) &amp; &quot;.oxt|py|&quot;
+	&apos;sExtName = &quot;BasicAddonBuilder_LO_0.6.4.oxt|py|&quot;
+	If sExtName = &quot;&quot; Then 
+		MsgBox(&quot;Error getting extension name.&quot;)
+		Exit Function
+	End If
+	 	
 	parser_script_url = &quot;get_lo_exported_functions.py&quot;
     fullURI = URL_Main &amp; sExtName &amp; parser_script_url &amp; &quot;$&quot; &amp; &quot;main&quot; &amp; URL_Args
     m = getMasterScriptProvider()
@@ -32,7 +55,10 @@ End Function
 
 Sub testpy
 	Dim sParsedScriptURL$
+	Dim aList()
 	sParsedScriptURL = &quot;/home/user/lib/py/My.py&quot;
-	Print(py_get_exported_functions(sParsedScriptURL))
+	aList() = ScriptForge.SF_FileSystem.Files(&quot;/home/user/lib/py&quot;, &quot;*.py&quot;)
+	&apos;Print(py_get_exported_functions(sParsedScriptURL))
+	Print(ScriptForge.SF_FileSystem.GetBaseName(getExtensionLocation(EXTENSION_IDENTIFIER)))
 End Sub
 </script:module>

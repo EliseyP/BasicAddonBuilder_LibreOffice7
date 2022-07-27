@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgMacroPicker" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.3 $
+&apos;	BasicAddonBuilder - $ Version: 0.6.4 $
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -226,34 +226,25 @@ Dim oBasicLibrary As Object
 Dim oBasicModule As Object
 Dim I As Integer
 Dim mModuleList()
+Dim mPyFilesList()
 Dim sFileName As String
+Dim sPyFileName As String
 Dim sPath As String
 Dim sFunctionsList As String	
 Dim sModuleUrl As String
 
 	If sProviderName = &quot;Python&quot; Then
+		GlobalScope.BasicLibraries.LoadLibrary(&quot;ScriptForge&quot;)
 		&apos; Get .py modules in dir
 		&apos;Start counting over for files
-		sPath = sLibraryName &amp; GetPathSeparator() &amp; &quot;*.py&quot;
-		sFileName = Dir(sPath)
-		&apos; Check - does have py-module functions for export.
-		sModuleUrl = sLibraryName &amp; GetPathSeparator() &amp; sFileName
-		sFunctionsList = py_get_exported_functions(sModuleUrl)	
-		If sFunctionsList &lt;&gt; &quot;&quot; Then
-			AppendItem(mModuleList(), sFileName)
-		End If
-		&apos;Get files this time!
-		Do While (sFileName &lt;&gt; &quot;&quot;)
-			&apos;I = I + 1
-			sFileName = Dir()
-			If sFileName &lt;&gt; &quot;&quot; Then
-				sModuleUrl = sLibraryName &amp; GetPathSeparator() &amp; sFileName
-				sFunctionsList = py_get_exported_functions(sModuleUrl)	
-				If sFunctionsList &lt;&gt; &quot;&quot; Then
-					AppendItem(mModuleList(), sFileName)
-				End If
-			End If
-		Loop
+		&apos;sPath = sLibraryName &amp; GetPathSeparator() &amp; &quot;*.py&quot;
+		mPyFilesList() = ScriptForge.SF_FileSystem.Files(sLibraryName, &quot;*.py&quot;)
+		For Each sPyFileName In mPyFilesList()
+			sFunctionsList = py_get_exported_functions(ConvertFromURL(sPyFileName))	
+			If sFunctionsList &lt;&gt; &quot;&quot; Then AppendItem(mModuleList(), ScriptForge.SF_FileSystem.GetBaseName(sPyFileName))
+		Next sPyFileName
+
+		
 		PrepareModuleList = mModuleList()
 				
 	Else
@@ -357,8 +348,8 @@ Dim sPath$
 	
 	If sProviderName = &quot;Python&quot; Then
 		sPath = sLibraryName &amp; GetPathSeparator() &amp; sModuleName
-		mFunctionsList = getExportedFunctionsFromPyScript(sPath)
-		&apos;mFunctionsList = getExportedFunctionsFromPyScript(convertToURL(sPath))
+		mFunctionsList = getExportedFunctionsFromPyScript(sPath) &apos; via python 
+		&apos;mFunctionsList = getExportedFunctionsFromPyScriptOLD(convertToURL(sPath))
 		
 		PrepareMacroList = mFunctionsList()
 	Else
