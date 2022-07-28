@@ -60,10 +60,10 @@
   <dlg:button dlg:id="cmdToolbarDelete" dlg:tab-index="28" dlg:left="211" dlg:top="171" dlg:width="40" dlg:height="14" dlg:page="3" dlg:value="Remove" dlg:image-position="left-center" dlg:image-align="left">
    <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step03.cmdToolbarDelete_onClick?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:button>
-  <dlg:menulist dlg:id="lstBasicLibraries" dlg:tab-index="12" dlg:left="127" dlg:top="89" dlg:width="134" dlg:height="108" dlg:page="1">
+  <dlg:menulist dlg:id="lstBasicLibraries" dlg:tab-index="12" dlg:left="130" dlg:top="89" dlg:width="134" dlg:height="108" dlg:page="1">
    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step01.lstBasicLibraries_itemStateChanged?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:menulist>
-  <dlg:menulist dlg:id="lstBasicLibraryContainers" dlg:tab-index="17" dlg:left="127" dlg:top="77" dlg:width="134" dlg:height="12" dlg:page="1" dlg:spin="true">
+  <dlg:menulist dlg:id="lstBasicLibraryContainers" dlg:tab-index="17" dlg:left="130" dlg:top="77" dlg:width="134" dlg:height="12" dlg:page="1" dlg:spin="true">
    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step01.lstBasicLibraryContainers_itemStateChanged?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:menulist>
   <dlg:button dlg:id="cmdOfficeMenuAddItem" dlg:tab-index="36" dlg:left="236" dlg:top="86" dlg:width="50" dlg:height="14" dlg:page="4" dlg:value="Add menu" dlg:image-position="left-center" dlg:image-align="left">
@@ -245,8 +245,8 @@
   </dlg:checkbox>
   <dlg:fixedline dlg:id="FixedLine8" dlg:tab-index="99" dlg:left="96" dlg:top="162" dlg:width="196" dlg:height="4" dlg:page="9"/>
   <dlg:text dlg:id="Label12" dlg:tab-index="101" dlg:disabled="true" dlg:left="111" dlg:top="182" dlg:width="72" dlg:height="9" dlg:page="9" dlg:value="Store as:" dlg:align="right"/>
-  <dlg:checkbox dlg:id="chkStoreBABSettings" dlg:tab-index="102" dlg:disabled="true" dlg:left="106" dlg:top="169" dlg:width="174" dlg:height="11" dlg:page="9" dlg:value="Store settings (suggested)" dlg:checked="false"/>
-  <dlg:combobox dlg:id="cmbStoreBABSettings" dlg:tab-index="100" dlg:disabled="true" dlg:left="187" dlg:top="180" dlg:width="95" dlg:height="12" dlg:page="9" dlg:spin="true"/>
+  <dlg:checkbox dlg:id="chkStoreBABSettings" dlg:tab-index="102" dlg:disabled="false" dlg:left="106" dlg:top="169" dlg:width="174" dlg:height="11" dlg:page="9" dlg:value="Store settings (suggested)" dlg:checked="false"/>
+  <dlg:combobox dlg:id="cmbStoreBABSettings" dlg:tab-index="100" dlg:disabled="false" dlg:left="187" dlg:top="180" dlg:width="95" dlg:height="12" dlg:page="9" dlg:spin="true"/>
   <!-- <dlg:radiogroup>
    <dlg:radio dlg:id="opt_aoo4" dlg:tab-index="104" dlg:disabled="true" dlg:left="127" dlg:top="88" dlg:width="167" dlg:height="9" dlg:page="2" dlg:value="Compatible with AOO 4.0.0 and higher versions" dlg:checked="true"/>
    <dlg:radio dlg:id="opt_old" dlg:tab-index="105" dlg:disabled="true" dlg:left="127" dlg:top="98" dlg:width="167" dlg:height="9" dlg:page="2" dlg:value="Compatible up to AOO 3.4.1"/>
@@ -262,9 +262,9 @@
   <!-- <dlg:checkbox dlg:id="chkPyLib" dlg:tab-index="111" dlg:left="105" dlg:top="45" dlg:width="176" dlg:height="9" dlg:page="1" dlg:value="Use Python library" dlg:image-position="left-center" dlg:checked="false">
     <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step01.chkPyLib_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:checkbox> -->
-  <dlg:text dlg:id="lblPyLib" dlg:tab-index="111" dlg:left="130" dlg:top="40" dlg:width="130" dlg:height="9" dlg:page="1" dlg:value="Select directory of the Python library to export"/>
-  <dlg:textfield dlg:id="txtPyLib" dlg:tab-index="112" dlg:left="121" dlg:top="50" dlg:width="150" dlg:height="12" dlg:page="1" dlg:readonly="true"/>
-  <dlg:button dlg:id="cmdPyLib" dlg:tab-index="113" dlg:left="271" dlg:top="50" dlg:width="10" dlg:height="12" dlg:page="1" dlg:value="...">
+  <dlg:text dlg:id="lblPyLib" dlg:tab-index="111" dlg:left="132" dlg:top="40" dlg:width="130" dlg:height="9" dlg:page="1" dlg:value="Select directory of the Python library to export"/>
+  <dlg:textfield dlg:id="txtPyLib" dlg:tab-index="112" dlg:left="132" dlg:top="50" dlg:width="150" dlg:height="12" dlg:page="1" dlg:readonly="true"/>
+  <dlg:button dlg:id="cmdPyLib" dlg:tab-index="113" dlg:left="285" dlg:top="50" dlg:width="10" dlg:height="12" dlg:page="1" dlg:value="...">
     <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step01.cmdPyLib_onClick?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:button>
   <dlg:text dlg:id="lblExtPyOnlyName" dlg:tab-index="115" dlg:left="127" dlg:top="45" dlg:width="160" dlg:height="9" dlg:page="2" dlg:value="Set extension name: (Extension with Python lib only)"/>
@@ -272,5 +272,9 @@
    <script:event script:event-name="on-textchange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step02.txtExtPyOnlyName_textModified?language=Basic&amp;location=application" script:language="Script"/>
    <script:event script:event-name="on-blur" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step02.txtExtPyOnlyName_focusLost?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:textfield>
+  <dlg:checkbox dlg:id="chk_onlyPython" dlg:tab-index="116" dlg:left="122" dlg:top="50" dlg:width="84" dlg:height="10" dlg:page="1" dlg:value="" dlg:checked="false">
+    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step01.chkOnlyPython_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:checkbox>
+  <dlg:text dlg:id="lblOnlyPyThon" dlg:tab-index="117" dlg:left="89" dlg:top="50" dlg:width="40" dlg:height="9" dlg:page="1" dlg:value="Python only"/>
  </dlg:bulletinboard>
 </dlg:window>

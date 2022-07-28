@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_step09" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.4 $ 
+&apos;	BasicAddonBuilder - $ Version: 0.6.5 $ 
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -32,16 +32,7 @@ Option Explicit
 &apos;______________________________________________________________________________
 Sub Step09_Initialize() 
 	
-	&apos;xray g_oDlgWizardModel.txtExtPyOnlyName
-	
 	With g_oDlgWizardModel
-&apos;		If g_bOnlyPython = True Then
-&apos;			.txtExtPyOnlyName.Enabled = True
-&apos;		Else
-&apos;			.txtExtPyOnlyName.Enabled = False
-&apos;			.txtExtPyOnlyName.EnableVisible = False
-&apos;			.lblExtPyOnlyName.EnableVisible = False
-&apos;		End If
 
 &apos;set step title/description
 		.lblStepTitle.Label = GetRoadmapItem(9).Label
@@ -162,13 +153,7 @@ Dim bNotEmptyFtp As Boolean
 	
 	bUpdateInfo = bUpload AND CBool(g_oDlgWizardModel.chkUpdateInfo.state)
 	
-	&apos;xray g_oDlgWizardModel.txtExtPyOnlyName
-	&apos;xray g_oDlgWizardModel.txtStoreUrl
 	With g_oDlgWizardModel
-		&apos;.txtExtPyOnlyName.Enabled = True
-		&apos;.txtExtPyOnlyName.Readonly = False
-		&apos;.txtExtPyOnlyName.Text = &quot;TEST&quot;
-		 
 		
 		.txtStoreUrl.Enabled = bStore
 		.cmdStoreUrl.Enabled = bStore

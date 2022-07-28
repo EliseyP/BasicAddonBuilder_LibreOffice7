@@ -4,19 +4,24 @@
 
 Option Explicit
 
-sub test
-&apos;	oReg = createunoservice(&quot;com.sun.star.registry.SimpleRegistry&quot;)
-&apos;	oReg.open(&quot;file:///home/paolo/testreg.dat&quot;, True, False)
-&apos;	oRoot = oReg.getRootkey()
-&apos;	xray oRoot
-end sub
+Sub test
+BasicLibraries.LoadLibrary(&quot;XrayTool&quot;)
+Globalscope.BasicLibraries.LoadLibrary( &quot;MRILib&quot; )
+	Dim oReg
+	Dim oRoot
+
+	oReg = createunoservice(&quot;com.sun.star.registry.SimpleRegistry&quot;)
+	oReg.open(&quot;file:///home/user/testreg.dat&quot;, True, False)
+	oRoot = oReg.getRootkey()
+	xray oRoot
+End sub
 
 &apos;______________________________________________________________________________
 Sub storeprj
 Dim sUrl, sName
 
 
-	sUrl = &quot;file:///home/paolo/testreg.dat&quot;
+	sUrl = &quot;file:///home/user/testreg.dat&quot;
 	sName = &quot;TestPrj&quot;
 	
 	StoreBABProject(sUrl, sName)
@@ -28,7 +33,7 @@ Sub loadprj
 Dim sUrl, sName
 
 
-	sUrl = &quot;file:///home/paolo/testreg.dat&quot;
+	sUrl = &quot;file:///home/user/testreg.dat&quot;
 	sName = &quot;TestPrj&quot;
 	
 	LoadBABProject(sUrl, sName)
@@ -64,6 +69,15 @@ Dim I as integer
 	
 	g_sDefaultProvider = GetKeyValue(oPrjKey, &quot;ProviderName&quot;)
 	g_sDefaultLibrary = GetKeyValue(oPrjKey, &quot;LibraryName&quot;)
+
+	g_sPythonLibrary = GetKeyValue(oPrjKey, &quot;PythonLibrary&quot;, g_sPythonLibrary)
+	g_sExtensionWithOnlyPythonName = GetKeyValue(oPrjKey, &quot;ExtensionWithOnlyPythonName&quot;)
+	g_sExtVersion = GetKeyValue(oPrjKey, &quot;ExtVersion&quot;)
+	g_bOnlyPython = GetKeyValue(oPrjKey, &quot;OnlyPython&quot;)
+	g_bOnlyBasic = GetKeyValue(oPrjKey, &quot;OnlyBasic&quot;)
+	g_bBasicAndPython = GetKeyValue(oPrjKey, &quot;BasicAndPython&quot;)
+	
+	
 	With g_oDlgWizard
 		.getControl(&quot;lstBasicLibraryContainers&quot;).selectItem(g_sDefaultProvider, True)
 		.getControl(&quot;lstBasicLibraries&quot;).selectItem(g_sDefaultLibrary, True)
@@ -165,6 +179,14 @@ Dim mKeyNames()
 
 	SetKeyValue(oPrjKey, &quot;ProviderName&quot;, g_sDefaultProvider)
 	SetKeyValue(oPrjKey, &quot;LibraryName&quot;, g_sDefaultLibrary)
+	
+	SetKeyValue(oPrjKey, &quot;PythonLibrary&quot;, g_sPythonLibrary)
+	SetKeyValue(oPrjKey, &quot;ExtensionWithOnlyPythonName&quot;, g_sExtensionWithOnlyPythonName)
+	SetKeyValue(oPrjKey, &quot;ExtVersion&quot;, g_sExtVersion)
+	SetKeyValue(oPrjKey, &quot;OnlyPython&quot;, g_bOnlyPython)
+	SetKeyValue(oPrjKey, &quot;OnlyBasic&quot;, g_bOnlyBasic)
+	SetKeyValue(oPrjKey, &quot;BasicAndPython&quot;, g_bBasicAndPython)
+	
 	SetKeyValue(oPrjKey, &quot;UIOptions/Toolbar&quot;, g_oDlgWizardModel.chkToolbar.State)
 	SetKeyValue(oPrjKey, &quot;UIOptions/AddonMenu&quot;, g_oDlgWizardModel.chkAddonMenu.State)
 	SetKeyValue(oPrjKey, &quot;UIOptions/OfficeMenu&quot;, g_oDlgWizardModel.chkOfficeMenu.State)

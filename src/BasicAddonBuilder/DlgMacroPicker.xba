@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgMacroPicker" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.4 $
+&apos;	BasicAddonBuilder - $ Version: 0.6.5 $
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -239,6 +239,7 @@ Dim sModuleUrl As String
 		&apos;Start counting over for files
 		&apos;sPath = sLibraryName &amp; GetPathSeparator() &amp; &quot;*.py&quot;
 		mPyFilesList() = ScriptForge.SF_FileSystem.Files(sLibraryName, &quot;*.py&quot;)
+
 		For Each sPyFileName In mPyFilesList()
 			sFunctionsList = py_get_exported_functions(ConvertFromURL(sPyFileName))	
 			If sFunctionsList &lt;&gt; &quot;&quot; Then AppendItem(mModuleList(), ScriptForge.SF_FileSystem.GetBaseName(sPyFileName))
@@ -347,7 +348,7 @@ Dim sPath$
 	Redim mURIList()
 	
 	If sProviderName = &quot;Python&quot; Then
-		sPath = sLibraryName &amp; GetPathSeparator() &amp; sModuleName
+		sPath = sLibraryName &amp; GetPathSeparator() &amp; sModuleName &amp; &quot;.py&quot;
 		mFunctionsList = getExportedFunctionsFromPyScript(sPath) &apos; via python 
 		&apos;mFunctionsList = getExportedFunctionsFromPyScriptOLD(convertToURL(sPath))
 		

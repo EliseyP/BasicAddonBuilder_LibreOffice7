@@ -2,38 +2,49 @@
 
 from pathlib import Path
 import sys
-import importlib
+import ast
+
 """Get exported py-functions for OpenOffice from given script
 Return as |-separated string.      
 """
 
 
-def main(_scr_url: str = None):
-    if _scr_url is None:
+def main(_url: str):
+    # from pathlib import Path
+    if _url is None:
         return
-    _scr_path = Path(_scr_url)
-    _parent = _scr_path.parent.as_posix()
-    sys.path.append(_parent)
 
-    _mod_name = _scr_path.stem
+    text = Path(_url).read_text()
+
     try:
-        _mod = importlib.import_module(_mod_name)
-    except ModuleNotFoundError as e:
-        print(f"Can't find module: {e}")
-        return None
-    except Exception as er:
-        return None
-    else:
-        if _mod and 'g_exportedScripts' in _mod.__dir__():
-            _f_list = [_f.__name__ for _f in _mod.g_exportedScripts]
-            return '|'.join(_f_list)
-        else:
-            return None
+        code = ast.parse(text)
+    except:
+        print("pythonscript: getFuncsByUrl: exception while parsing: ")
+        raise
 
+    allFuncs = []
 
-g_exportedScripts = (
-    main,
-)
+    if code is None:
+        return allFuncs
+
+    _g_exportedScripts = []
+    for node in ast.iter_child_nodes(code):
+        if isinstance(node, ast.FunctionDef):
+            allFuncs.append(node.name)
+        elif isinstance(node, ast.Assign):
+            for target in node.targets:
+                try:
+                    identifier = target.id
+                except AttributeError:
+                    identifier = ""
+                    pass
+                if identifier == "g_exportedScripts":
+                    for value in node.value.elts:
+                        _g_exportedScripts.append(value.id)
+                    return '|'.join(_g_exportedScripts)
+
+    return '|'.join(allFuncs)
+
 
 if __name__ == "__main__":
     script_url: str = sys.argv[1]

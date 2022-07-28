@@ -7,7 +7,7 @@
 	
 	<identifier value="org.paolo-mantovani.basicaddonbuilder"/>	
 
-	<version value="0.6.4"/>
+	<version value="0.6.5"/>
 	
 	<dependencies>
 		<l:LibreOffice-minimal-version value="7.1" dep:name="LibreOffice 7.1 minimum, or more recent" />

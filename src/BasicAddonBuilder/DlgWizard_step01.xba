@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_step01" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.4 $
+&apos;	BasicAddonBuilder - $ Version: 0.6.5 $
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -159,8 +159,28 @@ ErrH:
 End Sub
 
 
-Sub chkPyLib_statusChanged(oEvent As Object)
+Sub chkOnlyPython_statusChanged(oEvent As Object)
+Dim lstBasicLibraryContainers
+Dim lstBasicLibraries
+Dim chk_onlyPython
+	
+	g_bOnlyPython = True
+	
+	lstBasicLibraryContainers = g_oDlgWizard.getControl(&quot;lstBasicLibraryContainers&quot;)
+	lstBasicLibraries = g_oDlgWizard.getControl(&quot;lstBasicLibraries&quot;)
+	chk_onlyPython = g_oDlgWizard.getControl(&quot;chk_onlyPython&quot;)
+	
+	lstBasicLibraryContainers.Enable = Not CBool(chk_onlyPython.State)
+	lstBasicLibraries.Enable = Not CBool(chk_onlyPython.State)
+	
+End Sub
 
+Sub TESTBOL
+	Dim bA As Boolean
+	bA = True
+	Dim bB  As Boolean
+	bB = Not bA
+	
 End Sub
 
 
