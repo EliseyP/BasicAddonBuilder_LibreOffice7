@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgProjects" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.5 $
+&apos;	BasicAddonBuilder - $ Version: 0.6.6 $
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -123,6 +123,21 @@ Sub lstProjects_onClick(oEvent As Object)
 		iForceResult = 1
 		oDlgProjects.endExecute()
 	End if
+	
+End Sub
+
+
+Sub cmdOpen_onClick(oEvent As Object)
+Dim lstProjects As Object
+Dim sProjName As String
+Dim sRegistryURL As String 
+
+	sRegistryURL = pmxGetPathSettings(&quot;UserConfig&quot;) &amp; &quot;BABProjects.dat&quot;
+	lstProjects = oDlgProjects.getControl(&quot;lstProjects&quot;)
+	sProjName = lstProjects.SelectedItem
+	g_sProjectName = sProjName
+	
+	LoadBABProject(sRegistryURL, sProjName)
 	
 End Sub
 

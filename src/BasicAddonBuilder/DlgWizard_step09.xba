@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_step09" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.5 $ 
+&apos;	BasicAddonBuilder - $ Version: 0.6.6 $ 
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -131,6 +131,45 @@ Sub chkUpdateInfo_statusChanged(oEvent As Object)
 	EnableStepControls()
 End Sub
 
+Sub chkStoreBABSettings_statusChanged(oEvent As Object)
+Dim cmbStoreBABSettings
+Dim chkStoreBABSettings
+Dim sProjectName As String
+	
+	cmbStoreBABSettings = g_oDlgWizardModel.cmbStoreBABSettings
+	chkStoreBABSettings = g_oDlgWizardModel.chkStoreBABSettings
+	cmbStoreBABSettings.Enabled = CBool(chkStoreBABSettings.State)
+	cmbStoreBABSettings.Autocomplete = True
+	
+	&apos; If Project Loaded
+	If g_sProjectName &lt;&gt; &quot;&quot; Then
+		sProjectName = g_sProjectName
+	Else 
+		sProjectName =  g_sDefaultLibrary
+	End If
+	cmbStoreBABSettingsInit(sProjectName)
+	
+End Sub
+
+Sub cmbStoreBABSettingsInit(Optional sItem As String)
+Dim cmbStoreBABSettings
+Dim mProjects()
+	&apos; Get projects from registry
+	&apos; and fill in cmbStoreBABSettingsInit.
+	cmbStoreBABSettings = g_oDlgWizardModel.cmbStoreBABSettings
+	mProjects() = LoadProjectList()
+	With cmbStoreBABSettings
+		If UBound(mProjects()) &gt;= 0 Then
+			.StringItemList = mProjects
+		End If
+		
+		&apos; And set text from Library name.  
+		If sItem &lt;&gt; &quot;&quot; Then 
+			.Text = sItem
+		End If 
+		
+	End With
+End Sub
 
 
 
@@ -170,7 +209,6 @@ Dim bNotEmptyFtp As Boolean
 							 (bNotEmptyUrl AND NOT bUpload) OR _
 							 (bNotEmptyFtp AND NOT bStore)
 	End With	
-	&apos;xray g_oDlgWizardModel.txtStoreUrl
 	
 End Sub
 </script:module>

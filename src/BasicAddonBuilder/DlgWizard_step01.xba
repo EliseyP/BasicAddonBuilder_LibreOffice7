@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_step01" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.5 $
+&apos;	BasicAddonBuilder - $ Version: 0.6.6 $
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -39,7 +39,7 @@ Dim nCase%
 &apos;set step title/description
 		.lblStepTitle.Label = GetRoadmapItem(1).Label
 		.lblStepDescription.Label = _
-			GetResString(&quot;Select the StarBasic library to deploy as %productname% Extension (Add-on)&quot;)
+			GetResString(&quot;Select the libraries to deploy as %productname% Extension (Add-on)&quot;)
 		
 &apos; enable/disable general controls
 		.cmdBack.Enabled = False
@@ -103,35 +103,38 @@ End Sub
 
 &apos;______________________________________________________________________________
 Sub EnableStepControls()
-&apos;BasicLibraries.LoadLibrary(&quot;XrayTool&quot;)
 Dim sItem As String
 Dim pyItem As String
 Dim bEnable As Boolean
+Dim bBasicEnable As Boolean
 Dim I As Integer
 Dim nCase As Integer
 
 	sItem = g_oDlgWizard.getControl(&quot;lstBasicLibraries&quot;).SelectedItem
+	
+	bBasicEnable = g_oDlgWizardModel.lstBasicLibraries.Enabled
+	
 	pyItem = g_oDlgWizard.getControl(&quot;txtPyLib&quot;).Text
-	bEnable = sItem &lt;&gt; &quot;Standard&quot; And sItem &lt;&gt; &quot;&quot; &apos;) Or pyItem &lt;&gt; &quot;&quot;
-
+	If CBool(g_oDlgWizardModel.chk_onlyPython.State) = True Then
+		bEnable = pyItem &lt;&gt; &quot;&quot; 
+	Else
+		bEnable = sItem &lt;&gt; &quot;Standard&quot; And sItem &lt;&gt; &quot;&quot; 
+	End If
 
 	nCase = 0 
 	&apos; 1 - basic only 
 	&apos; 2 - python only
 	&apos; 3 - both
 	If pyItem &lt;&gt; &quot;&quot; Then nCase = nCase + 2
-	If sItem &lt;&gt; &quot;&quot; Then nCase = nCase + 1
+	If sItem &lt;&gt; &quot;&quot; And bBasicEnable = True Then nCase = nCase + 1
 
 	Select Case nCase
 		Case 1
 			g_bOnlyBasic = True
 		Case 2 
-			g_bOnlyPython = True
-			bEnable = True
-			g_sDefaultProvider = &quot;Python&quot;
 			g_sDefaultLibrary = pyItem
 		Case 3 
-			g_bBasicAndPython = True  
+			g_bBasicAndPython = True
 	End Select
 
 	g_oDlgWizardModel.cmdNext.Enabled = bEnable
@@ -158,20 +161,34 @@ ErrH:
 	
 End Sub
 
+Sub cmdLoadProj_onClick(oEvent As Object)
+Dim iDlgResult As Integer
+	
+	iDlgResult = ShowProjects(&quot;&quot;)
+	&apos;If iDlgResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+	&apos;	Dialog_Initialize()
+	&apos;	Step01_Initialize()
+	&apos;   EnableStepControls()
+	&apos;End If
+End Sub
+
 
 Sub chkOnlyPython_statusChanged(oEvent As Object)
 Dim lstBasicLibraryContainers
 Dim lstBasicLibraries
 Dim chk_onlyPython
 	
-	g_bOnlyPython = True
-	
 	lstBasicLibraryContainers = g_oDlgWizard.getControl(&quot;lstBasicLibraryContainers&quot;)
 	lstBasicLibraries = g_oDlgWizard.getControl(&quot;lstBasicLibraries&quot;)
 	chk_onlyPython = g_oDlgWizard.getControl(&quot;chk_onlyPython&quot;)
+
+	g_bOnlyPython = CBool(chk_onlyPython.State)
+	If CBool(chk_onlyPython.State) = True Then g_sDefaultProvider = &quot;Python&quot;
 	
 	lstBasicLibraryContainers.Enable = Not CBool(chk_onlyPython.State)
 	lstBasicLibraries.Enable = Not CBool(chk_onlyPython.State)
+
+	EnableStepControls()
 	
 End Sub
 

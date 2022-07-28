@@ -1,14 +1,16 @@
 # BasicAddonBuilder_LibreOffice7 
 
-## 0.6.5
+## 0.6.6
 
 `LibreOffice` extension for extension compiling  
 
-Known instrument, fixed for `LO ver >= 7.1`.
+Known instrument from Paolo Mantovani, fixed for `LO ver >= 7.1`.
 
 Added Python Libraries support.  
 
 Fixed adding toolbar buttons.
+
+Finished a feature started by author - save and load setting of project (in LO-registry).
 
 ### Python Libraries support.
 

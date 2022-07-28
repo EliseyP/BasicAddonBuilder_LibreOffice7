@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_step00" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.5 $
+&apos;	BasicAddonBuilder - $ Version: 0.6.6 $
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -93,6 +93,9 @@ Dim sPkgStoreUrl As String
 Dim sFtpRoot As String
 Dim sPkgFtpUrl As String
 Dim sUpdateFtpUrl As String
+Dim sRegistryURL As String
+Dim bProjStore As Boolean
+Dim sProjName As String
 
 On Local Error Goto ErrH
 
@@ -139,6 +142,18 @@ On Local Error Goto ErrH
 	
 	&apos;clean temporary files
 	oFileAccess.kill(sTmpPkgUrl)
+	
+	&apos; Store project
+	sRegistryURL = pmxGetPathSettings(&quot;UserConfig&quot;) &amp; &quot;BABProjects.dat&quot;
+	bProjStore = CBool(g_oDlgWizardModel.chkStoreBABSettings.State)
+	 
+	If bProjStore = True Then
+		sProjName = g_oDlgWizardModel.cmbStoreBABSettings.Text
+		If sProjName &lt;&gt; &quot;&quot; Then
+			&apos;Print(&quot;STORE &quot; &amp; sProjName)
+			StoreBABProject(sRegistryURL, sProjName)
+		End If
+	End If
 	
 	g_oDlgWizard.endExecute()
 	

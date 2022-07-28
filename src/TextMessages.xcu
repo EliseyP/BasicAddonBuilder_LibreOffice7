@@ -965,10 +965,10 @@ This file has been created with :
 				<value xml:lang="da">V&#230;lg de indstillinger som du &#248;nsker aktiveret for Udvidelsen du opretter</value>
 			</prop>
 		</node>
-		<node oor:name="Select the StarBasic library to deploy as %productname% Extension (Add-on)" oor:op="replace">
+		<node oor:name="Select the libraries to deploy as %productname% Extension (Add-on)" oor:op="replace">
 			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
-				<value>Select the StarBasic library to deploy as %productname% Extension (Add-on)</value>
-				<value xml:lang="en">Select the StarBasic library to deploy as %productname% Extension (Add-on)</value>
+				<value>Select the libraries to deploy as %productname% Extension (Add-on)</value>
+				<value xml:lang="en">Select the libraries to deploy as %productname% Extension (Add-on)</value>
 				<value xml:lang="it">Selezionare la libreria StarBasic da distribuire come %productname% Extension</value>
 				<value xml:lang="de">W&#228;hlen Sie die Bibliothek, die als Add-On erstellt werden soll</value>
 				<value xml:lang="es">Seleccione la biblioteca StarBasic para distribuir como Add-on</value>
