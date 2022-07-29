@@ -1,6 +1,6 @@
 ===================================================================
 BasicAddonBuilder for OpenOffice.org 
-$ Version: 0.6.6 $
+$ Version: 0.6.7 $
 
 Copyright (C) 2006-2008 Paolo Mantovani
 
