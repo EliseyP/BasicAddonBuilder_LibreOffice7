@@ -54,8 +54,8 @@ Dim sPkgDesc As String
 	
 	&apos;prepare an initial description
 	If Not (g_oDlgWizardModel.txtPackageDescription.Tag = &quot;Initialized&quot;) Then
-
-		sPkgDesc = GetDefaultPackageName() &amp; Chr(10)
+		
+		sPkgDesc = GetDefaultPackageName(g_bExtFileNameWithoutVersion) &amp; Chr(10)
 		sPkgDesc = sPkgDesc &amp; &quot;Copyright (c) &quot; &amp; Year(Now) &amp; &quot; &quot; &amp; GetUserName &amp; Chr(10)
 		sPkgDesc = sPkgDesc &amp; Chr(10)
 		sPkgDesc = sPkgDesc &amp; GetResString(&quot;add a short description here&quot;)

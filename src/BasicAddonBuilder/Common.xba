@@ -803,9 +803,11 @@ End Function
 
 
 &apos;__________________________________________________________________________________________________________
-Function GetDefaultPackageName() As String
+Function GetDefaultPackageName(Optional bWithoutVersion As Boolean) As String
 Dim sPkgName As String
 Dim sPkgVer As String
+		
+		If IsMissing(bWithoutVersion) Then bWithoutVersion = False
 		
 		If g_bOnlyPython = True Then 
 			sPkgName = g_sExtensionWithOnlyPythonName
@@ -813,7 +815,7 @@ Dim sPkgVer As String
 			sPkgName = g_sDefaultLibrary
 		End If
 		sPkgVer = GetPackageVersion()
-		If sPkgVer &lt;&gt; &quot;&quot; Then
+		If sPkgVer &lt;&gt; &quot;&quot; And bWithoutVersion = False Then
 			sPkgName = sPkgName &amp; &quot;-&quot; &amp; sPkgVer
 		End If
 		sPkgName = sPkgName &amp; &quot;.oxt&quot;

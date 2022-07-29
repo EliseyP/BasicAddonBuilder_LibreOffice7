@@ -68,7 +68,7 @@ Dim iDlgResult As Integer
 	sStoreUrl = g_oDlgWizardModel.txtStoreUrl.Text
 	If sStoreUrl = &quot;&quot; Then
 		&apos;build an initial Url
-		sStoreUrl = PmxGetPathSettings(&quot;Work&quot;) &amp; GetDefaultPackageName()
+		sStoreUrl = PmxGetPathSettings(&quot;Work&quot;) &amp; GetDefaultPackageName(g_bExtFileNameWithoutVersion)
 	Else
 		&apos;convert the path shown in the text control
 		sStoreUrl = ConvertToUrl(sStoreUrl)

@@ -108,7 +108,7 @@ On Local Error Goto ErrH
 	sTmpUpdateUrl = GetTempFile()
 	sPkgStoreUrl = ConvertToUrl(g_oDlgWizardModel.txtStoreUrl.Text)
 	sFtpRoot = FixDirPath(g_oDlgWizardModel.txtUploadFtpUrl.Tag)
-	sPkgFtpUrl = sFtpRoot &amp; GetDefaultPackageName()
+	sPkgFtpUrl = sFtpRoot &amp; GetDefaultPackageName(g_bExtFileNameWithoutVersion)
 	sUpdateFtpUrl = sFtpRoot &amp; &quot;.&quot; &amp; sPkgId &amp; &quot;_update.xml&quot;
 	
 	&apos;create the Extension (aka UNO package) in a temporary location
@@ -155,7 +155,7 @@ On Local Error Goto ErrH
 	If CBool(g_oDlgWizardModel.chkSaveUpdateOnDisk.State) = True _
 	   And g_oDlgWizardModel.txtDownloadUrl.Text &lt;&gt; &quot;&quot;  _
 	Then
-		sUpdateStoreUrl = Left(sPkgStoreUrl, Len(sPkgStoreUrl) - 3)
+		sUpdateStoreUrl = Left(sPkgStoreUrl, Len(sPkgStoreUrl) - 3) &apos; rstrip &quot;oxt&quot;
 		sUpdateStoreUrl = sUpdateStoreUrl &amp; &quot;update.xml&quot;
 		ExportUpdateXml(sUpdateStoreUrl)
 		
@@ -172,14 +172,6 @@ ErrH:
 			
 	Resume ExitHere
 
-End Sub
-
-Sub TST_LEN()
-Dim sUpdateStoreUrl$
-Dim sPkgStoreUrl
-	sUpdateStoreUrl = &quot;/tmp/file-0.0.6.oxt&quot;
-	sPkgStoreUrl = Left(sUpdateStoreUrl, Len(sUpdateStoreUrl) - 3)
-	Print sPkgStoreUrl &amp; &quot;update.xml&quot;
 End Sub
 
 

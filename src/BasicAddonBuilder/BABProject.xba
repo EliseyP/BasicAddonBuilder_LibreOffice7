@@ -39,6 +39,9 @@ Dim sUrl, sName
 	LoadBABProject(sUrl, sName)
 End Sub
 
+Sub TST
+	Print ABS(CInt(True))
+End Sub
 
 
 &apos;______________________________________________________________________________
@@ -76,7 +79,7 @@ Dim I as integer
 	g_bOnlyPython = GetKeyValue(oPrjKey, &quot;OnlyPython&quot;)
 	g_bOnlyBasic = GetKeyValue(oPrjKey, &quot;OnlyBasic&quot;)
 	g_bBasicAndPython = GetKeyValue(oPrjKey, &quot;BasicAndPython&quot;)
-	
+	g_bExtFileNameWithoutVersion = GetKeyValue(oPrjKey, &quot;ExtFileNameWithoutVersion&quot;)
 	
 	With g_oDlgWizard
 		.getControl(&quot;lstBasicLibraryContainers&quot;).selectItem(g_sDefaultProvider, True)
@@ -92,6 +95,8 @@ Dim I as integer
 		.numInfoVersionMajor.Value = GetKeyValue(oPrjKey, &quot;Version/Major&quot;)
 		.numInfoVersionMinor.Value = GetKeyValue(oPrjKey, &quot;Version/Minor&quot;)
 		.numInfoVersionMicro.Value = GetKeyValue(oPrjKey, &quot;Version/Build&quot;)
+		.chkWithoutVersion.State = ABS(CInt(g_bExtFileNameWithoutVersion))
+		
 		.txtInfoLicenseUrl.Text = ConvertFromUrl(GetKeyValue(oPrjKey, &quot;License/DefaultLicenseURL&quot;))
 		.txtPackageDescription.Text = GetKeyValue(oPrjKey, &quot;Description/DefaultText&quot;)
 		.txtPackageDescription.Tag = &quot;Initialized&quot;
@@ -197,6 +202,7 @@ Dim mKeyNames()
 	SetKeyValue(oPrjKey, &quot;Version/Major&quot;, g_oDlgWizardModel.numInfoVersionMajor.Value)
 	SetKeyValue(oPrjKey, &quot;Version/Minor&quot;, g_oDlgWizardModel.numInfoVersionMinor.Value)
 	SetKeyValue(oPrjKey, &quot;Version/Build&quot;, g_oDlgWizardModel.numInfoVersionMicro.Value)
+	SetKeyValue(oPrjKey, &quot;ExtFileNameWithoutVersion&quot;, g_bExtFileNameWithoutVersion)
 	
 	SetKeyValue(oPrjKey, &quot;License/DefaultLicenseURL&quot;, _
 		ConvertToUrl(g_oDlgWizardModel.txtInfoLicenseUrl.Text))

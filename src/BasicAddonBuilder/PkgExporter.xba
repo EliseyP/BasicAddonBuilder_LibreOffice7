@@ -169,7 +169,7 @@ Dim mLines()
 		sPkgName = Tools.Strings.FileNameOutOfPath(sStoreUrl)	
 	Else
 		&apos;build a suitable for the extension
-		sPkgName = GetDefaultPackageName()		
+		sPkgName = GetDefaultPackageName(g_bExtFileNameWithoutVersion)		
 	End If
 	
 	&apos;build the download url
@@ -564,6 +564,7 @@ Dim sVersion As String
 Dim sLicenseUrl As String
 Dim sLang As String
 Dim sUpdateUrl As String
+Dim sExtName As String
 Dim mLines()
 Dim aUrl As New com.sun.star.util.URL
 Dim aStrPair As Object
@@ -593,7 +594,13 @@ Dim s_publisherName As String
 		&apos;rebuild the update.xml download (http) url
 		&apos;the dot before the filename is for making it hidden
 		oUrlTransformer.assemble(aUrl)
-		sUpdateUrl = FixDirPath(aUrl.Complete) &amp; &quot;.&quot; &amp; sIdentifier &amp; &quot;_update.xml&quot;
+		&apos;sUpdateUrl = FixDirPath(aUrl.Complete) &amp; &quot;.&quot; &amp; sIdentifier &amp; &quot;_update.xml&quot;
+		
+		sExtName = GetDefaultPackageName(g_bExtFileNameWithoutVersion)
+		sExtName = Left(sExtName, Len(sExtName) - 4) &apos; rstrip &quot;.oxt&quot;
+		&apos;sUpdateStoreUrl = sUpdateStoreUrl &amp; &quot;update.xml&quot;
+
+		sUpdateUrl = FixDirPath(aUrl.Complete) &amp; sExtName &amp; &quot;.update.xml&quot;
 	End If
 
 	&apos; setup the header
@@ -1086,7 +1093,7 @@ Dim sExtFullName$
 	sScheme = &quot;vnd.sun.star.script:&quot;
 	If aMacroDescriptor.Provider = &quot;Python&quot; Then
 		&apos; Get name of extension OOnik.oxt -&gt; OOnik
-		sExtFullName = GetDefaultPackageName()
+		sExtFullName = GetDefaultPackageName(g_bExtFileNameWithoutVersion)
 		&apos;If sExtVersion &lt;&gt; &quot;&quot; Then sExtVersion = &quot;-&quot; &amp; sExtVersion 
 		sPath = sExtFullName &amp; &quot;|&quot; &amp; sPyDirForLib &amp; &quot;|&quot;
 		sPath = sPath &amp; aMacroDescriptor.Module &amp; &quot;$&quot;

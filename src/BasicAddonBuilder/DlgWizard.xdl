@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
-<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgWizard" dlg:tab-index="0" dlg:left="85" dlg:top="46" dlg:width="303" dlg:height="226" dlg:page="9" dlg:closeable="true" dlg:moveable="true">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgWizard" dlg:tab-index="0" dlg:left="85" dlg:top="46" dlg:width="303" dlg:height="226" dlg:page="7" dlg:closeable="true" dlg:moveable="true">
  <dlg:styles>
   <dlg:style dlg:style-id="0" dlg:font-weight="150"/>
  </dlg:styles>
@@ -197,9 +197,9 @@
   </dlg:button>
   <dlg:text dlg:id="Label1" dlg:tab-index="74" dlg:left="106" dlg:top="44" dlg:width="176" dlg:height="9" dlg:page="8" dlg:value="Extension description"/>
   <dlg:text dlg:id="Label2" dlg:tab-index="75" dlg:left="106" dlg:top="42" dlg:width="176" dlg:height="9" dlg:page="7" dlg:value="Unique identifier"/>
-  <dlg:text dlg:id="Label5" dlg:tab-index="78" dlg:left="154" dlg:top="78" dlg:width="35" dlg:height="9" dlg:page="7" dlg:value="Major"/>
-  <dlg:text dlg:id="Label8" dlg:tab-index="80" dlg:left="200" dlg:top="78" dlg:width="35" dlg:height="9" dlg:page="7" dlg:value="Minor"/>
-  <dlg:text dlg:id="Label10" dlg:tab-index="82" dlg:left="245" dlg:top="78" dlg:width="35" dlg:height="9" dlg:page="7" dlg:value="Build"/>
+  <dlg:text dlg:id="Label5" dlg:tab-index="78" dlg:left="182" dlg:top="77" dlg:width="30" dlg:height="9" dlg:page="7" dlg:value="Major"/>
+  <dlg:text dlg:id="Label8" dlg:tab-index="80" dlg:left="217" dlg:top="77" dlg:width="30" dlg:height="9" dlg:page="7" dlg:value="Minor"/>
+  <dlg:text dlg:id="Label10" dlg:tab-index="82" dlg:left="252" dlg:top="77" dlg:width="30" dlg:height="9" dlg:page="7" dlg:value="Build"/>
   <dlg:text dlg:id="Label11" dlg:tab-index="84" dlg:left="106" dlg:top="104" dlg:width="119" dlg:height="9" dlg:page="7" dlg:help-text="The files must contain unformatted text using Utf8 encoding" dlg:value="Add license"/>
   <dlg:fixedline dlg:id="FixedLine7" dlg:tab-index="77" dlg:left="106" dlg:top="67" dlg:width="176" dlg:height="9" dlg:page="7" dlg:value="Version number"/>
   <dlg:fixedline dlg:id="FixedLine6" dlg:tab-index="94" dlg:left="96" dlg:top="74" dlg:width="196" dlg:height="4" dlg:page="9"/>
@@ -232,9 +232,9 @@
   <dlg:button dlg:id="cmdUploadConfig" dlg:tab-index="98" dlg:disabled="true" dlg:left="236" dlg:top="103" dlg:width="45" dlg:height="14" dlg:page="9" dlg:value="Configure...">
    <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step09.cmdUploadConfig_onClick?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:button>
-  <dlg:numericfield dlg:id="numInfoVersionMajor" dlg:tab-index="79" dlg:left="154" dlg:top="89" dlg:width="35" dlg:height="12" dlg:page="7" dlg:decimal-accuracy="0" dlg:value="1" dlg:value-min="0" dlg:value-max="99" dlg:spin="true"/>
-  <dlg:numericfield dlg:id="numInfoVersionMinor" dlg:tab-index="81" dlg:left="200" dlg:top="89" dlg:width="35" dlg:height="12" dlg:page="7" dlg:decimal-accuracy="0" dlg:value="0" dlg:value-min="0" dlg:value-max="99" dlg:spin="true"/>
-  <dlg:numericfield dlg:id="numInfoVersionMicro" dlg:tab-index="83" dlg:left="245" dlg:top="89" dlg:width="35" dlg:height="12" dlg:page="7" dlg:decimal-accuracy="0" dlg:value="0" dlg:value-min="0" dlg:value-max="99" dlg:spin="true"/>
+  <dlg:numericfield dlg:id="numInfoVersionMajor" dlg:tab-index="79" dlg:left="182" dlg:top="88" dlg:width="30" dlg:height="12" dlg:page="7" dlg:decimal-accuracy="0" dlg:value="1" dlg:value-min="0" dlg:value-max="99" dlg:spin="true"/>
+  <dlg:numericfield dlg:id="numInfoVersionMinor" dlg:tab-index="81" dlg:left="217" dlg:top="88" dlg:width="30" dlg:height="12" dlg:page="7" dlg:decimal-accuracy="0" dlg:value="0" dlg:value-min="0" dlg:value-max="99" dlg:spin="true"/>
+  <dlg:numericfield dlg:id="numInfoVersionMicro" dlg:tab-index="83" dlg:left="252" dlg:top="88" dlg:width="30" dlg:height="12" dlg:page="7" dlg:decimal-accuracy="0" dlg:value="0" dlg:value-min="0" dlg:value-max="99" dlg:spin="true"/>
   <dlg:textfield dlg:id="txtUploadFtpUrl" dlg:tab-index="89" dlg:disabled="true" dlg:left="135" dlg:top="105" dlg:width="100" dlg:height="12" dlg:page="9" dlg:readonly="true"/>
   <dlg:checkbox dlg:id="chkUpdateInfo" dlg:tab-index="93" dlg:disabled="true" dlg:left="121" dlg:top="122" dlg:width="160" dlg:height="9" dlg:page="9" dlg:value="Add auto-update information" dlg:image-position="left-center" dlg:checked="false">
    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step09.chkUpdateInfo_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
@@ -276,6 +276,9 @@
   </dlg:button>
   <dlg:checkbox dlg:id="chkSaveUpdateOnDisk" dlg:tab-index="117" dlg:left="106" dlg:top="81" dlg:width="175" dlg:height="9" dlg:page="9" dlg:value="Save Update XML file on disk" dlg:image-position="left-top" dlg:checked="false">
    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step09.chkSaveUpdateOnDisk_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:checkbox>
+  <dlg:checkbox dlg:id="chkWithoutVersion" dlg:tab-index="118" dlg:left="105" dlg:top="90" dlg:width="73" dlg:height="10" dlg:page="7" dlg:value="No version in filename" dlg:checked="false">
+   <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step07.chkWithoutVersion_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:checkbox>
  </dlg:bulletinboard>
 </dlg:window>
