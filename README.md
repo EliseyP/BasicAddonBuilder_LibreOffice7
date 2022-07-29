@@ -2,7 +2,7 @@
 
 ## 0.6.7
 
-`LibreOffice` extension for extension compiling  
+`LibreOffice` extension for extension compiling.  
 
 Known instrument from **Paolo Mantovani,** fixed for `LO ver >= 7.1`.
 
@@ -18,7 +18,7 @@ Finished a feature started by author - **save and load settings of project** (in
 
 ### Python Libraries support
 
-You can select directory with python modules. This directory's structure must be prepared (remember about `pythonpath` directory for other modules). And it will copy to extension root and renamed to `python`.  
+You can select directory with python modules. This directory's structure must be prepared (remember about `pythonpath` directory for other modules). Then it will be copied to extension root and renamed to `python`.  
 
 Extension's name must be set manually if only Python library selected (if both selected - Basic and Python - extension named from Basic library automatically).
 
