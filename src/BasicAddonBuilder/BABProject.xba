@@ -96,7 +96,9 @@ Dim I as integer
 		.txtPackageDescription.Text = GetKeyValue(oPrjKey, &quot;Description/DefaultText&quot;)
 		.txtPackageDescription.Tag = &quot;Initialized&quot;
 		
+		
 		.chkStore.State = GetKeyValue(oPrjKey, &quot;HasStoreURL&quot;)
+		.chkSaveUpdateOnDisk.State = GetKeyValue(oPrjKey, &quot;HasStoreUpdateOnDisk&quot;)
 		.txtStoreUrl.Text = ConvertFromUrl(GetKeyValue(oPrjKey, &quot;StoreURL&quot;))
 		.chkUpload.State = GetKeyValue(oPrjKey, &quot;HasUploadURL&quot;)
 		.txtUploadFtpUrl.Tag = GetKeyValue(oPrjKey, &quot;UploadURL&quot;)
@@ -208,11 +210,13 @@ Dim mKeyNames()
 	AppendLocalizedStringKeys(oRegKey, g_mPkgDescTranslations())
 	
 	SetKeyValue(oPrjKey, &quot;HasStoreURL&quot;, g_oDlgWizardModel.chkStore.State)
+	SetKeyValue(oPrjKey, &quot;HasStoreUpdateOnDisk&quot;, g_oDlgWizardModel.chkSaveUpdateOnDisk.State)
 	SetKeyValue(oPrjKey, &quot;StoreURL&quot;, ConvertToUrl(g_oDlgWizardModel.txtStoreUrl.Text))
 	SetKeyValue(oPrjKey, &quot;HasUploadURL&quot;, g_oDlgWizardModel.chkUpload.State)
 	SetKeyValue(oPrjKey, &quot;UploadURL&quot;, g_oDlgWizardModel.txtUploadFtpUrl.Tag)
 	SetKeyValue(oPrjKey, &quot;HasUpdateURL&quot;, g_oDlgWizardModel.chkUpdateInfo.State)
 	SetKeyValue(oPrjKey, &quot;UpdateURL&quot;, g_oDlgWizardModel.txtDownloadUrl.Text)
+	
 	
 	SetKeyValue(oPrjKey, &quot;Toolbar/Title&quot;, g_oDlgWizardModel.txtToolbarTitle.Text)
 	

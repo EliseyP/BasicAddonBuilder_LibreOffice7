@@ -146,7 +146,6 @@ Const sTxtDefault = &quot;Save Update XML file on disk&quot;
 	txtDownloadUrl = g_oDlgWizardModel.txtDownloadUrl
 	bEnabled = CBool(chkSaveUpdateOnDisk.State)
 	txtDownloadUrl.Enabled = bEnabled
-	g_bSaveUpdateOnDisk = bEnabled
 	
 	If g_bOnlyPython = True Then 
 		sPkgName = g_sExtensionWithOnlyPythonName

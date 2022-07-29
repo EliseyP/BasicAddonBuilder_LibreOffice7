@@ -152,7 +152,9 @@ On Local Error Goto ErrH
 	End If
 	
 	&apos;create the Update.xml file into the extension create dir
-	If g_bSaveUpdateOnDisk = True And g_oDlgWizardModel.txtDownloadUrl.Text &lt;&gt; &quot;&quot;  Then
+	If CBool(g_oDlgWizardModel.chkSaveUpdateOnDisk.State) = True _
+	   And g_oDlgWizardModel.txtDownloadUrl.Text &lt;&gt; &quot;&quot;  _
+	Then
 		sUpdateStoreUrl = Left(sPkgStoreUrl, Len(sPkgStoreUrl) - 3)
 		sUpdateStoreUrl = sUpdateStoreUrl &amp; &quot;update.xml&quot;
 		ExportUpdateXml(sUpdateStoreUrl)
