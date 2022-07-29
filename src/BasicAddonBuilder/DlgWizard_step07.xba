@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_step07" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.7 $ 
+&apos;	BasicAddonBuilder - $ Version: 0.6.4 $ 
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -117,7 +117,6 @@ Dim iDlgResult As Integer
 	mFilters(1,1) = &quot;*.*&quot;	
 	
 	sLicenseUrl = ConvertToUrl(g_oDlgWizardModel.txtInfoLicenseUrl.Text)
-	
 	iDlgResult = ShowFileDialog(sLicenseUrl, mFilters())
 	If iDlgResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
 		&apos;update the License Url in the text control

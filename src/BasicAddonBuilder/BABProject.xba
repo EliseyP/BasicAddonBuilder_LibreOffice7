@@ -39,11 +39,6 @@ Dim sUrl, sName
 	LoadBABProject(sUrl, sName)
 End Sub
 
-Sub TST
-	Print ABS(CInt(True))
-End Sub
-
-
 &apos;______________________________________________________________________________
 Sub LoadBABProject(sRegistryURL AS String, sProjectName As String)
 Dim oReg As Object
@@ -58,7 +53,8 @@ Dim sTbTitle As String
 Dim bReadOnly As Boolean
 Dim bCreate As Boolean
 Dim mKeyNames()
-Dim I as integer
+Dim I as Integer
+Dim sOtherFilesItem As String
 
 	oReg = createunoservice(&quot;com.sun.star.registry.SimpleRegistry&quot;)
 	
@@ -138,6 +134,15 @@ Dim I as integer
 		ToolbarPreview_AddItem(I, aUIChild)
 	Next I
 
+	oRegKey = oPrjKey.openKey(&quot;OtherFiles&quot;)
+	mKeyNames() = oRegKey.getKeyNames()
+	For I = LBound(mKeyNames()) To UBound(mKeyNames())
+		&apos;oRegSubKey = oRegKey.openKey(I)
+		&apos;sOtherFilesItem = oRegSubKey.getStringValue() 
+		sOtherFilesItem = GetKeyValue(oPrjKey, &quot;OtherFiles/&quot; &amp; I)
+		AppendItem(mOtherFiles(), sOtherFilesItem)
+	Next I
+
 	ToolbarPreview_UpdateControls()
 	
 	oRegKey = oPrjKey.openKey(&quot;OfficeMenu&quot;)
@@ -168,6 +173,7 @@ Dim I As Integer
 Dim bReadOnly As Boolean
 Dim bCreate As Boolean
 Dim mKeyNames()
+Dim sOtherFilesItem As String
 
 	oReg = createunoservice(&quot;com.sun.star.registry.SimpleRegistry&quot;)
 	
@@ -234,6 +240,13 @@ Dim mKeyNames()
 		aUIElem = mToolbarUIElements(I)
 		oRegKey = oPrjKey.createKey(&quot;Toolbar/UIElements/&quot; &amp; I)
 		AppendUIElementKey(oRegKey, aUIElem)
+	Next I
+	
+	oPrjKey.createKey(&quot;OtherFiles&quot;)
+	For I = LBound(mOtherFiles()) To UBound(mOtherFiles())
+		sOtherFilesItem = mOtherFiles(I)
+		&apos;oRegKey = oPrjKey.createKey(&quot;OtherFiles/&quot; &amp; I)
+		SetKeyValue(oPrjKey, &quot;OtherFiles/&quot; &amp; I, sOtherFilesItem)
 	Next I
 	
 	If Not IsEmpty(aRootOfficeMenu) Then

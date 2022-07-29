@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
-<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgWizard" dlg:tab-index="0" dlg:left="85" dlg:top="46" dlg:width="303" dlg:height="226" dlg:page="7" dlg:closeable="true" dlg:moveable="true">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgWizard" dlg:tab-index="0" dlg:left="85" dlg:top="46" dlg:width="303" dlg:height="226" dlg:page="2" dlg:closeable="true" dlg:moveable="true">
  <dlg:styles>
   <dlg:style dlg:style-id="0" dlg:font-weight="150"/>
  </dlg:styles>
@@ -16,13 +16,13 @@
    <script:event script:event-name="on-textchange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step08.txtPackageDescription_textModified?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:textfield>
   <dlg:text dlg:id="lblStepDescription" dlg:tab-index="10" dlg:left="106" dlg:top="13" dlg:width="185" dlg:height="24" dlg:value="lblStepDescription" dlg:multiline="true"/>
-  <dlg:checkbox dlg:id="chkAddonMenu" dlg:tab-index="15" dlg:left="119" dlg:top="146" dlg:width="148" dlg:height="10" dlg:page="2" dlg:value="Add items under Tools/Add-on menu" dlg:checked="false">
+  <dlg:checkbox dlg:id="chkAddonMenu" dlg:tab-index="15" dlg:left="119" dlg:top="104" dlg:width="148" dlg:height="10" dlg:page="2" dlg:value="Add items under Tools/Add-on menu" dlg:checked="false">
    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step02.chkAddonMenu_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:checkbox>
-  <dlg:checkbox dlg:id="chkToolbar" dlg:tab-index="13" dlg:left="119" dlg:top="77" dlg:width="148" dlg:height="10" dlg:page="2" dlg:value="Add customized office toolbar" dlg:checked="false">
+  <dlg:checkbox dlg:id="chkToolbar" dlg:tab-index="13" dlg:left="119" dlg:top="71" dlg:width="148" dlg:height="10" dlg:page="2" dlg:value="Add customized office toolbar" dlg:checked="false">
    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step02.chkToolbar_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:checkbox>
-  <dlg:checkbox dlg:id="chkHelpMenu" dlg:tab-index="16" dlg:left="119" dlg:top="170" dlg:width="148" dlg:height="10" dlg:page="2" dlg:value="Add items under Help (?) menu" dlg:checked="false">
+  <dlg:checkbox dlg:id="chkHelpMenu" dlg:tab-index="16" dlg:left="119" dlg:top="120" dlg:width="148" dlg:height="10" dlg:page="2" dlg:value="Add items under Help (?) menu" dlg:checked="false">
    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step02.chkHelpMenu_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:checkbox>
   <dlg:fixedline dlg:id="FixedLine1" dlg:tab-index="29" dlg:left="97" dlg:top="73" dlg:width="197" dlg:height="4" dlg:page="3"/>
@@ -240,7 +240,7 @@
    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step09.chkUpdateInfo_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:checkbox>
   <dlg:text dlg:id="lblUploadFtpUrl" dlg:tab-index="95" dlg:disabled="true" dlg:left="96" dlg:top="107" dlg:width="33" dlg:height="9" dlg:page="9" dlg:value="FTP address"/>
-  <dlg:checkbox dlg:id="chkOfficeMenu" dlg:tab-index="14" dlg:left="119" dlg:top="122" dlg:width="148" dlg:height="10" dlg:page="2" dlg:value="Add top level menu" dlg:checked="false">
+  <dlg:checkbox dlg:id="chkOfficeMenu" dlg:tab-index="14" dlg:left="119" dlg:top="87" dlg:width="148" dlg:height="10" dlg:page="2" dlg:value="Add top level menu" dlg:checked="false">
    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step02.chkOfficeMenu_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:checkbox>
   <dlg:fixedline dlg:id="FixedLine8" dlg:tab-index="99" dlg:left="96" dlg:top="162" dlg:width="196" dlg:height="4" dlg:page="9"/>
@@ -262,8 +262,8 @@
   <dlg:button dlg:id="cmdPyLib" dlg:tab-index="111" dlg:left="285" dlg:top="50" dlg:width="10" dlg:height="12" dlg:page="1" dlg:value="...">
    <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step01.cmdPyLib_onClick?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:button>
-  <dlg:text dlg:id="lblExtPyOnlyName" dlg:tab-index="113" dlg:left="127" dlg:top="45" dlg:width="160" dlg:height="9" dlg:page="2" dlg:value="Set extension name: (Extension with Python lib only)"/>
-  <dlg:textfield dlg:id="txtExtPyOnlyName" dlg:tab-index="112" dlg:left="127" dlg:top="55" dlg:width="160" dlg:height="12" dlg:page="2" dlg:readonly="true">
+  <dlg:text dlg:id="lblExtPyOnlyName" dlg:tab-index="113" dlg:left="120" dlg:top="45" dlg:width="160" dlg:height="9" dlg:page="2" dlg:value="Set extension name: (Extension with Python lib only)"/>
+  <dlg:textfield dlg:id="txtExtPyOnlyName" dlg:tab-index="112" dlg:left="120" dlg:top="55" dlg:width="160" dlg:height="12" dlg:page="2" dlg:readonly="true">
    <script:event script:event-name="on-textchange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step02.txtExtPyOnlyName_textModified?language=Basic&amp;location=application" script:language="Script"/>
    <script:event script:event-name="on-blur" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step02.txtExtPyOnlyName_focusLost?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:textfield>
@@ -280,5 +280,19 @@
   <dlg:checkbox dlg:id="chkWithoutVersion" dlg:tab-index="118" dlg:left="105" dlg:top="90" dlg:width="73" dlg:height="10" dlg:page="7" dlg:value="No version in filename" dlg:checked="false">
    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step07.chkWithoutVersion_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:checkbox>
+  <dlg:fixedline dlg:id="FixedLine10" dlg:tab-index="119" dlg:left="96" dlg:top="135" dlg:width="196" dlg:height="8" dlg:page="2" dlg:value="Other directorise and files"/>
+  <dlg:menulist dlg:id="lbOtherFiles" dlg:tab-index="120" dlg:left="96" dlg:top="146" dlg:width="139" dlg:height="48" dlg:page="2" dlg:multiselection="true"/>
+  <dlg:button dlg:id="cmdAddOtherFiles" dlg:tab-index="121" dlg:left="243" dlg:top="146" dlg:width="47" dlg:height="12" dlg:page="2" dlg:value="Add Files">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step02.cmdAddOtherFiles_onClick?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+  <dlg:button dlg:id="cmdAddOtherDir" dlg:tab-index="124" dlg:left="243" dlg:top="158" dlg:width="47" dlg:height="12" dlg:page="2" dlg:value="Add Dir">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step02.cmdAddOtherDir_onClick?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+  <dlg:button dlg:id="cmdOtherFilesDelete" dlg:tab-index="123" dlg:left="243" dlg:top="170" dlg:width="47" dlg:height="12" dlg:page="2" dlg:value="Delete">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step02.cmdOthefFilesDelete_onClick?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+  <dlg:button dlg:id="cmdOtherFilesClear" dlg:tab-index="122" dlg:left="243" dlg:top="182" dlg:width="47" dlg:height="12" dlg:page="2" dlg:value="Clear">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step02.cmdOthefFilesClear_onClick?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
  </dlg:bulletinboard>
 </dlg:window>

@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_step02" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.7 $ 
+&apos;	BasicAddonBuilder - $ Version: 0.6.4 $ 
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -29,11 +29,13 @@
 &apos; Declarations:
 Option Explicit
 
+Public mOtherFiles()
 
 &apos;______________________________________________________________________________
 Sub Step02_Initialize()
 
 	With g_oDlgWizardModel
+		.lbOtherFiles.StringItemList() = mOtherFiles()
 &apos;set step title/description
 		.lblStepTitle.Label = GetRoadmapItem(2).Label
 		.lblStepDescription.Label = _
@@ -177,5 +179,67 @@ Dim sExtName As String
 
 End Sub
 
+Sub cmdAddOtherFiles_onClick(oEvent As Object)
+Dim lbOtherFiles
+Dim sFileName As String
+Dim mSelectedFiles()
 
+	lbOtherFiles = g_oDlgWizardModel.lbOtherFiles
+	mOtherFiles() = lbOtherFiles.StringItemList	
+	mSelectedFiles() = ChooseAFiles()
+
+	If UBound(mSelectedFiles()) &lt; 0 Then Exit Sub
+
+	For Each sFileName In mSelectedFiles()
+		If sFileName &lt;&gt; &quot;&quot; AND HasItem(mOtherFiles(), ConvertFromUrl(sFileName)) = False Then
+			AppendItem(mOtherFiles(), ConvertFromUrl(sFileName))
+		End If
+	Next sFileName
+	lbOtherFiles.StringItemList = mOtherFiles()
+
+End Sub
+
+Sub cmdAddOtherDir_onClick(oEvent As Object)
+Dim lbOtherFiles
+Dim sSelectedDir As String
+
+	lbOtherFiles = g_oDlgWizardModel.lbOtherFiles
+	mOtherFiles() = lbOtherFiles.StringItemList	
+	
+	sSelectedDir = ChooseADirectory()
+	
+	If sSelectedDir = &quot;&quot; OR HasItem(mOtherFiles(), ConvertFromUrl(sSelectedDir)) = True Then Exit Sub
+
+	AppendItem(mOtherFiles(), ConvertFromUrl(sSelectedDir))
+
+	lbOtherFiles.StringItemList = mOtherFiles()
+
+End Sub
+
+Sub cmdOthefFilesClear_onClick(oEvent As Object)
+Dim NullList() as String
+	g_oDlgWizardModel.lbOtherFiles.StringItemList() = NullList()
+End Sub
+
+Sub cmdOthefFilesDelete_onClick(oEvent As Object)
+
+	Dim lbOtherFiles
+	Dim nFisrtSelectedPos As Integer
+	Dim nSelectedPos As Integer
+
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;Tools&quot;)
+	
+	lbOtherFiles = g_oDlgWizardModel.lbOtherFiles
+	nFisrtSelectedPos = lbOtherFiles.SelectedItems(0)
+
+	mOtherFiles() = RemoveSelected(lbOtherFiles)
+	lbOtherFiles.StringItemList = mOtherFiles()
+
+	nSelectedPos = 0
+	If nFisrtSelectedPos &gt; 0 Then nSelectedPos = nFisrtSelectedPos - 1
+	
+	g_oDlgWizard.getControl(&quot;lbOtherFiles&quot;).selectItemPos(nSelectedPos, True)
+		
+	
+End Sub
 </script:module>

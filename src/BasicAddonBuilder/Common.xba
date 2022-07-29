@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="Common" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.7 $
+&apos;	BasicAddonBuilder - $ Version: 0.6.4 $
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -873,6 +873,34 @@ Dim sVersion As String
 	End If
 	
 	GetPackageVersion = sVersion
+	
+End Function
+
+Function ChooseAFiles(Optional sInPath$) As Variant
+  Dim oDialog As Object
+  Dim oSFA As Object
+  Dim s As String
+  Dim oPathSettings
+  Dim oContext
+
+  oDialog = CreateUnoService(&quot;com.sun.star.ui.dialogs.FilePicker&quot;)
+  oSFA = createUnoService(&quot;com.sun.star.ucb.SimpleFileAccess&quot;)
+  oDialog.setMultiSelectionMode(True)
+  If IsMissing(sInPath) Then
+    &apos;oPathSettings = CreateUnoService(&quot;com.sun.star.util.PathSettings&quot;)
+    oContext = getProcessServiceManager().DefaultContext
+    oPathSettings = oContext.getValueByName(&quot;/singletons/com.sun.star.util.thePathSettings&quot;)
+    oDialog.setDisplayDirectory(oPathSettings.Work)
+  ElseIf oSFA.Exists(sInPath) Then
+    oDialog.setDisplayDirectory(sInPath)
+  Else
+    s = &quot;Directory &apos;&quot; &amp; sInPath &amp; &quot;&apos; Does not exist&quot;
+    If MsgBox(s, 33, &quot;Error&quot;) = 2 Then Exit Function
+  End If
+ 
+  If oDialog.Execute() = 1 Then
+    ChooseAFiles() = oDialog.getSelectedFiles()
+  End If
 	
 End Function
 

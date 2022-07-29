@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="PkgExporter" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.7 $ 
+&apos;	BasicAddonBuilder - $ Version: 0.6.4 $ 
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -47,7 +47,6 @@ Private oGraphicProvider As Object
 Private oFileAccess As Object
 Private oURLTransformer As Object
 
-
 &apos;______________________________________________________________________________________________
 &apos; Modified by Derby Russell to ensure the temp folder name stored in this
 &apos; module and used throughout this module, is Windows Long Format
@@ -61,6 +60,11 @@ Dim sTmpPath As String
 Dim sPyDir$ 
 Dim nCases%
 Dim res As Boolean
+Dim sOtherFilesItem As String
+Dim sFileName As String
+Dim sDirName As String
+	
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;ScriptForge&quot;)
 	
 	sPyDirForLib = &quot;python&quot;
 	
@@ -98,7 +102,7 @@ Dim res As Boolean
 	
 	&apos; Copy Python Library dir to temp
 	If g_sPythonLibrary &lt;&gt; &quot;&quot; Then
-		GlobalScope.BasicLibraries.LoadLibrary(&quot;ScriptForge&quot;)
+		
 		sPyDir = sTempDirUrl &amp; sPyDirForLib
 		oFileAccess.createFolder(sPyDir)
 		res = CopyFolder(g_sPythonLibrary, sPyDir)
@@ -108,6 +112,29 @@ Dim res As Boolean
 		End If
 		
 	End If
+	
+	&apos;Copy other Files and Dirs. 
+	&apos; !!! Only latin names (ZipFolder(sTempDirUrl, sPackageUrl) - 
+	&apos; decodes as url-encoded non-latin names:
+	&apos; %D0%9F%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%BA%D0%B0 = &quot;Проверка&quot;).
+	&apos; Maybe use python zip function? 
+	
+	If UBound(mOtherFiles()) &gt;= 0 Then
+		For Each sOtherFilesItem In mOtherFiles()
+			If oFileAccess.isFolder(sOtherFilesItem) = True Then
+			    sDirName = FileNameoutofPath(sOtherFilesItem)
+				res = CopyFolder(sOtherFilesItem, sTempDirUrl &amp; sDirName)
+				If res = False Then 
+					MsgBox(&quot;Error copy dir:&quot; &amp; CHR(13) &amp; sOtherFilesItem)
+					Exit Sub
+				End If				
+			Else
+				sFileName = FileNameoutofPath(sOtherFilesItem)
+				oFileAccess.copy(sOtherFilesItem, sTempDirUrl &amp; sFileName)
+			End IF	
+		
+		Next sOtherFilesItem
+	End If 
 	
 	&apos;create the various sub directories needed
 	sMetaDirUrl = sTempDirUrl &amp; &quot;META-INF&quot;
