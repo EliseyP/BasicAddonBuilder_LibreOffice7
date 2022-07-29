@@ -10,7 +10,7 @@ Added Python Libraries support.
 
 Fixed adding toolbar buttons.
 
-Finished a feature started by author - **save and load setting of project** (in LO-registry).
+Finished a feature started by author - **save and load settings of project** (in LO-registry).
 
 ### Python Libraries support
 
