@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="CtrlMenuPreview" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.6 $ 
+&apos;	BasicAddonBuilder - $ Version: 0.6.4 $ 
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s

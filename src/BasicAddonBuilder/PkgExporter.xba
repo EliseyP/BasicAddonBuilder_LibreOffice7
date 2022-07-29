@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="PkgExporter" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.6 $ 
+&apos;	BasicAddonBuilder - $ Version: 0.6.4 $ 
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -188,6 +188,8 @@ Dim mLines()
 	AppendItem(mLines(), Indent(2) &amp; &quot;&lt;src xlink:href=&quot;&quot;&quot; &amp; sDownloadUrl &amp; &quot;&quot;&quot; /&gt;&quot;)
 	AppendItem(mLines(), Indent(1) &amp; &quot;&lt;/update-download&gt;&quot;)
 	AppendItem(mLines(), Indent(0) &amp; &quot;&lt;/description&gt;&quot;)
+	
+	&apos;TODO addd publisher strings (if checked and not empty) 
 	
 	&apos;finally create the file
 	If oFileAccess.exists(sUrl) And Not oFileAccess.IsFolder(sUrl) Then

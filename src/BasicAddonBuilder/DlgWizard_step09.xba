@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_step09" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.6 $ 
+&apos;	BasicAddonBuilder - $ Version: 0.6.4 $ 
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -131,6 +131,37 @@ Sub chkUpdateInfo_statusChanged(oEvent As Object)
 	EnableStepControls()
 End Sub
 
+Sub chkSaveUpdateOnDisk_statusChanged(oEvent As Object)
+Dim txtDownloadUrl
+Dim chkSaveUpdateOnDisk
+Dim sPkgName As String
+Dim sUpdateFileName As String
+Dim bEnabled As Boolean
+Dim sTxt As String
+Const sTxtDefault = &quot;Save Update XML file on disk&quot;
+	
+	chkSaveUpdateOnDisk = g_oDlgWizardModel.chkSaveUpdateOnDisk
+	&apos;xray chkSaveUpdateOnDisk
+	sTxt = chkSaveUpdateOnDisk.Label
+	txtDownloadUrl = g_oDlgWizardModel.txtDownloadUrl
+	bEnabled = CBool(chkSaveUpdateOnDisk.State)
+	txtDownloadUrl.Enabled = bEnabled
+	g_bSaveUpdateOnDisk = bEnabled
+	
+	If g_bOnlyPython = True Then 
+		sPkgName = g_sExtensionWithOnlyPythonName
+	Else
+		sPkgName = g_sDefaultLibrary	
+	End If
+	sUpdateFileName = sPkgName &amp; &quot;.update.xml&quot;
+	sTxt = sTxtDefault
+	If bEnabled = True Then sTxt = sTxtDefault &amp; &quot;: &quot; &amp; sUpdateFileName
+
+	chkSaveUpdateOnDisk.Label = sTxt
+
+End Sub
+
+
 Sub chkStoreBABSettings_statusChanged(oEvent As Object)
 Dim cmbStoreBABSettings
 Dim chkStoreBABSettings
@@ -175,14 +206,11 @@ End Sub
 
 &apos;______________________________________________________________________________
 Sub EnableStepControls()
-Dim bExtPyOnlyName As Boolean
 Dim bStore As Boolean
 Dim bUpload As Boolean
 Dim bUpdateInfo As Boolean
 Dim bNotEmptyUrl As Boolean
 Dim bNotEmptyFtp As Boolean
-
-	&apos;bExtPyOnlyName = CBool(g_oDlgWizardModel.txtExtPyOnlyName.Text &lt;&gt; &quot;&quot;)
 
 	bStore = CBool(g_oDlgWizardModel.chkStore.state)
 	bNotEmptyUrl = bStore AND (g_oDlgWizardModel.txtStoreUrl.Text &lt;&gt; &quot;&quot;)
@@ -190,7 +218,9 @@ Dim bNotEmptyFtp As Boolean
 	bUpload = CBool(g_oDlgWizardModel.chkUpload.state)
 	bNotEmptyFtp = bUpload AND (g_oDlgWizardModel.txtUploadFtpUrl.Text &lt;&gt; &quot;&quot;)
 	
-	bUpdateInfo = bUpload AND CBool(g_oDlgWizardModel.chkUpdateInfo.state)
+	bUpdateInfo = _
+		(bUpload AND CBool(g_oDlgWizardModel.chkUpdateInfo.state)) _
+		Or CBool(g_oDlgWizardModel.chkSaveUpdateOnDisk.state) 
 	
 	With g_oDlgWizardModel
 		

@@ -5,7 +5,7 @@
   <dlg:style dlg:style-id="0" dlg:font-weight="150"/>
  </dlg:styles>
  <dlg:bulletinboard>
-  <dlg:button dlg:id="cmdHelp" dlg:tab-index="0" dlg:left="8" dlg:top="206" dlg:width="45" dlg:height="14" dlg:value="?" dlg:button-type="help"/>
+  <dlg:button dlg:id="cmdHelp" dlg:tab-index="0" dlg:left="8" dlg:top="206" dlg:width="42" dlg:height="14" dlg:value="?" dlg:button-type="help"/>
   <dlg:button dlg:id="cmdCancel" dlg:tab-index="4" dlg:left="247" dlg:top="206" dlg:width="45" dlg:height="14" dlg:value="Cancel" dlg:button-type="cancel"/>
   <dlg:text dlg:style-id="0" dlg:id="lblStepTitle" dlg:tab-index="7" dlg:left="96" dlg:top="2" dlg:width="196" dlg:height="9" dlg:value="lblStepTitle"/>
   <dlg:fixedline dlg:id="FixedLine3" dlg:tab-index="9" dlg:left="96" dlg:top="37" dlg:width="196" dlg:height="4"/>
@@ -203,7 +203,7 @@
   <dlg:text dlg:id="Label11" dlg:tab-index="84" dlg:left="106" dlg:top="104" dlg:width="119" dlg:height="9" dlg:page="7" dlg:help-text="The files must contain unformatted text using Utf8 encoding" dlg:value="Add license"/>
   <dlg:fixedline dlg:id="FixedLine7" dlg:tab-index="77" dlg:left="106" dlg:top="67" dlg:width="176" dlg:height="9" dlg:page="7" dlg:value="Version number"/>
   <dlg:fixedline dlg:id="FixedLine6" dlg:tab-index="94" dlg:left="96" dlg:top="74" dlg:width="196" dlg:height="4" dlg:page="9"/>
-  <dlg:checkbox dlg:id="chkUpload" dlg:tab-index="92" dlg:left="106" dlg:top="81" dlg:width="175" dlg:height="9" dlg:page="9" dlg:value="Upload on a remote Web server via FTP (experimental)" dlg:image-position="left-top" dlg:checked="false">
+  <dlg:checkbox dlg:id="chkUpload" dlg:tab-index="92" dlg:left="106" dlg:top="94" dlg:width="175" dlg:height="9" dlg:page="9" dlg:value="Upload on a remote Web server via FTP (experimental)" dlg:image-position="left-top" dlg:checked="false">
    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step09.chkUpload_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:checkbox>
   <dlg:checkbox dlg:id="chkStore" dlg:tab-index="91" dlg:left="105" dlg:top="45" dlg:width="176" dlg:height="9" dlg:page="9" dlg:value="Save the extension in this computer" dlg:image-position="left-center" dlg:checked="true">
@@ -235,44 +235,47 @@
   <dlg:numericfield dlg:id="numInfoVersionMajor" dlg:tab-index="79" dlg:left="154" dlg:top="89" dlg:width="35" dlg:height="12" dlg:page="7" dlg:decimal-accuracy="0" dlg:value="1" dlg:value-min="0" dlg:value-max="99" dlg:spin="true"/>
   <dlg:numericfield dlg:id="numInfoVersionMinor" dlg:tab-index="81" dlg:left="200" dlg:top="89" dlg:width="35" dlg:height="12" dlg:page="7" dlg:decimal-accuracy="0" dlg:value="0" dlg:value-min="0" dlg:value-max="99" dlg:spin="true"/>
   <dlg:numericfield dlg:id="numInfoVersionMicro" dlg:tab-index="83" dlg:left="245" dlg:top="89" dlg:width="35" dlg:height="12" dlg:page="7" dlg:decimal-accuracy="0" dlg:value="0" dlg:value-min="0" dlg:value-max="99" dlg:spin="true"/>
-  <dlg:textfield dlg:id="txtUploadFtpUrl" dlg:tab-index="89" dlg:disabled="true" dlg:left="121" dlg:top="105" dlg:width="114" dlg:height="12" dlg:page="9" dlg:readonly="true"/>
+  <dlg:textfield dlg:id="txtUploadFtpUrl" dlg:tab-index="89" dlg:disabled="true" dlg:left="135" dlg:top="105" dlg:width="100" dlg:height="12" dlg:page="9" dlg:readonly="true"/>
   <dlg:checkbox dlg:id="chkUpdateInfo" dlg:tab-index="93" dlg:disabled="true" dlg:left="121" dlg:top="122" dlg:width="160" dlg:height="9" dlg:page="9" dlg:value="Add auto-update information" dlg:image-position="left-center" dlg:checked="false">
    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step09.chkUpdateInfo_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:checkbox>
-  <dlg:text dlg:id="lblUploadFtpUrl" dlg:tab-index="95" dlg:disabled="true" dlg:left="121" dlg:top="94" dlg:width="114" dlg:height="9" dlg:page="9" dlg:value="FTP address"/>
+  <dlg:text dlg:id="lblUploadFtpUrl" dlg:tab-index="95" dlg:disabled="true" dlg:left="96" dlg:top="107" dlg:width="33" dlg:height="9" dlg:page="9" dlg:value="FTP address"/>
   <dlg:checkbox dlg:id="chkOfficeMenu" dlg:tab-index="14" dlg:left="119" dlg:top="122" dlg:width="148" dlg:height="10" dlg:page="2" dlg:value="Add top level menu" dlg:checked="false">
    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step02.chkOfficeMenu_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:checkbox>
   <dlg:fixedline dlg:id="FixedLine8" dlg:tab-index="99" dlg:left="96" dlg:top="162" dlg:width="196" dlg:height="4" dlg:page="9"/>
   <dlg:text dlg:id="Label12" dlg:tab-index="101" dlg:disabled="true" dlg:left="111" dlg:top="182" dlg:width="72" dlg:height="9" dlg:page="9" dlg:value="Store as:" dlg:align="right"/>
   <dlg:checkbox dlg:id="chkStoreBABSettings" dlg:tab-index="102" dlg:left="106" dlg:top="169" dlg:width="174" dlg:height="11" dlg:page="9" dlg:value="Store settings (suggested)" dlg:checked="false">
-    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step09.chkStoreBABSettings_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
+   <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step09.chkStoreBABSettings_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:checkbox>
-  <dlg:combobox dlg:id="cmbStoreBABSettings" dlg:tab-index="100" dlg:left="187" dlg:top="180" dlg:width="95" dlg:height="12" dlg:page="9" dlg:spin="true" dlg:disabled="true"/>
+  <dlg:combobox dlg:id="cmbStoreBABSettings" dlg:tab-index="100" dlg:disabled="true" dlg:left="187" dlg:top="180" dlg:width="95" dlg:height="12" dlg:page="9" dlg:spin="true"/>
   <dlg:checkbox dlg:id="chk_publisher" dlg:tab-index="103" dlg:left="222" dlg:top="136" dlg:width="84" dlg:height="10" dlg:page="7" dlg:value="Add publisher" dlg:checked="false">
    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step07.Add_Publisher?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:checkbox>
-  <dlg:text dlg:id="lbl_publisherName" dlg:tab-index="108" dlg:disabled="true" dlg:left="107" dlg:top="144" dlg:width="74" dlg:height="9" dlg:page="7" dlg:value="Publisher name"/>
-  <dlg:text dlg:id="lbl_publisherUrl" dlg:tab-index="109" dlg:disabled="true" dlg:left="106" dlg:top="170" dlg:width="74" dlg:height="9" dlg:page="7" dlg:value="Publisher url"/>
-  <dlg:fixedline dlg:id="FixedLine9" dlg:tab-index="110" dlg:left="106" dlg:top="137" dlg:width="112" dlg:height="7" dlg:page="7"/>
-  <dlg:textfield dlg:id="txt_publisherName" dlg:tab-index="107" dlg:disabled="true" dlg:left="106" dlg:top="154" dlg:width="176" dlg:height="12" dlg:page="7"/>
-  <dlg:textfield dlg:id="txt_publisherUrl" dlg:tab-index="106" dlg:disabled="true" dlg:left="106" dlg:top="180" dlg:width="176" dlg:height="12" dlg:page="7" dlg:value="http://"/>
-  <dlg:text dlg:id="lblPyLib" dlg:tab-index="111" dlg:left="132" dlg:top="40" dlg:width="130" dlg:height="9" dlg:page="1" dlg:value="Select directory of the Python library to export"/>
-  <dlg:textfield dlg:id="txtPyLib" dlg:tab-index="112" dlg:left="132" dlg:top="50" dlg:width="150" dlg:height="12" dlg:page="1" dlg:readonly="true"/>
-  <dlg:button dlg:id="cmdPyLib" dlg:tab-index="113" dlg:left="285" dlg:top="50" dlg:width="10" dlg:height="12" dlg:page="1" dlg:value="...">
+  <dlg:text dlg:id="lbl_publisherName" dlg:tab-index="106" dlg:disabled="true" dlg:left="107" dlg:top="144" dlg:width="74" dlg:height="9" dlg:page="7" dlg:value="Publisher name"/>
+  <dlg:text dlg:id="lbl_publisherUrl" dlg:tab-index="107" dlg:disabled="true" dlg:left="106" dlg:top="170" dlg:width="74" dlg:height="9" dlg:page="7" dlg:value="Publisher url"/>
+  <dlg:fixedline dlg:id="FixedLine9" dlg:tab-index="108" dlg:left="106" dlg:top="137" dlg:width="112" dlg:height="7" dlg:page="7"/>
+  <dlg:textfield dlg:id="txt_publisherName" dlg:tab-index="105" dlg:disabled="true" dlg:left="106" dlg:top="154" dlg:width="176" dlg:height="12" dlg:page="7"/>
+  <dlg:textfield dlg:id="txt_publisherUrl" dlg:tab-index="104" dlg:disabled="true" dlg:left="106" dlg:top="180" dlg:width="176" dlg:height="12" dlg:page="7" dlg:value="http://"/>
+  <dlg:text dlg:id="lblPyLib" dlg:tab-index="109" dlg:left="132" dlg:top="40" dlg:width="130" dlg:height="9" dlg:page="1" dlg:value="Select directory of the Python library to export"/>
+  <dlg:textfield dlg:id="txtPyLib" dlg:tab-index="110" dlg:left="132" dlg:top="50" dlg:width="150" dlg:height="12" dlg:page="1" dlg:readonly="true"/>
+  <dlg:button dlg:id="cmdPyLib" dlg:tab-index="111" dlg:left="285" dlg:top="50" dlg:width="10" dlg:height="12" dlg:page="1" dlg:value="...">
    <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step01.cmdPyLib_onClick?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:button>
-  <dlg:text dlg:id="lblExtPyOnlyName" dlg:tab-index="115" dlg:left="127" dlg:top="45" dlg:width="160" dlg:height="9" dlg:page="2" dlg:value="Set extension name: (Extension with Python lib only)"/>
-  <dlg:textfield dlg:id="txtExtPyOnlyName" dlg:tab-index="114" dlg:left="127" dlg:top="55" dlg:width="160" dlg:height="12" dlg:page="2" dlg:readonly="true">
+  <dlg:text dlg:id="lblExtPyOnlyName" dlg:tab-index="113" dlg:left="127" dlg:top="45" dlg:width="160" dlg:height="9" dlg:page="2" dlg:value="Set extension name: (Extension with Python lib only)"/>
+  <dlg:textfield dlg:id="txtExtPyOnlyName" dlg:tab-index="112" dlg:left="127" dlg:top="55" dlg:width="160" dlg:height="12" dlg:page="2" dlg:readonly="true">
    <script:event script:event-name="on-textchange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step02.txtExtPyOnlyName_textModified?language=Basic&amp;location=application" script:language="Script"/>
    <script:event script:event-name="on-blur" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step02.txtExtPyOnlyName_focusLost?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:textfield>
-  <dlg:checkbox dlg:id="chk_onlyPython" dlg:tab-index="116" dlg:left="122" dlg:top="50" dlg:width="84" dlg:height="10" dlg:page="1" dlg:checked="false">
+  <dlg:checkbox dlg:id="chk_onlyPython" dlg:tab-index="114" dlg:left="122" dlg:top="50" dlg:width="84" dlg:height="10" dlg:page="1" dlg:checked="false">
    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step01.chkOnlyPython_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:checkbox>
-  <dlg:text dlg:id="lblOnlyPyThon" dlg:tab-index="117" dlg:left="89" dlg:top="50" dlg:width="40" dlg:height="9" dlg:page="1" dlg:value="Python only"/>
-  <dlg:button dlg:id="cmdLoadProj" dlg:tab-index="118" dlg:left="54" dlg:top="206" dlg:width="42" dlg:height="14" dlg:page="1" dlg:value="Load Project">
+  <dlg:text dlg:id="lblOnlyPyThon" dlg:tab-index="115" dlg:left="89" dlg:top="50" dlg:width="40" dlg:height="9" dlg:page="1" dlg:value="Python only"/>
+  <dlg:button dlg:id="cmdLoadProj" dlg:tab-index="116" dlg:left="52" dlg:top="206" dlg:width="42" dlg:height="14" dlg:page="1" dlg:value="Load Project">
    <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step01.cmdLoadProj_onClick?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:button>
+  <dlg:checkbox dlg:id="chkSaveUpdateOnDisk" dlg:tab-index="117" dlg:left="106" dlg:top="81" dlg:width="175" dlg:height="9" dlg:page="9" dlg:value="Save Update XML file on disk" dlg:image-position="left-top" dlg:checked="false">
+   <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step09.chkSaveUpdateOnDisk_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:checkbox>
  </dlg:bulletinboard>
 </dlg:window>

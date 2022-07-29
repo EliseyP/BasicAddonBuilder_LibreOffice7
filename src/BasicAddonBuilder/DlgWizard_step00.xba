@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_step00" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.6 $
+&apos;	BasicAddonBuilder - $ Version: 0.6.4 $
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -93,6 +93,7 @@ Dim sPkgStoreUrl As String
 Dim sFtpRoot As String
 Dim sPkgFtpUrl As String
 Dim sUpdateFtpUrl As String
+Dim sUpdateStoreUrl As String &apos; On disk
 Dim sRegistryURL As String
 Dim bProjStore As Boolean
 Dim sProjName As String
@@ -112,12 +113,7 @@ On Local Error Goto ErrH
 	
 	&apos;create the Extension (aka UNO package) in a temporary location
 	ExportUnoPackage(sTmpPkgUrl)
-	
-	&apos; TODO
-	&apos;create the Update.xml file into the extension create dir
-	&apos;ExportUpdateXml(sCreationUrl)
-	
-	
+		
 	If g_oDlgWizardModel.chkStore.State = 1 Then
 		&apos;copy the created extension to the location selected by the user
 		oFileAccess.copy(sTmpPkgUrl, sPkgStoreUrl)
@@ -155,9 +151,15 @@ On Local Error Goto ErrH
 		End If
 	End If
 	
-	g_oDlgWizard.endExecute()
+	&apos;create the Update.xml file into the extension create dir
+	If g_bSaveUpdateOnDisk = True And g_oDlgWizardModel.txtDownloadUrl.Text &lt;&gt; &quot;&quot;  Then
+		sUpdateStoreUrl = Left(sPkgStoreUrl, Len(sPkgStoreUrl) - 3)
+		sUpdateStoreUrl = sUpdateStoreUrl &amp; &quot;update.xml&quot;
+		ExportUpdateXml(sUpdateStoreUrl)
+		
+	End If 
 	
-	&apos;storeprj
+	g_oDlgWizard.endExecute()
 	
 ExitHere:
 	Exit Sub
@@ -169,6 +171,15 @@ ErrH:
 	Resume ExitHere
 
 End Sub
+
+Sub TST_LEN()
+Dim sUpdateStoreUrl$
+Dim sPkgStoreUrl
+	sUpdateStoreUrl = &quot;/tmp/file-0.0.6.oxt&quot;
+	sPkgStoreUrl = Left(sUpdateStoreUrl, Len(sUpdateStoreUrl) - 3)
+	Print sPkgStoreUrl &amp; &quot;update.xml&quot;
+End Sub
+
 
 
 &apos;______________________________________________________________________________
