@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_step09" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.8 $ 
+&apos;	BasicAddonBuilder - $ Version: 0.6.4 $ 
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -37,6 +37,7 @@ Sub Step09_Initialize()
 &apos;set step title/description
 		.lblStepTitle.Label = GetRoadmapItem(9).Label
 		.lblStepDescription.Label = GetResString(&quot;Store the created Extension locally or publish it via FTP&quot;)
+		
 &apos; enable/disable general controls
 		.cmdBack.Enabled = True
 		.cmdNext.Enabled = False &apos;this is the last step (at the moment...)
@@ -141,7 +142,6 @@ Dim sTxt As String
 Const sTxtDefault = &quot;Save Update XML file on disk&quot;
 	
 	chkSaveUpdateOnDisk = g_oDlgWizardModel.chkSaveUpdateOnDisk
-	&apos;xray chkSaveUpdateOnDisk
 	sTxt = chkSaveUpdateOnDisk.Label
 	txtDownloadUrl = g_oDlgWizardModel.txtDownloadUrl
 	bEnabled = CBool(chkSaveUpdateOnDisk.State)
@@ -175,7 +175,11 @@ Dim sProjectName As String
 	If g_sProjectName &lt;&gt; &quot;&quot; Then
 		sProjectName = g_sProjectName
 	Else 
-		sProjectName =  g_sDefaultLibrary
+		If g_bOnlyPython = True Then
+			sProjectName = g_sExtensionWithOnlyPythonName
+		Else 
+			sProjectName =  g_sDefaultLibrary
+		End If 
 	End If
 	cmbStoreBABSettingsInit(sProjectName)
 	

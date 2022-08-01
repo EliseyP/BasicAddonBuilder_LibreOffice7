@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgMacroPicker" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.8 $
+&apos;	BasicAddonBuilder - $ Version: 0.6.4 $
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -40,6 +40,7 @@ Private mURIList() &apos;for each macro shown in the dialog we store the corresp
 Private lstLibraries As Object
 Private lstModules As Object
 Private lstMacros As Object
+Private lblMacros As Object
 Private cmdOk As Object
 
 Private sLastProvider As String
@@ -55,6 +56,7 @@ Dim oDlg As Object
 Dim oDlgModel As Object
 Dim iDialogResult As Integer
 Dim nInd%
+
 
 	DialogLibraries.LoadLibrary(&quot;BasicAddonBuilder&quot;)
 	oLib = DialogLibraries.GetByName(&quot;BasicAddonBuilder&quot;)
@@ -78,6 +80,7 @@ Dim nInd%
 		lstLibraries = .getControl(&quot;lstLibraries&quot;)
 		lstModules = .getControl(&quot;lstModules&quot;)
 		lstMacros = .getControl(&quot;lstMacros&quot;)
+		lblMacros = .getControl(&quot;lblMacros&quot;)
 		cmdOk = .getControl(&quot;cmdOk&quot;)
 	End With
 	
@@ -93,12 +96,19 @@ Dim nInd%
 		sLastLibrary = g_sDefaultLibrary
 	End If
 	
-	&apos; On this step if selected ONLY PYTHON aDesc=Empty 
-	&apos; aMacroDescriptor have &quot;MyMacros:Csl2Pdf (g_sDefaultLibrary)&quot;  
 	&apos;select initial items
 	If aMacroDescriptor.Library = &quot;&quot; Then
 		aMacroDescriptor.Provider = sLastProvider
 		aMacroDescriptor.Library = sLastLibrary
+	End If
+	
+	If aMacroDescriptor.Provider = &quot;Python&quot; Then 
+		With oDlgModel.lblMacros
+			.Multiline = True
+			.Height = .Height * 2
+			.PositionY = .PositionY - .Height/2
+			.Label = &quot;Functions&quot; &amp; CHR(13) &amp; &quot;(in g_exportedScripts)&quot;
+		End With	
 	End If
 	
 	If SelectLibrary(aMacroDescriptor.Provider, aMacroDescriptor.Library) Then

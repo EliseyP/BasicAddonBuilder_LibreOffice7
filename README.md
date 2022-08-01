@@ -1,6 +1,6 @@
 # BasicAddonBuilder_LibreOffice7 
 
-## 0.6.8
+## 0.6.9
 
 `LibreOffice` extension for extension compiling.  
 
@@ -14,6 +14,7 @@ Finished a feature started by author - **save and load settings of project** (in
 
 - Optional creating Update XML file in extension creation dir.
 - Optional removing version from extension filename (version is present in the extension itself).  
+- Minimal LO version.
 - Python Libraries support.  
 - Add other directories and files to extension.
 ### Python Libraries support

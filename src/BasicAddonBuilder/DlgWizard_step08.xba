@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_step08" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.8 $ 
+&apos;	BasicAddonBuilder - $ Version: 0.6.4 $ 
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -32,9 +32,11 @@ Option Explicit
 
 Public g_mPkgDescTranslations()
 
+Private bDependLOMinVer_IS_CORRECT As Boolean
 &apos;______________________________________________________________________________
 Sub Step08_Initialize()
 Dim sPkgDesc As String
+Dim bEnable
 	
 	With g_oDlgWizardModel	
 &apos;set step title/description
@@ -42,6 +44,10 @@ Dim sPkgDesc As String
 		.lblStepDescription.Label = _
 			GetResString(&quot;Add a description for the Extension to create.&quot;) &amp; Chr(10) &amp; _
 			GetResString(&quot;The description will be shown as tool-tip text in the Extension manager dialog&quot;)
+&apos; enable/disable depend controls
+		bEnable = CBool(.chkDependLO.State)
+		.txtDependLO.Enabled = bEnable
+		.patfldDependLO.Enabled = bEnable
 		
 &apos; enable/disable general controls
 		.cmdBack.Enabled = True
@@ -64,7 +70,8 @@ Dim sPkgDesc As String
 		
 		g_oDlgWizardModel.txtPackageDescription.Tag = &quot;Initialized&quot;
 	End If
-
+	bDependLOMinVer_IS_CORRECT = True
+	
 End Sub
 
 
@@ -90,6 +97,44 @@ Dim sDesc As String
 		g_oDlgWizard.getControl(&quot;txtPackageDescription&quot;).Text = sDesc
 	End If
 	
+End Sub
+
+
+Sub chkDependLO_statusChanged(oEvent As Object)
+Dim chkDependLO
+Dim bEnable As Boolean
+	
+	chkDependLO = g_oDlgWizardModel.chkDependLO
+	bEnable = CBool(chkDependLO.State)
+	g_oDlgWizardModel.txtDependLO.Enabled = bEnable
+	g_oDlgWizardModel.patfldDependLO.Enabled = bEnable
+	EnableStepControls()
+End Sub
+
+Sub patfldDependLO_textModified(oEvent As Object)
+	sanityDependLOMinVer(g_oDlgWizardModel.patfldDependLO.Text)
+	EnableStepControls()	
+End Sub
+
+Sub sanityDependLOMinVer(sMinVer As String)
+&apos; Check formatted field &apos;N.N&apos;
+	If Right(sMinVer, 1) = &quot;_&quot; Or Left(sMinVer, 1) = &quot;_&quot; Then 
+		bDependLOMinVer_IS_CORRECT = False
+	Else 
+		bDependLOMinVer_IS_CORRECT = True
+	End If 
+End Sub
+
+Sub EnableStepControls()
+	Dim bEnable As Boolean
+	If CBool(g_oDlgWizardModel.chkDependLO.State) = True Then
+		bEnable = bDependLOMinVer_IS_CORRECT
+
+		g_oDlgWizardModel.cmdNext.Enabled = bEnable
+		If Not bEnable Then
+			g_oDlgWizardModel.cmdCreate.Enabled = False
+		End If
+	End If 
 End Sub
 
 </script:module>

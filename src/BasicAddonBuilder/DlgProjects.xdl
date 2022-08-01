@@ -13,6 +13,10 @@
   </dlg:menulist>
   <dlg:button dlg:id="cmdOpen" dlg:tab-index="4" dlg:disabled="true" dlg:left="108" dlg:top="22" dlg:width="40" dlg:height="14" dlg:value="Open" dlg:button-type="ok">
    <script:event script:event-name="on-mouseup" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgProjects.cmdOpen_onClick?language=Basic&amp;location=application" script:language="Script"/>
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgProjects.cmdOpen_onClick?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+  <dlg:button dlg:id="cmdOk" dlg:tab-index="5" dlg:left="108" dlg:top="91" dlg:width="40" dlg:height="14" dlg:value="Ok">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgProjects.cmdOk_onClick?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:button>
  </dlg:bulletinboard>
 </dlg:window>

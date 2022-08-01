@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="PkgExporter" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.8 $ 
+&apos;	BasicAddonBuilder - $ Version: 0.6.4 $ 
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -207,10 +207,23 @@ Dim mLines()
 
 	AppendItem(mLines(), Indent(0) &amp; &quot;&lt;description&quot;)
 	AppendItem(mLines(), Indent(0) &amp; &quot; xmlns=&quot;&quot;http://openoffice.org/extensions/update/2006&quot;&quot;&quot;)
+	AppendItem(mLines(), Indent(0) &amp; &quot; xmlns:l=&quot;&quot;http://libreoffice.org/extensions/description/2011&quot;&quot;&quot;)
 	AppendItem(mLines(), Indent(0) &amp; &quot; xmlns:xlink=&quot;&quot;http://www.w3.org/1999/xlink&quot;&quot;&gt;&quot;)
 	
 	AppendItem(mLines(), Indent(1) &amp; &quot;&lt;identifier value=&quot;&quot;&quot; &amp; sIdentifier &amp; &quot;&quot;&quot; /&gt;&quot;)
 	AppendItem(mLines(), Indent(1) &amp; &quot;&lt;version value=&quot;&quot;&quot; &amp; sVersion &amp; &quot;&quot;&quot; /&gt;&quot;)
+
+	If CBool(g_oDlgWizardModel.chkDependLO.State) = True Then
+		AppendItem(mLines(), Indent(1) &amp; &quot;&lt;dependencies&gt;&quot;)
+		AppendItem(mLines(), Indent(2) &amp; _
+		  &quot;&lt;l:LibreOffice-minimal-version value=&quot;&quot;&quot; &amp; _
+		  g_oDlgWizardModel.patfldDependLO.Text &amp; _
+		  &quot;&quot;&quot; dep:name=&quot;&quot;&quot; &amp; _
+		  g_oDlgWizardModel.txtDependLO.Text &amp; &quot;&quot;&quot;/&gt;&quot;)
+		AppendItem(mLines(), Indent(1) &amp; &quot;&lt;/dependencies&gt;&quot;)
+	End If 
+	
+	
 	AppendItem(mLines(), Indent(1) &amp; &quot;&lt;update-download&gt;&quot;)
 	AppendItem(mLines(), Indent(2) &amp; &quot;&lt;src xlink:href=&quot;&quot;&quot; &amp; sDownloadUrl &amp; &quot;&quot;&quot; /&gt;&quot;)
 	AppendItem(mLines(), Indent(1) &amp; &quot;&lt;/update-download&gt;&quot;)
@@ -643,13 +656,16 @@ Dim s_publisherName As String
 	AppendItem(mLines(), Indent(1) &amp; &quot;&lt;version value=&quot;&quot;&quot; &amp; sVersion &amp; &quot;&quot;&quot;/&gt;&quot;)
 	
 	&apos;OpenOffice.org-minimal-version:
-	&apos;not currently supported by BasicAddonBuilder
-	&apos; (adding as XML comment)
-	AppendItem(mLines(), Indent(1) &amp; &quot;&lt;dependencies&gt;&quot;)
-	&apos;AppendItem(mLines(), Indent(2) &amp; &quot;&lt;OpenOffice.org-minimal-version value=&quot;&quot;2.1&quot;&quot; dep:name=&quot;&quot;OpenOffice.org 2.1&quot;&quot;/&gt;&quot;)
-	AppendItem(mLines(), Indent(2) &amp; &quot;&lt;l:LibreOffice-minimal-version value=&quot;&quot;7.1&quot;&quot; dep:name=&quot;&quot;LibreOffice 7.1 minimum, or more recent&quot;&quot;/&gt;&quot;)
-	AppendItem(mLines(), Indent(1) &amp; &quot;&lt;/dependencies&gt;&quot;)
-	
+	If CBool(g_oDlgWizardModel.chkDependLO.State) = True Then
+		AppendItem(mLines(), Indent(1) &amp; &quot;&lt;dependencies&gt;&quot;)
+		AppendItem(mLines(), Indent(2) &amp; _
+		  &quot;&lt;l:LibreOffice-minimal-version value=&quot;&quot;&quot; &amp; _
+		  g_oDlgWizardModel.patfldDependLO.Text &amp; _
+		  &quot;&quot;&quot; dep:name=&quot;&quot;&quot; &amp; _
+		  g_oDlgWizardModel.txtDependLO.Text &amp; &quot;&quot;&quot;/&gt;&quot;)
+		AppendItem(mLines(), Indent(1) &amp; &quot;&lt;/dependencies&gt;&quot;)
+	End If 
+		
 	&apos;--&gt;patch-----for more information, see module &quot;patch_information&quot;----
 	s_publisherUrl = g_oDlgWizardModel.txt_publisherUrl.Text
 	s_publisherName = g_oDlgWizardModel.txt_publisherName.Text

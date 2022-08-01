@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgProjects" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.8 $
+&apos;	BasicAddonBuilder - $ Version: 0.6.4 $
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -153,11 +153,26 @@ Dim mList()
 	AppendItem(mDeletedProjects(), lstProjects.SelectedItem)
 	
 	&apos;remove the item from the view
-	lstProjects.removeItems(lstProjects.SelectedItem, 1)
+	lstProjects.removeItems(lstProjects.getSelectedItemPos(), 1)
 	
 	EnableControls()
 
 End Sub
+
+Sub cmdOk_onClick(oEvent As Object)
+	Dim sProjName As String
+	
+	If UBound(mDeletedProjects()) &gt;=0 Then
+		&apos; remove from registry
+		For Each sProjName In mDeletedProjects()
+			DeleteProject(sProjName)
+		Next sProjName
+	End If 
+
+	oDlgProjects.endExecute()
+
+End Sub
+
 
 
 &apos;====================================================
@@ -205,6 +220,7 @@ Dim I As Integer
 	For I = LBound(mList()) To UBound(mList())
 		sKeyName = mList(I)
 		If Len(sKeyName) &gt; 0 Then
+			&apos; remove leading &quot;/&quot; from name
 			sKeyName = Right(sKeyName, Len(sKeyName) - 1)
 		End If
 		mList(I) = sKeyName
@@ -222,6 +238,7 @@ Dim oRoot As Object
 Dim sRegistryURL As String
 Dim bReadOnly As Boolean
 Dim bCreate As Boolean
+Dim mKeyNames()
 
 	oReg = CreateUnoService(&quot;com.sun.star.registry.SimpleRegistry&quot;)
 
@@ -231,7 +248,8 @@ Dim bCreate As Boolean
 	oReg.open(sRegistryURL, bReadOnly, bCreate)
 
 	oRoot = oReg.getRootkey()
-	
+	mKeyNames() = oRoot.KeyNames()
+	sPrjName = &quot;/&quot; &amp; sPrjName
 	If HasItem(oRoot.KeyNames(), sPrjName) Then
 		oRoot.deleteKey(sPrjName)
 	End If

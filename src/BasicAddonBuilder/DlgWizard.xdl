@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
-<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgWizard" dlg:tab-index="0" dlg:left="85" dlg:top="46" dlg:width="303" dlg:height="226" dlg:page="2" dlg:closeable="true" dlg:moveable="true">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgWizard" dlg:tab-index="0" dlg:left="85" dlg:top="46" dlg:width="303" dlg:height="226" dlg:page="1" dlg:closeable="true" dlg:moveable="true">
  <dlg:styles>
   <dlg:style dlg:style-id="0" dlg:font-weight="150"/>
  </dlg:styles>
@@ -294,5 +294,13 @@
   <dlg:button dlg:id="cmdOtherFilesClear" dlg:tab-index="122" dlg:left="243" dlg:top="182" dlg:width="47" dlg:height="12" dlg:page="2" dlg:value="Clear">
    <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step02.cmdOthefFilesClear_onClick?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:button>
+  <dlg:fixedline dlg:style-id="0" dlg:id="FixedLine11" dlg:tab-index="125" dlg:left="109" dlg:top="166" dlg:width="181" dlg:height="8" dlg:page="8" dlg:value="Dependencies. From version:"/>
+  <dlg:checkbox dlg:id="chkDependLO" dlg:tab-index="128" dlg:left="96" dlg:top="165" dlg:width="12" dlg:height="10" dlg:page="8" dlg:checked="false">
+   <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step08.chkDependLO_statusChanged?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:checkbox>
+  <dlg:textfield dlg:id="txtDependLO" dlg:tab-index="126" dlg:disabled="true" dlg:left="132" dlg:top="179" dlg:width="158" dlg:height="10" dlg:page="8" dlg:value="LibreOffice 3.5 minimum, or more recent"/>
+  <dlg:patternfield dlg:id="patfldDependLO" dlg:tab-index="127" dlg:disabled="true" dlg:left="111" dlg:top="179" dlg:width="15" dlg:height="10" dlg:page="8" dlg:strict-format="true" dlg:value="3.5" dlg:edit-mask="NLN" dlg:literal-mask="_._">
+   <script:event script:event-name="on-textchange" script:macro-name="vnd.sun.star.script:BasicAddonBuilder.DlgWizard_step08.patfldDependLO_textModified?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:patternfield>
  </dlg:bulletinboard>
 </dlg:window>

@@ -80,9 +80,17 @@ Dim sOtherFilesItem As String
 	With g_oDlgWizard
 		.getControl(&quot;lstBasicLibraryContainers&quot;).selectItem(g_sDefaultProvider, True)
 		.getControl(&quot;lstBasicLibraries&quot;).selectItem(g_sDefaultLibrary, True)
+		&apos;.getControl(&quot;txtPyLib&quot;).Text = g_sPythonLibrary
 	End With
 
+
 	With g_oDlgWizardModel
+		.chk_onlyPython.State = ABS(CInt(g_bOnlyPython)) 
+		.txtPyLib.Text = g_sPythonLibrary
+		.lstBasicLibraryContainers.Enabled = Not g_bOnlyPython
+		.lstBasicLibraries.Enabled = Not g_bOnlyPython
+		.txtExtPyOnlyName = g_sExtensionWithOnlyPythonName
+		
 		.chkToolbar.State = GetKeyValue(oPrjKey, &quot;UIOptions/Toolbar&quot;)
 		.chkAddonMenu.State = GetKeyValue(oPrjKey, &quot;UIOptions/AddonMenu&quot;)
 		.chkOfficeMenu.State = GetKeyValue(oPrjKey, &quot;UIOptions/OfficeMenu&quot;)
@@ -97,6 +105,10 @@ Dim sOtherFilesItem As String
 		.txtPackageDescription.Text = GetKeyValue(oPrjKey, &quot;Description/DefaultText&quot;)
 		.txtPackageDescription.Tag = &quot;Initialized&quot;
 		
+		.chkDependLO.State = GetKeyValue(oPrjKey, &quot;chkDependLO&quot;)
+		.txtDependLO.Text = GetKeyValue(oPrjKey, &quot;txtDependLO&quot;)
+		.patfldDependLO.Text = GetKeyValue(oPrjKey, &quot;patfldDependLO&quot;)
+
 		
 		.chkStore.State = GetKeyValue(oPrjKey, &quot;HasStoreURL&quot;)
 		.chkSaveUpdateOnDisk.State = GetKeyValue(oPrjKey, &quot;HasStoreUpdateOnDisk&quot;)
@@ -220,6 +232,10 @@ Dim sOtherFilesItem As String
 
 	oRegKey = oPrjKey.createKey(&quot;Description/Translations&quot;)
 	AppendLocalizedStringKeys(oRegKey, g_mPkgDescTranslations())
+
+	SetKeyValue(oPrjKey, &quot;chkDependLO&quot;, g_oDlgWizardModel.chkDependLO.State)
+	SetKeyValue(oPrjKey, &quot;txtDependLO&quot;, g_oDlgWizardModel.txtDependLO.Text)
+	SetKeyValue(oPrjKey, &quot;patfldDependLO&quot;, g_oDlgWizardModel.patfldDependLO.Text)
 	
 	SetKeyValue(oPrjKey, &quot;HasStoreURL&quot;, g_oDlgWizardModel.chkStore.State)
 	SetKeyValue(oPrjKey, &quot;HasStoreUpdateOnDisk&quot;, g_oDlgWizardModel.chkSaveUpdateOnDisk.State)

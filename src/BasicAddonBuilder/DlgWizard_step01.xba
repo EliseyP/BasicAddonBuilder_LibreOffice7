@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_step01" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.8 $
+&apos;	BasicAddonBuilder - $ Version: 0.6.4 $
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -49,6 +49,7 @@ Dim nCase%
 &apos;		.Roadmap(0).Enabled = True
 
 	End With
+	
 	
 	&apos; update the global variable
 	lstBasicLibraryContainers = g_oDlgWizard.getControl(&quot;lstBasicLibraryContainers&quot;)
@@ -103,6 +104,7 @@ End Sub
 
 &apos;______________________________________________________________________________
 Sub EnableStepControls()
+&apos;Print(&quot;EnableStepControls: STEP 1&quot;)
 Dim sItem As String
 Dim pyItem As String
 Dim bEnable As Boolean
@@ -115,6 +117,9 @@ Dim nCase As Integer
 	bBasicEnable = g_oDlgWizardModel.lstBasicLibraries.Enabled
 	
 	pyItem = g_oDlgWizard.getControl(&quot;txtPyLib&quot;).Text
+	
+	&apos;Print pyItem
+	
 	If CBool(g_oDlgWizardModel.chk_onlyPython.State) = True Then
 		bEnable = pyItem &lt;&gt; &quot;&quot; 
 	Else
@@ -165,11 +170,11 @@ Sub cmdLoadProj_onClick(oEvent As Object)
 Dim iDlgResult As Integer
 	
 	iDlgResult = ShowProjects(&quot;&quot;)
-	&apos;If iDlgResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+	If iDlgResult = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
 	&apos;	Dialog_Initialize()
 	&apos;	Step01_Initialize()
-	&apos;   EnableStepControls()
-	&apos;End If
+	   EnableStepControls()
+	End If
 End Sub
 
 
@@ -183,20 +188,12 @@ Dim chk_onlyPython
 	chk_onlyPython = g_oDlgWizard.getControl(&quot;chk_onlyPython&quot;)
 
 	g_bOnlyPython = CBool(chk_onlyPython.State)
-	If CBool(chk_onlyPython.State) = True Then g_sDefaultProvider = &quot;Python&quot;
+	If g_bOnlyPython = True Then g_sDefaultProvider = &quot;Python&quot;
 	
-	lstBasicLibraryContainers.Enable = Not CBool(chk_onlyPython.State)
-	lstBasicLibraries.Enable = Not CBool(chk_onlyPython.State)
+	lstBasicLibraryContainers.Enable = Not g_bOnlyPython
+	lstBasicLibraries.Enable = Not g_bOnlyPython
 
 	EnableStepControls()
-	
-End Sub
-
-Sub TESTBOL
-	Dim bA As Boolean
-	bA = True
-	Dim bB  As Boolean
-	bB = Not bA
 	
 End Sub
 

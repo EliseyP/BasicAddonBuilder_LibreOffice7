@@ -3,7 +3,7 @@
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgWizard_step02" script:language="StarBasic">REM  *****  BASIC  *****
 &apos;______________________________________________________________________________
 &apos;	
-&apos;	BasicAddonBuilder - $ Version: 0.6.8 $ 
+&apos;	BasicAddonBuilder - $ Version: 0.6.4 $ 
 &apos;	Copyright (C) 2006-2008 Paolo Mantovani
 &apos;	
 &apos;	A wizard to export basic libraries as Add on&apos;s
@@ -40,23 +40,30 @@ Sub Step02_Initialize()
 		.lblStepTitle.Label = GetRoadmapItem(2).Label
 		.lblStepDescription.Label = _
 			GetResString(&quot;Select the options that you want activate for the Extension to create&quot;)
-		
+&apos;set lib name		
 		If g_bOnlyPython = True Then
+			If g_sExtensionWithOnlyPythonName &lt;&gt; &quot;&quot; Then
+				.txtExtPyOnlyName.Text = g_sExtensionWithOnlyPythonName
+			Else	
+				.txtExtPyOnlyName.Text = Replace(g_sPythonLibrary, GetPathSeparator(), &quot;_&quot;)
+			End If
 			.txtExtPyOnlyName.Enabled = True
 			.txtExtPyOnlyName.Readonly = False 
 		Else
+			&apos; gray color for disabled
 			.txtExtPyOnlyName.Enabled = False
-			.txtExtPyOnlyName.EnableVisible = False
-			.lblExtPyOnlyName.EnableVisible = False
+			.txtExtPyOnlyName.BackgroundColor = RGB(219, 219, 219)
+			If .txtExtPyOnlyName.Text &lt;&gt; &quot;&quot; Then .txtExtPyOnlyName.Text = &quot;&quot;
+			
 		End If
 		
 		
 &apos; enable/disable general controls
 		.cmdBack.Enabled = True
-		If g_bOnlyPython = True Then
-			.cmdNext.Enabled = False
-		Else
-			.cmdNext.Enabled = True
+		.cmdNext.Enabled = True
+		
+		If g_bOnlyPython = True AND .txtExtPyOnlyName.Text = &quot;&quot; Then
+				.cmdNext.Enabled = False
 		End If
 		
 &apos; enable/disable roadmap items
