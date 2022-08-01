@@ -2,7 +2,7 @@
 
 <!--	
 		BasicAddonBuilder for OpenOffice.org 
-		$ Version: 0.6.8 $
+		$ Version: 0.6.9 $
 		Copyright (C) 2006-2008 Paolo Mantovani
 		
 		This library is free software; you can redistribute it and/or
@@ -43,7 +43,7 @@
 			<value xml:lang="da">Denne version indeholder en patch, skabt af J&#246;rg Schmidt (joesch@calc-info.de). For mere information, se modulet &quot;patch_information&quot;.  Denne version indeholder en patch, skabt af Derby Russell (jdrussell51@gmail.com). For mere information, se modulet &quot;patch_information&quot;.</value>
 		</prop>
 		<prop oor:name="Version" oor:type="xs:string">
-			<value>0.6.8</value> <!-- Version --> <!-- do not edit this line -->
+			<value>0.6.9</value> <!-- Version --> <!-- do not edit this line -->
 		</prop>
 		<prop oor:name="License" oor:type="xs:string">
 			<value>GNU Lesser General Public License</value>
