@@ -30,3 +30,18 @@ Functions from python modules are available for mapping on toolbar or menus crea
 Add only latin-named files and directories.  
 `ZipFolder` function decodes as url-encoded all non-latin names:  
 `%D0%9F%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%BA%D0%B0 = "Проверка"`.
+
+### Screenshots
+![](Images/img_01.jpg)  
+
+![](Images/img_02.jpg)  
+
+![](Images/img_03.jpg)  
+
+![](Images/img_04.jpg)  
+
+![](Images/img_05.jpg)  
+
+![](Images/img_06.jpg)  
+
+![](Images/img_07.jpg)
