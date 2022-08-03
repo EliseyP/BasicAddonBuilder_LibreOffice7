@@ -109,6 +109,9 @@ Dim sOtherFilesItem As String
 		.txtDependLO.Text = GetKeyValue(oPrjKey, &quot;txtDependLO&quot;)
 		.patfldDependLO.Text = GetKeyValue(oPrjKey, &quot;patfldDependLO&quot;)
 
+		.chk_publisher.State = GetKeyValue(oPrjKey, &quot;chk_publisher&quot;)
+		.txt_publisherName.Text = GetKeyValue(oPrjKey, &quot;txt_publisherName&quot;)
+		.txt_publisherUrl.Text = GetKeyValue(oPrjKey, &quot;txt_publisherUrl&quot;)
 		
 		.chkStore.State = GetKeyValue(oPrjKey, &quot;HasStoreURL&quot;)
 		.chkSaveUpdateOnDisk.State = GetKeyValue(oPrjKey, &quot;HasStoreUpdateOnDisk&quot;)
@@ -162,6 +165,7 @@ Dim sOtherFilesItem As String
 	
 	oRegKey = oPrjKey.openKey(&quot;AddonMenu&quot;)
 	aRootAddonMenu = GetUIElementFromKey(oRegKey)
+	&apos; set lstAddonMenuTitle.stringItemList()
 	
 	oRegKey = oPrjKey.openKey(&quot;HelpMenu&quot;)
 	aRootHelpMenu = GetUIElementFromKey(oRegKey)
@@ -236,6 +240,10 @@ Dim sOtherFilesItem As String
 	SetKeyValue(oPrjKey, &quot;chkDependLO&quot;, g_oDlgWizardModel.chkDependLO.State)
 	SetKeyValue(oPrjKey, &quot;txtDependLO&quot;, g_oDlgWizardModel.txtDependLO.Text)
 	SetKeyValue(oPrjKey, &quot;patfldDependLO&quot;, g_oDlgWizardModel.patfldDependLO.Text)
+	
+	SetKeyValue(oPrjKey, &quot;chk_publisher&quot;, g_oDlgWizardModel.chk_publisher.State)
+	SetKeyValue(oPrjKey, &quot;txt_publisherName&quot;, g_oDlgWizardModel.txt_publisherName.Text)
+	SetKeyValue(oPrjKey, &quot;txt_publisherUrl&quot;, g_oDlgWizardModel.txt_publisherUrl.Text)
 	
 	SetKeyValue(oPrjKey, &quot;HasStoreURL&quot;, g_oDlgWizardModel.chkStore.State)
 	SetKeyValue(oPrjKey, &quot;HasStoreUpdateOnDisk&quot;, g_oDlgWizardModel.chkSaveUpdateOnDisk.State)

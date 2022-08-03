@@ -1,7 +1,5 @@
 # BasicAddonBuilder_LibreOffice7 
 
-## 0.6.9
-
 `LibreOffice` extension for extension compiling.  
 
 Known instrument from **Paolo Mantovani,** fixed for `LO ver >= 7.1`.

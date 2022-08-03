@@ -40,12 +40,14 @@ Sub Step05_Initialize()
 Dim lblAddonMenuPreviewWindow
 Dim lstAddonMenuPreviewType
 Dim iPreviewType 
+Dim oListBox
+Dim mMenuList()
 
 	With g_oDlgWizardModel
 &apos;set step title/description
 		.lblStepTitle.Label = GetRoadmapItem(5).Label
 		.lblStepDescription.Label = GetResString(&quot;Define customized menu entries under the Tools-&gt;Addon&apos;s menu&quot;)
-		
+
 &apos; enable/disable general controls
 		.cmdBack.Enabled = True
 		.cmdNext.Enabled = True
@@ -65,6 +67,12 @@ Dim iPreviewType
 		&apos;Case 3 : iPreviewType = HC_BIG_ICO
 	End Select	
 	
+&apos;set saved menus list
+	oListBox = g_oDlgWizard.getControl(&quot;lstAddonMenuTitle&quot;)
+	&apos;get the new menu list
+	GetMenuList(aRootAddonMenu, mMenuList())
+	&apos;replace all items
+	oListBox.Model.StringItemList = mMenuList()	
 	
 	MenuPreview_Initialize(lblAddonMenuPreviewWindow, iPreviewType )
 	RefreshPreview()
