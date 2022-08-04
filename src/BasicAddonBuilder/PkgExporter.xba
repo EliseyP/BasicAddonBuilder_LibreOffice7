@@ -477,6 +477,7 @@ Sub AppendUIImageElementXml(mLines(), aUIImagesDescriptor As Object, sElementNam
 Dim sURL As String
 Dim sImgId As String
 Dim I As Integer
+Dim sImgExt As String
 	
   AppendItem(mLines(), Indent(iBaseIndent) &amp; &quot;&lt;node oor:name=&quot;&quot;&quot; &amp; sElementName &amp; &quot;&quot;&quot; oor:op=&quot;&quot;replace&quot;&quot;&gt;&quot;)
 
@@ -496,32 +497,33 @@ Dim I As Integer
 	&apos;Add each images as prop 
 	
 	sImgId = GetImageId(aUIImagesDescriptor)
+	sImgExt = &quot;png&quot;
 	
 	If sImgId &lt;&gt; &quot;&quot; Then
 		&apos;BigUrl
 		If aUIImagesDescriptor.LC26IconUrl &lt;&gt; &quot;&quot; Then
-			sURL = sImgId &amp; &quot;_26.bmp&quot;
+			sURL = sImgId &amp; &quot;_26.&quot; &amp; sImgExt &apos; bmp&quot;
 			AppendItem(mLines(), Indent(iBaseIndent+2) &amp; &quot;&lt;prop oor:name=&quot;&quot;ImageBigURL&quot;&quot; oor:type=&quot;&quot;xs:string&quot;&quot;&gt;&quot;)
 			  AppendItem(mLines(), Indent(iBaseIndent+3) &amp; &quot;&lt;value&gt;%origin%/icons/&quot; &amp; sURL &amp; &quot;&lt;/value&gt;&quot;)
 			AppendItem(mLines(), Indent(iBaseIndent+2) &amp; &quot;&lt;/prop&gt;&quot;)
 		End If
 		&apos;SmallUrl
 		If aUIImagesDescriptor.LC16IconUrl &lt;&gt; &quot;&quot; Then
-			sURL = sImgId &amp; &quot;_16.bmp&quot;
+			sURL = sImgId &amp; &quot;_16.&quot; &amp; sImgExt
 			AppendItem(mLines(), Indent(iBaseIndent+2) &amp; &quot;&lt;prop oor:name=&quot;&quot;ImageSmallURL&quot;&quot; oor:type=&quot;&quot;xs:string&quot;&quot;&gt;&quot;)
 			  AppendItem(mLines(), Indent(iBaseIndent+3) &amp; &quot;&lt;value&gt;%origin%/icons/&quot; &amp; sURL &amp; &quot;&lt;/value&gt;&quot;)
 			AppendItem(mLines(), Indent(iBaseIndent+2) &amp; &quot;&lt;/prop&gt;&quot;)
 		End If 	
 		&apos;BigUrlHC
 		If aUIImagesDescriptor.HC26IconUrl &lt;&gt; &quot;&quot; Then
-			sURL = sImgId &amp; &quot;_26h.bmp&quot;
+			sURL = sImgId &amp; &quot;_26h.&quot; &amp; sImgExt
 			AppendItem(mLines(), Indent(iBaseIndent+2) &amp; &quot;&lt;prop oor:name=&quot;&quot;ImageBigHCURL&quot;&quot; oor:type=&quot;&quot;xs:string&quot;&quot;&gt;&quot;)
 			  AppendItem(mLines(), Indent(iBaseIndent+3) &amp; &quot;&lt;value&gt;%origin%/icons/&quot; &amp; sURL &amp; &quot;&lt;/value&gt;&quot;)
 			AppendItem(mLines(), Indent(iBaseIndent+2) &amp; &quot;&lt;/prop&gt;&quot;)
 		End If
 		&apos;SmallUrlHC
 		If aUIImagesDescriptor.HC16IconUrl &lt;&gt; &quot;&quot; Then
-			sURL = sImgId &amp; &quot;_16h.bmp&quot;
+			sURL = sImgId &amp; &quot;_16h.&quot; &amp; sImgExt
 			AppendItem(mLines(), Indent(iBaseIndent+2) &amp; &quot;&lt;prop oor:name=&quot;&quot;ImageSmallHCURL&quot;&quot; oor:type=&quot;&quot;xs:string&quot;&quot;&gt;&quot;)
 			  AppendItem(mLines(), Indent(iBaseIndent+3) &amp; &quot;&lt;value&gt;%origin%/icons/&quot; &amp; sURL &amp; &quot;&lt;/value&gt;&quot;)
 			AppendItem(mLines(), Indent(iBaseIndent+2) &amp; &quot;&lt;/prop&gt;&quot;)
@@ -646,7 +648,10 @@ Dim s_publisherName As String
 		
 		&apos;rebuild the update.xml download (http) url
 		&apos;the dot before the filename is for making it hidden
-		oUrlTransformer.assemble(aUrl)
+		
+		&apos;COMMENT - VERY STRANGE: httpL//www.myserver.com/path -&gt; httpL//www.myserver.comwww.myserver.com/path
+		&apos;oUrlTransformer.assemble(aUrl)
+		
 		&apos;sUpdateUrl = FixDirPath(aUrl.Complete) &amp; &quot;.&quot; &amp; sIdentifier &amp; &quot;_update.xml&quot;
 		
 		sExtName = GetDefaultPackageName(g_bExtFileNameWithoutVersion)
@@ -1216,6 +1221,7 @@ Dim sDestUrl As String
 Dim sImgId As String
 Dim sMime As String
 Dim bImagePresent As Boolean
+Dim sImgExt
 
 Static iImgCounter As Integer
 	
@@ -1225,32 +1231,34 @@ Static iImgCounter As Integer
 	sImgId = &quot;image&quot; &amp; iImgCounter
 	
 	&apos;the format used for the output image
-	sMime = &quot;image/x-MS-bmp&quot;
+	&apos;sMime = &quot;image/x-MS-bmp&quot;
+	sMime = &quot;image/png&quot;
+	sImgExt = &quot;png&quot;
 	
 	sSourceUrl = aUIElement.LC16IconUrl
 	If sSourceUrl &lt;&gt; &quot;&quot; Then
-		sDestUrl = sIconDirUrl &amp; &quot;/&quot; &amp; sImgId &amp; &quot;_16.bmp&quot;
+		sDestUrl = sIconDirUrl &amp; &quot;/&quot; &amp; sImgId &amp; &quot;_16.&quot; &amp; sImgExt
 		ConvertImage(sSourceUrl, sDestUrl, sMime)
 		bImagePresent = True
 	End If
 		
 	sSourceUrl = aUIElement.LC26IconUrl
 	If sSourceUrl &lt;&gt; &quot;&quot; Then
-		sDestUrl = sIconDirUrl &amp; &quot;/&quot; &amp; sImgId &amp; &quot;_26.bmp&quot;
+		sDestUrl = sIconDirUrl &amp; &quot;/&quot; &amp; sImgId &amp; &quot;_26.&quot; &amp; sImgExt
 		ConvertImage(sSourceUrl, sDestUrl, sMime)
 		bImagePresent = True
 	End If
 	
 	sSourceUrl = aUIElement.HC16IconUrl
 	If sSourceUrl &lt;&gt; &quot;&quot; Then
-		sDestUrl = sIconDirUrl &amp; &quot;/&quot; &amp; sImgId &amp; &quot;_16h.bmp&quot;
+		sDestUrl = sIconDirUrl &amp; &quot;/&quot; &amp; sImgId &amp; &quot;_16h.&quot; &amp; sImgExt
 		ConvertImage(sSourceUrl, sDestUrl, sMime)
 		bImagePresent = True
 	End If
 		
 	sSourceUrl = aUIElement.HC26IconUrl
 	If sSourceUrl &lt;&gt; &quot;&quot; Then
-		sDestUrl = sIconDirUrl &amp; &quot;/&quot; &amp; sImgId &amp; &quot;_26h.bmp&quot;
+		sDestUrl = sIconDirUrl &amp; &quot;/&quot; &amp; sImgId &amp; &quot;_26h.&quot; &amp; sImgExt
 		ConvertImage(sSourceUrl, sDestUrl, sMime)
 		bImagePresent = True
 	End If
@@ -1286,8 +1294,34 @@ Dim oGraph As Object
 End Sub
 
 
+Sub TSTConvert()
+Dim sSrcUrl As String
+Dim sDestUrl As String
+Dim sMimeType As String	
+Dim oGraph As Object
 
-
+	oGraphicProvider = createUnoService(&quot;com.sun.star.graphic.GraphicProvider&quot;)
+	&apos;sMimeType = &quot;image/x-MS-bmp&quot;
+	sMimeType = &quot;image/png&quot;
+	sSrcUrl = &quot;file:///home/user/git/HymnographyCSL/Images/cslRunnHeader.png&quot;
+	sDestUrl = &quot;file:///home/user/git/HymnographyCSL/Images/cslRunnHeader_cnv.png&quot;
+	&apos;ConvertImage(sSrcUrl, sDestUrl, sMimeType)
+	
+	Dim mArgsIn(1)as new com.sun.star.beans.PropertyValue
+	mArgsIn(0).Name  = &quot;URL&quot;
+	mArgsIn(0).Value = sSrcUrl
+	oGraph = oGraphicProvider.queryGraphic(mArgsIn())
+	
+	
+	Dim mArgsOut(1) as new com.sun.star.beans.PropertyValue
+	mArgsOut(0).Name  = &quot;URL&quot;
+	mArgsOut(0).Value = sDestUrl
+	mArgsOut(1).Name  = &quot;MimeType&quot;
+	mArgsOut(1).Value = sMimeType
+	
+	oGraphicProvider.storeGraphic(oGraph, mArgsOut())
+	
+End Sub
 
 
 
