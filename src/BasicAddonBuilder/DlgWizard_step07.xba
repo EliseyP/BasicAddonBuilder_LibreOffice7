@@ -44,6 +44,10 @@ Sub Step07_Initialize()
 			GetResString(&quot;Set the version number and select a license for the Extension to create.&quot;) &amp; Chr(10) &amp; _
 			GetResString(&quot;You can also specify more localized versions of the license&quot;)
 
+&apos; enable/disable publisher controls
+		.txt_publisherName.Enabled = CBool(.chk_publisher.State)
+		.txt_publisherUrl.Enabled = CBool(.chk_publisher.State)
+		
 &apos; enable/disable general controls
 		.cmdBack.Enabled = True
 		.cmdNext.Enabled = True 

@@ -40,6 +40,8 @@ Sub Step04_Initialize()
 Dim lblOfficeMenuPreviewWindow
 Dim lstOfficeMenuPreviewType
 Dim iPreviewType 
+Dim mMenuList()
+Dim oListBox
 	
 	With g_oDlgWizardModel
 &apos;set step title/description
@@ -67,6 +69,11 @@ Dim iPreviewType
 		&apos;Case 3 : iPreviewType = HC_BIG_ICO
 	End Select	
 	
+	&apos;oListBox = g_oDlgWizard.getControl(&quot;lstOfficeMenuTitle&quot;)
+	&apos;get the new menu list
+	&apos;GetMenuList(aRootOfficeMenu, mMenuList())
+	&apos;replace all items
+	&apos;oListBox.Model.StringItemList = mMenuList()
 	
 	MenuPreview_Initialize(lblOfficeMenuPreviewWindow, iPreviewType )
 	RefreshMenuList()
@@ -382,7 +389,9 @@ Dim iOldSelection As Integer
 	oListBox.Model.StringItemList = mMenuList()
 	
 	&apos;restore the selection
-	oListBox.selectItemPos(iOldSelection, True)
+	If iOldSelection &gt;= 0 Then
+		oListBox.selectItemPos(iOldSelection, True)
+	End If
 	
 End Sub
 

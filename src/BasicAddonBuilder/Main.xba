@@ -39,7 +39,7 @@ Option Explicit
 
 &apos;______________________________________________________________________________
 Sub RunWizard
- &apos;BasicLibraries.LoadLibrary(&quot;XrayTool&quot;)
+&apos;BasicLibraries.LoadLibrary(&quot;XrayTool&quot;)
  &apos;Globalscope.BasicLibraries.LoadLibrary( &quot;MRILib&quot; )
 On Error GoTo ErrH
 

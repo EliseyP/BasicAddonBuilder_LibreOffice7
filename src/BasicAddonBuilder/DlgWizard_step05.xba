@@ -68,11 +68,11 @@ Dim mMenuList()
 	End Select	
 	
 &apos;set saved menus list
-	oListBox = g_oDlgWizard.getControl(&quot;lstAddonMenuTitle&quot;)
+	&apos;oListBox = g_oDlgWizard.getControl(&quot;lstAddonMenuTitle&quot;)
 	&apos;get the new menu list
-	GetMenuList(aRootAddonMenu, mMenuList())
+	&apos;GetMenuList(aRootAddonMenu, mMenuList())
 	&apos;replace all items
-	oListBox.Model.StringItemList = mMenuList()	
+	&apos;oListBox.Model.StringItemList = mMenuList()	
 	
 	MenuPreview_Initialize(lblAddonMenuPreviewWindow, iPreviewType )
 	RefreshPreview()

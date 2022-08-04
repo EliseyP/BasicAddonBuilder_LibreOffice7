@@ -55,6 +55,8 @@ Dim bCreate As Boolean
 Dim mKeyNames()
 Dim I as Integer
 Dim sOtherFilesItem As String
+Dim mAddonsMenuList()
+Dim mOfficeMenuList()
 
 	oReg = createunoservice(&quot;com.sun.star.registry.SimpleRegistry&quot;)
 	
@@ -162,10 +164,15 @@ Dim sOtherFilesItem As String
 	
 	oRegKey = oPrjKey.openKey(&quot;OfficeMenu&quot;)
 	aRootOfficeMenu = GetUIElementFromKey(oRegKey)
+	GetMenuList(aRootOfficeMenu, mOfficeMenuList())
+	g_oDlgWizardModel.lstOfficeMenuTitle.stringItemList = mOfficeMenuList()
 	
 	oRegKey = oPrjKey.openKey(&quot;AddonMenu&quot;)
 	aRootAddonMenu = GetUIElementFromKey(oRegKey)
-	&apos; set lstAddonMenuTitle.stringItemList()
+	GetMenuList(aRootAddonMenu, mAddonsMenuList())
+	g_oDlgWizardModel.lstAddonMenuTitle.stringItemList = mAddonsMenuList()
+	
+	&apos;xray g_oDlgWizardModel.lstAddonMenuTitle
 	
 	oRegKey = oPrjKey.openKey(&quot;HelpMenu&quot;)
 	aRootHelpMenu = GetUIElementFromKey(oRegKey)

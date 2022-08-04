@@ -293,6 +293,13 @@ Sub GetImgDescriptorsFromUIContainers()
 		For Each aDesc In aRootOfficeMenu.SubItems()
 			&apos; Compare for mImagesElements()
 			aImgDesc = GetImgDescFromUiElement(aDesc, False)
+			If aImgDesc.LC16IconUrl = &quot;&quot; _
+			  And aImgDesc.HC16IconUrl = &quot;&quot; _
+			  And aImgDesc.LC26IconUrl = &quot;&quot; _
+			  And aImgDesc.HC26IconUrl = &quot;&quot; Then 
+			  Exit For
+			End If
+			
 			I = 0
 			If UBound(mImagesElements()) &lt; 0 Then
 				AppendItem(mImagesElements(), aImgDesc)
@@ -318,6 +325,12 @@ Sub GetImgDescriptorsFromUIContainers()
 		For Each aDesc In aRootAddonMenu.SubItems()
 			&apos; Compare for mImagesElements()
 			aImgDesc = GetImgDescFromUiElement(aDesc, False)
+			If aImgDesc.LC16IconUrl = &quot;&quot; _
+			  And aImgDesc.HC16IconUrl = &quot;&quot; _
+			  And aImgDesc.LC26IconUrl = &quot;&quot; _
+			  And aImgDesc.HC26IconUrl = &quot;&quot; Then 
+			  Exit For
+			End If
 			I = 0
 			If UBound(mImagesElements()) &lt; 0 Then
 				AppendItem(mImagesElements(), aImgDesc)
