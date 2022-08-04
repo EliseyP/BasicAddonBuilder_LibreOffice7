@@ -38,7 +38,7 @@ Dim sExtName$
 	GlobalScope.BasicLibraries.LoadLibrary(&quot;ScriptForge&quot;)
 	
 	sExtName = ScriptForge.SF_FileSystem.GetBaseName(getExtensionLocation(EXTENSION_IDENTIFIER)) &amp; &quot;.oxt|py|&quot;
-	&apos;sExtName = &quot;BasicAddonBuilder_LO_0.6.10.oxt|py|&quot;
+	&apos;sExtName = &quot;BasicAddonBuilder_LO_0.6.11.oxt|py|&quot;
 	If sExtName = &quot;&quot; Then 
 		MsgBox(&quot;Error getting extension name.&quot;)
 		Exit Function
