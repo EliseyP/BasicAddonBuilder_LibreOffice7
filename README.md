@@ -43,3 +43,6 @@ Add only latin-named files and directories.
 ![](Images/img_06.jpg)  
 
 ![](Images/img_07.jpg)
+
+### TODO:
+- HotKeys.
