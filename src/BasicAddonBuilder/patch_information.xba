@@ -21,7 +21,7 @@
 &apos;additional changes:
 &apos;-embed the publisher, in the description.xml file
 
-&apos;Changes made by Derby Russell for 0.5.2
+&apos;Changes made by Derby Russell for 0_5_2
 &apos;In the PkgExporter module:
 &apos;the line 74 was changed from:
 &apos;     sTempDirUrl = GetTempFile() &amp; &quot;/&quot;
